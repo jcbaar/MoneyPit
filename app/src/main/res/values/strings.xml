@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MoneyPit</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="no_cars">It is very lonely in here. Please use the menu to add a new car.</string>
+    <string name="title_activity_add_or_edit_car">AddOrEditCarActivity</string>
+    <string name="car_brand">Brand</string>
+    <string name="carModel">Model</string>
+    <string name="carBuildYear">Build year</string>
+    <string name="carLicense">Licenseplate</string>
+    <string name="carCurrency">Currency</string>
+    <string name="carDistanceUnit">Distance unit</string>
+    <string name="buildyear_to_low">You have entered a year lower than 1672. That was the year the first ever steam car was built. Please enter a year higher than or equal to 1672.</string>
+    <string name="buildyear_to_high">You have entered a year higher than the current year. Please enter a year lower than, or equal to the current year.</string>
+    <string name="buildyear_error">You have entered an illegal value or no value at all. Please enter a year between 1672 and the current year.</string>
+    <string name="no_text_error">This field may not be empty.</string>
+    <string name="title_edit_car">Edit existing car</string>
+    <string name="title_create_car">Create a new car</string>
+    <string name="error_saving_car">There was a problem saving the car into the database.</string>
+    <string name="carVolumeUnit">Volume unit</string>
+
+</resources>
