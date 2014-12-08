@@ -11,6 +11,9 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 
+import com.development.jaba.model.Car;
+import com.development.jaba.model.Fillup;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
-    private MoneyPitDbManager _dbManager;                       // Database manager instance handling singleton SQLiteDatabase.
+    private MoneyPitDbManager mDbManager;                       // Database manager instance handling singleton SQLiteDatabase.
     //endregion
 
     //region Construction.
@@ -36,7 +39,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public MoneyPitDbContext(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         MoneyPitDbManager.initializeInstance(this);
-        _dbManager = MoneyPitDbManager.getInstance();
+        mDbManager = MoneyPitDbManager.getInstance();
     }
     //endregion
 
@@ -103,7 +106,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public long addCar(Car car) {
         SQLiteDatabase db;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             ContentValues values = car.toContentValues();
             return db.insertOrThrow(TABLE_CAR,
@@ -115,7 +118,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return 0;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -129,7 +132,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public boolean updateCar(Car car) {
         SQLiteDatabase db;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             ContentValues values = car.toContentValues();
 
@@ -143,7 +146,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return false;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -157,7 +160,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
 
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             return db.delete(TABLE_CAR,
                     Car.KEY_ID + " = ?",
@@ -168,7 +171,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return false;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -194,7 +197,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
         Cursor cursor = null;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
             if (cursor.moveToFirst()) {
@@ -214,7 +217,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             if(cursor != null){
                 cursor.close();
             }
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -254,7 +257,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
         Cursor cursor = null;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
             if (cursor.getCount() == 1) {
@@ -272,7 +275,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             if(cursor != null){
                 cursor.close();
             }
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
     //endregion
@@ -286,7 +289,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public long addFillup(Fillup fillup) {
         SQLiteDatabase db;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             ContentValues values = fillup.toContentValues();
             return db.insertOrThrow(TABLE_FILLUP,
@@ -298,7 +301,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return 0;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -312,7 +315,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public boolean updateFillup(Fillup fillup) {
         SQLiteDatabase db;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             ContentValues values = fillup.toContentValues();
 
@@ -326,7 +329,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return false;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -335,13 +338,13 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * should contain the database ID of the fillup to delete. The other fields
      * in the entity are ignored.
      * @param fillup The fillup entity to delete.
-     * @returntrue for success, false for failure.
+     * @return true for success, false for failure.
      */
     public boolean deleteFillup(Fillup fillup) {
         SQLiteDatabase db;
 
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
 
             return db.delete(TABLE_FILLUP,
                     Fillup.KEY_ID + " = ?",
@@ -352,7 +355,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return false;
         }
         finally {
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -369,7 +372,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
         Cursor cursor = null;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
             if (cursor.getCount() == 1) {
@@ -387,7 +390,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             if(cursor != null){
                 cursor.close();
             }
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
 
@@ -408,7 +411,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
         Cursor cursor = null;
         try {
-            db = _dbManager.openDatabase();
+            db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
             if (cursor.moveToFirst()) {
@@ -451,7 +454,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             if(cursor != null){
                 cursor.close();
             }
-            _dbManager.closeDatabase();
+            mDbManager.closeDatabase();
         }
     }
     //endregion

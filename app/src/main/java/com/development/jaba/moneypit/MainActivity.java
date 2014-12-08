@@ -11,7 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.development.jaba.database.Car;
+import com.development.jaba.adapters.CarRowAdapter;
+import com.development.jaba.model.Car;
 import com.development.jaba.database.MoneyPitDbContext;
 
 import java.util.List;

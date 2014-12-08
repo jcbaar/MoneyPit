@@ -1,5 +1,7 @@
 package com.development.jaba.database;
 
+import com.development.jaba.model.Fillup;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,9 +22,9 @@ public class Utils {
      * FuelConsumption
      *
      * @param fillups The list of fillups that needs to be recomputed.
-     * @param previous A fillup entity which is the first that preceeds the earliest
+     * @param previous A fillup entity which is the first that precedes the earliest
      *                 fillup in the list. This is used to correctly compute the DaysSinceLastFillup,
-     *                 Distance and FuelConsumtion fields of the earliest fillup in the list.
+     *                 Distance and FuelConsumption fields of the earliest fillup in the list.
      */
     public static void recomputeFillupTotals(List<Fillup> fillups, Fillup previous)
     {
@@ -79,7 +81,7 @@ public class Utils {
     }
 
     /**
-     * Get's the difference in days between two given dates.
+     * Gets the difference in days between two given dates.
      * @param dateOne The first date (earlier)
      * @param dateTwo The second date (later)
      * @return The number of days between the two dates.

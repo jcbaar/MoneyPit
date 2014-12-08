@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="estimate_odometer"
+        android:title="@string/estimate_odo"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="export_import_pictures"
+        android:title="@string/export_import_pictures"/>
+</PreferenceScreen>

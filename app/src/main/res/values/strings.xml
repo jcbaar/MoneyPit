@@ -20,5 +20,17 @@
     <string name="title_create_car">Create a new car</string>
     <string name="error_saving_car">There was a problem saving the car into the database.</string>
     <string name="carVolumeUnit">Volume unit</string>
+    <string name="title_activity_main_drawer">MoneyPit</string>
+    <string name="title_section1">Cars</string>
+    <string name="title_section2">Settings</string>
+    <string name="title_section3">Database</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="capture_button">Capture</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="estimate_odo">Estimate odometer</string>
+    <string name="export_import_pictures">Export and import pictures</string>
+    <string name="dialog_close">Close</string>
 
 </resources>

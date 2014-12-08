@@ -8,51 +8,51 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MoneyPitDbManager {
     //region Private fields.
-    private int openCounter;                        // SQLiteDatabase open reference counter.
-    private static MoneyPitDbManager instance;      // The singleton instance of the database manager.
-    private static SQLiteOpenHelper databaseHelper; // The singleton instance of the opened SQLiteOpenHelper.
-    private SQLiteDatabase database;                // The singleton instance of the database.
+    private int mOpenCounter;                        // SQLiteDatabase open reference counter.
+    private static MoneyPitDbManager mInstance;      // The singleton instance of the mDatabase manager.
+    private static SQLiteOpenHelper mDatabaseHelper; // The singleton mInstance of the opened SQLiteOpenHelper.
+    private SQLiteDatabase mDatabase;                // The singleton mInstance of the mDatabase.
     //endregion
 
     //region Methods
     /**
      * Initializes the singleton. This needs to be called before any of the other
      * methods are called.
-     * @param helper The SQLiteOpenHelper instance to associate with the manager.
+     * @param helper The SQLiteOpenHelper mInstance to associate with the manager.
      */
     public static synchronized void initializeInstance(SQLiteOpenHelper helper) {
-        if (instance == null) {
-            instance = new MoneyPitDbManager();
-            databaseHelper = helper;
+        if (mInstance == null) {
+            mInstance = new MoneyPitDbManager();
+            mDatabaseHelper = helper;
         }
     }
 
     /**
-     * Get the singleton instance of the manager.
-     * @return The singleton instance of the manager.
+     * Get the singleton mInstance of the manager.
+     * @return The singleton mInstance of the manager.
      * @throws IllegalStateException Thrown when this is called before {@see initializeInstance}
      * was called.
      */
     public static synchronized MoneyPitDbManager getInstance() throws IllegalStateException {
-        if (instance == null) {
+        if (mInstance == null) {
             throw new IllegalStateException(MoneyPitDbManager.class.getSimpleName() +
                     " is not initialized, call initializeInstance(..) method first.");
         }
 
-        return instance;
+        return mInstance;
     }
 
     /**
-     * Opens the database as writable when it was not yet opened. Adds a reference when the
+     * Opens the mDatabase as writable when it was not yet opened. Adds a reference when the
      * database was already opened.
      * @return The SQLiteDatabase object.
      */
     public synchronized SQLiteDatabase openDatabase() {
-        openCounter++;
-        if(openCounter == 1) {
-            database = databaseHelper.getWritableDatabase();
+        mOpenCounter++;
+        if(mOpenCounter == 1) {
+            mDatabase = mDatabaseHelper.getWritableDatabase();
         }
-        return database;
+        return mDatabase;
     }
 
     /**
@@ -60,10 +60,11 @@ public class MoneyPitDbManager {
      * decreased.
      */
     public synchronized void closeDatabase() {
-        openCounter--;
-        if(openCounter == 0) {
-            database.close();
-
+        if(mOpenCounter > 0) {
+            mOpenCounter--;
+            if (mOpenCounter == 0) {
+                mDatabase.close();
+            }
         }
     }
     //endregion

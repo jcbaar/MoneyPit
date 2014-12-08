@@ -1,7 +1,10 @@
 package com.development.jaba.moneypit;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,16 +14,17 @@ import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.development.jaba.database.Car;
-import com.development.jaba.database.DistanceUnit;
+import com.development.jaba.model.Car;
+import com.development.jaba.model.DistanceUnit;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.database.VolumeUnit;
+import com.development.jaba.model.VolumeUnit;
+import com.development.jaba.utilities.ValidationHelper;
 
 /**
  * Activity for creating a new Car entity or editing an existing
  * entity.
  */
-public class AddOrEditCarActivity extends ActivityBase {
+public class AddOrEditCarActivity extends Activity {
 
     private Spinner distanceUnits,
                     volumeUnits;
@@ -33,9 +37,6 @@ public class AddOrEditCarActivity extends ActivityBase {
 
     private MoneyPitDbContext context;
     private Car carToEdit;
-
-    private View.OnFocusChangeListener manditoryListner,
-                                       buildYearListner;
 
     /**
      * Called when the Activity is starting.
@@ -61,24 +62,24 @@ public class AddOrEditCarActivity extends ActivityBase {
         // Instantiate a database context..
         context = new MoneyPitDbContext(this);
 
-        // Setup the OnFocusChangeListner() objects used to validate the
+        // Setup the OnFocusChangeListener() objects used to validate the
         // fields upon loosing focus.
-        manditoryListner = new View.OnFocusChangeListener() {
+        View.OnFocusChangeListener mandatoryListener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 // Validate for a required field.
                 if (!hasFocus) {
-                    validateTextViewManditory((TextView) v);
+                    ValidationHelper.validateTextViewMandatory((TextView) v);
                 }
             }
         };
 
-        buildYearListner = new View.OnFocusChangeListener() {
+        View.OnFocusChangeListener buildYearListener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 // Validate for a build year field.
-                if(!hasFocus) {
-                    validateTextViewBuildYear((EditText)v);
+                if (!hasFocus) {
+                    ValidationHelper.validateTextViewBuildYear((EditText) v);
                 }
             }
         };
@@ -105,12 +106,12 @@ public class AddOrEditCarActivity extends ActivityBase {
         volumeUnits.setAdapter(volumeAdapter);
 
         // Setup the validation listeners.
-        make.setOnFocusChangeListener(manditoryListner);
-        model.setOnFocusChangeListener(manditoryListner);
-        license.setOnFocusChangeListener(manditoryListner);
-        currency.setOnFocusChangeListener(manditoryListner);
+        make.setOnFocusChangeListener(mandatoryListener);
+        model.setOnFocusChangeListener(mandatoryListener);
+        license.setOnFocusChangeListener(mandatoryListener);
+        currency.setOnFocusChangeListener(mandatoryListener);
 
-        buildYear.setOnFocusChangeListener(buildYearListner);
+        buildYear.setOnFocusChangeListener(buildYearListener);
 
         // Setup the activity title depending on whether we are editing and
         // existing Car entity or a new one.
@@ -121,6 +122,11 @@ public class AddOrEditCarActivity extends ActivityBase {
         }
         else {
             setTitle(getString(R.string.title_create_car));
+        }
+
+        ActionBar actionBar = getActionBar();
+        if( actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -147,8 +153,8 @@ public class AddOrEditCarActivity extends ActivityBase {
         carToEdit.setBuildYear(Integer.parseInt(buildYear.getText().toString()));
         carToEdit.setLicensePlate(license.getText().toString());
         carToEdit.setCurrency(currency.getText().toString());
-        carToEdit.setDistanceUnit(DistanceUnit.Unknown.fromValue(distanceUnits.getSelectedItemPosition()+1));
-        carToEdit.setVolumeUnit(VolumeUnit.Unknown.fromValue(volumeUnits.getSelectedItemPosition()+1));
+        carToEdit.setDistanceUnit(DistanceUnit.fromValue(distanceUnits.getSelectedItemPosition()+1));
+        carToEdit.setVolumeUnit(VolumeUnit.fromValue(volumeUnits.getSelectedItemPosition()+1));
     }
 
     /**
@@ -157,11 +163,11 @@ public class AddOrEditCarActivity extends ActivityBase {
      * of the fields failed validation.
      */
     private boolean validateFields() {
-        return validateTextViewManditory(make) &&
-                validateTextViewManditory(model) &&
-                validateTextViewBuildYear(buildYear) &&
-                validateTextViewManditory(license) &&
-                validateTextViewManditory(currency);
+        return ValidationHelper.validateTextViewMandatory(make) &&
+                ValidationHelper.validateTextViewMandatory(model) &&
+                ValidationHelper.validateTextViewBuildYear(buildYear) &&
+                ValidationHelper.validateTextViewMandatory(license) &&
+                ValidationHelper.validateTextViewMandatory(currency);
     }
 
     /**
@@ -233,6 +239,10 @@ public class AddOrEditCarActivity extends ActivityBase {
             }
             finish();
         }
+        else if(id == android.R.id.home) {
+            Intent intent = NavUtils.getParentActivityIntent(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            NavUtils.navigateUpTo(this, intent);        }
         return super.onOptionsItemSelected(item);
     }
 }

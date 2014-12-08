@@ -66,12 +66,12 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 	Button next;
 	Spinner select_table;
 	TextView tv;
-	
+
 	indexInfo info = new indexInfo();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 
 		//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
 		dbm = new MoneyPitDbContext(AndroidDatabaseManager.this);
@@ -830,7 +830,8 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
       	  crudadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
      
           crud_dropdown.setAdapter(crudadapter);
-          lcrud.setId(299);
+        //noinspection ResourceType
+        lcrud.setId(299);
           lcrud.addView(crud_dropdown,paramcrudtext);
 
           RelativeLayout.LayoutParams rlcrudparam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

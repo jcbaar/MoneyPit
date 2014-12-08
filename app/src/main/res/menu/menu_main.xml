@@ -3,14 +3,10 @@
     tools:context=".MainActivity">
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-    <item android:id="@+id/action_add_car"
-        android:title="Add new car"
         android:orderInCategory="101"
         android:showAsAction="never" />
     <item android:id="@+id/show_database"
         android:title="Database contents"
-        android:orderInCategory="200"
+        android:orderInCategory="103"
         android:showAsAction="never" />
 </menu>

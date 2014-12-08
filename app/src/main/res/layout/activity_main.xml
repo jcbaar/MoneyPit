@@ -8,13 +8,13 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/carList">
+        android:id="@+id/carList2">
     </ListView>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:id="@+id/listEmpty"
+        android:id="@+id/listEmpty2"
         android:text="@string/no_cars"/>
 </RelativeLayout>
