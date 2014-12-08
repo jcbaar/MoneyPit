@@ -1,10 +1,10 @@
 package com.development.jaba.moneypit;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,7 +24,7 @@ import com.development.jaba.utilities.ValidationHelper;
  * Activity for creating a new Car entity or editing an existing
  * entity.
  */
-public class AddOrEditCarActivity extends Activity {
+public class AddOrEditCarActivity extends ActionBarActivity {
 
     private Spinner distanceUnits,
                     volumeUnits;

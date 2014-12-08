@@ -1,9 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
     <item android:id="@+id/action_add_car"
-        android:title="Add new car"
-        android:orderInCategory="100"
-        android:showAsAction="always"
+        android:title="@string/add_car"
+        android:orderInCategory="200"
+        app:showAsAction="always"
         android:icon="@drawable/ic_action_add"/>
 </menu>

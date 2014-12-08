@@ -145,17 +145,26 @@ public class CarListFragment extends BaseFragment {
         return false;
     }
 
+    //region Options menu
+
+    /**
+     * Creates the fragment menu items.
+     * @param menu The menu to create the fragment menu items in.
+     * @param inflater The @{link MenuItemInflater}
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         getActivity().getMenuInflater().inflate(R.menu.menu_carlist, menu);
     }
 
+    /**
+     * Handler for selection of a option menu item.
+     * @param item The item that was selected.
+     * @return true if the item was handled, false if it was not.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -163,6 +172,9 @@ public class CarListFragment extends BaseFragment {
             editCar(null);
             return true;
         }
+
+        // All other items are not our's...
         return false;
     }
+    //endregion
 }

@@ -32,5 +32,8 @@
     <string name="estimate_odo">Estimate odometer</string>
     <string name="export_import_pictures">Export and import pictures</string>
     <string name="dialog_close">Close</string>
+    <string name="add_car">Add new car</string>
+    <string name="section_cars">Cars</string>
+    <string name="section_test">TEST!!!</string>
 
 </resources>

@@ -1,12 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="101"
-        android:showAsAction="never" />
     <item android:id="@+id/show_database"
         android:title="Database contents"
-        android:orderInCategory="103"
-        android:showAsAction="never" />
+        android:orderInCategory="1000"
+        app:showAsAction="never" />
 </menu>
