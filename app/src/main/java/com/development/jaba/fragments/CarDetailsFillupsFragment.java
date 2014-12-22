@@ -1,9 +1,7 @@
 package com.development.jaba.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,39 +9,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.development.jaba.model.Car;
+import com.development.jaba.adapters.FillupRowAdapter;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.moneypit.AddOrEditCarActivity;
-import com.development.jaba.adapters.CarRowAdapter;
-import com.development.jaba.moneypit.CarDetailsActivity;
+import com.development.jaba.database.Utils;
+import com.development.jaba.model.Car;
+import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.R;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- * Lists the Car entities from the database enabling editing of that list and the
- * Car entities within.
+ * Created by Jan on 22-12-2014.
  */
-public class CarListFragment extends BaseFragment {
-
-    private static final int REQUEST_EDIT_CAR = 1,  // Request code for editing a car.
-                             REQUEST_ADD_CAR = 2;   // Request code for adding a new car.
+public class CarDetailsFillupsFragment extends BaseFragment {
 
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
-    private ListAdapter mCarAdapter;                 // Adapter for holding the Car list.
-    private List<Car> mCars;                         // The list of Car entities from the database.
+    private FillupRowAdapter mFillupAdapter;              // Adapter for holding the Fill-up list.
+    private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
+    private Car mCar;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
      * @param sectionNumber The section number in the Navigation Drawer.
      * @return The created fragment.
      */
-    public static CarListFragment newInstance(int sectionNumber) {
-        CarListFragment fragment = new CarListFragment();
+    public static Fragment newInstance(int sectionNumber, Car carToShow) {
+        CarDetailsFillupsFragment fragment = new CarDetailsFillupsFragment();
+        fragment.mCar = carToShow;
+
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -58,28 +54,32 @@ public class CarListFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_drawer, container, false);
+        View view = inflater.inflate(R.layout.fragment_car_details_fillups, container, false);
 
         mContext = new MoneyPitDbContext(getActivity());
-        mCars = mContext.getAllCars();
+        if(mCar != null) {
+            mFillups = mContext.getFillupsOfCar(mCar.getId(), Utils.getYearFromDate(new Date()));
 
-        mCarAdapter = new CarRowAdapter(getActivity(), mCars);
-        ListView carList = (ListView) view.findViewById(R.id.carList);
-        carList.setEmptyView(view.findViewById(R.id.listEmpty));
+            mFillupAdapter = new FillupRowAdapter(getActivity(), mFillups);
+            mFillupAdapter.setCar(mCar);
 
-        carList.setAdapter(mCarAdapter);
-        carList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showCarDetails((Car) mCarAdapter.getItem(position));
-            }
-        });
+            ListView fillupList = (ListView) view.findViewById(R.id.fillupList);
+            fillupList.setEmptyView(view.findViewById(R.id.fillupListEmpty));
 
-        registerForContextMenu(carList);
+            fillupList.setAdapter(mFillupAdapter);
+            fillupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //showCarDetails((Car) mFillupAdapter.getItem(position));
+                }
+            });
+
+            registerForContextMenu(fillupList);
+        }
         return view;
     }
 
-    private void showCarDetails(Car car) {
+/*    private void showCarDetails(Car car) {
         Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
         if(car != null) {
             carDetails.putExtra("Car", car);
@@ -111,7 +111,7 @@ public class CarListFragment extends BaseFragment {
                     } else {
                         mCars.add(car);
                     }
-                    ((ArrayAdapter)mCarAdapter).notifyDataSetChanged();
+                    ((ArrayAdapter) mFillupAdapter).notifyDataSetChanged();
                 }
             }
         }
@@ -121,7 +121,7 @@ public class CarListFragment extends BaseFragment {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if(v.getId() == R.id.carList) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+            Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
             menu.setHeaderTitle(selectedCar.toString());
             String[] menuItems = getResources().getStringArray(R.array.edit_delete);
             for(int i = 0; i < menuItems.length; i++) {
@@ -138,20 +138,20 @@ public class CarListFragment extends BaseFragment {
         switch(menuItemIndex) {
             case 0:
             {
-                Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+                Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
                 editCar(selectedCar);
                 return true;
             }
 
             case 1:
-                Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+                Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
                 mContext.deleteCar(selectedCar);
                 mCars.remove(selectedCar);
-                ((ArrayAdapter)mCarAdapter).notifyDataSetChanged();
+                ((ArrayAdapter) mFillupAdapter).notifyDataSetChanged();
                 return true;
         }
         return false;
-    }
+    }*/
 
     //region Options menu
 
@@ -173,13 +173,13 @@ public class CarListFragment extends BaseFragment {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+//        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add_car) {
-            editCar(null);
-            return true;
-        }
+//        if (id == R.id.action_add_car) {
+//            editCar(null);
+//            return true;
+//        }
 
         // All other items are not our's...
         return false;

@@ -6,7 +6,7 @@
     <color name="accent">#F44336</color>
 
     <color name="drawer_background">#FFFFFF</color>
-    <color name="drawer_text">#000000</color>
+    <color name="drawer_text">#FF0000</color>
 
     <color name="action_bar_background">@color/main</color>
     <color name="action_bar_divider">@color/dark</color>

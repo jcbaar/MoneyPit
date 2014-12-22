@@ -88,7 +88,7 @@ public class NativeCameraFragment extends BaseFragment {
         // Create our Preview view and set it as the content of our activity.
         boolean opened = safeCameraOpenInView(view);
 
-        if(opened == false){
+        if(!opened){
             Log.d("CameraGuide","Error, Camera failed to open");
             return view;
         }
@@ -120,7 +120,7 @@ public class NativeCameraFragment extends BaseFragment {
         mCameraView = view;
         qOpened = (mCamera != null);
 
-        if(qOpened == true){
+        if(qOpened){
             mPreview = new CameraPreview(getActivity().getBaseContext(), mCamera,view);
             FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
             preview.addView(mPreview);
@@ -414,9 +414,9 @@ public class NativeCameraFragment extends BaseFragment {
             }
 
             // If we cannot find the one that matches the aspect ratio, ignore the requirement.
-            if (optimalSize == null) {
+            //if (optimalSize == null) {
                 // TODO : Backup in case we don't get a size.
-            }
+            //}
 
             return optimalSize;
         }

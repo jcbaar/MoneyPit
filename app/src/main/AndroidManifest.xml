@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
@@ -16,7 +19,7 @@
         android:logo="@drawable/ic_action_logo"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.development.jaba.moneypit.MainDrawerActivity"
+            android:name=".MainDrawerActivity"
             android:label="@string/title_activity_main_drawer" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,24 +27,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--
         <activity
-            android:name="com.development.jaba.moneypit.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
--->
-        <activity android:name="com.development.jaba.moneypit.AndroidDatabaseManager" />
-        <activity
-            android:name="com.development.jaba.moneypit.AddOrEditCarActivity"
+            android:name=".AddOrEditCarActivity"
             android:label="@string/title_activity_add_or_edit_car" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.development.jaba.moneypit.MainDrawerActivity" />
+        </activity>
+        <activity
+            android:name=".CarDetailsActivity"
+            android:label="@string/title_activity_car_details" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.development.jaba.moneypit.AddOrEditCarActivity" />
         </activity>
     </application>
 

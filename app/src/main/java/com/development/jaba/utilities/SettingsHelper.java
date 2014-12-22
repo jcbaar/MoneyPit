@@ -20,7 +20,7 @@ public class SettingsHelper {
     /**
      * {@link SharedPreferences} reference.
      */
-    private SharedPreferences mPreferences;
+    private final SharedPreferences mPreferences;
 
     /**
      * Constructor. Initializes an instance of the object.

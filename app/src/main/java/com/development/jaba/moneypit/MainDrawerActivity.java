@@ -1,9 +1,6 @@
 package com.development.jaba.moneypit;
 
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,10 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.NativeCameraFragment;
 import com.development.jaba.fragments.NavigationDrawerFragment;
 import com.development.jaba.fragments.SettingsFragment;
+
+import java.io.IOException;
 
 
 public class MainDrawerActivity extends ActionBarActivity
@@ -24,6 +24,9 @@ public class MainDrawerActivity extends ActionBarActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    private android.support.v4.app.Fragment mFragment = null;
+    private android.app.Fragment mNativeFragment = null;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -75,50 +78,47 @@ public class MainDrawerActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = null;
+        boolean useNative = false;
 
         switch( position+1)
         {
             case 1: // Cars fragment.
-                fragment = CarListFragment.newInstance( position + 1 );
+                mFragment = CarListFragment.newInstance( position + 1 );
                 break;
 
             case 2: // Settings fragment.
-                fragment = SettingsFragment.newInstance(position + 1);
+                mNativeFragment = SettingsFragment.newInstance(position + 1);
+                useNative = true;
                 break;
 
             case 3: // Camera fragment.
-                fragment = NativeCameraFragment.newInstance(position + 1);
+                mFragment = NativeCameraFragment.newInstance(position + 1);
                 break;
 
             default:
                 break;
         }
 
-        if(fragment != null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
+        if(useNative) {
+            if(mFragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
+                mFragment = null;
+            }
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, mNativeFragment).commit();
         }
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.section_cars);
-                break;
-            case 2:
-                mTitle = getString(R.string.action_settings);
-                break;
-            case 3:
-                mTitle = getString(R.string.section_test);
-                break;
+        else {
+            if(mNativeFragment != null) {
+                getFragmentManager().beginTransaction().remove(mNativeFragment).commit();
+                mNativeFragment = null;
+            }
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
         }
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setDisplayShowTitleEnabled(true);
@@ -145,14 +145,13 @@ public class MainDrawerActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_backup) {
+            MoneyPitDbContext dbc = new MoneyPitDbContext(this);
+            try {
+                dbc.backup();
+            } catch (IOException e) {
+            }
         }
-        else if (id == R.id.show_database){
-            Intent dbmanager = new Intent(MainDrawerActivity.this,AndroidDatabaseManager.class);
-            startActivity(dbmanager);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

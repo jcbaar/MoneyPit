@@ -21,4 +21,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:19.1.+'
+    compile group: 'org.achartengine', name: 'achartengine', version: '1.2.0'
 }

@@ -1,5 +1,7 @@
 package com.development.jaba.model;
 
+import com.development.jaba.utilities.FormattingHelper;
+
 /**
  * Enumeration for volume units.
  */
@@ -8,7 +10,7 @@ public enum VolumeUnit {
     ImperialGallon(2),
     USGallon(3);
 
-    private int _value;
+    private final int _value;
 
     /**
      * Constructor. Initializes an instance of the object.
@@ -16,6 +18,22 @@ public enum VolumeUnit {
      */
     private VolumeUnit(int value) {
         _value = value;
+    }
+
+    /**
+     * Convert the unit to it's name.
+     * @return The name of the unit.
+     */
+    public String getUnitName() {
+        return FormattingHelper.getStringByResourceName("long" + this.toString());
+    }
+
+    /**
+     * Convert the unit to it's short name.
+     * @return The name of the unit.
+     */
+    public String getShortUnitName() {
+        return FormattingHelper.getStringByResourceName("short" + this.toString());
     }
 
     /**
