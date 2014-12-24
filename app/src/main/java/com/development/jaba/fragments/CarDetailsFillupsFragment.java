@@ -50,6 +50,16 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        if(mCar == null && savedInstanceState != null) {
+            mCar = (Car)savedInstanceState.getSerializable("Car");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("Car", mCar);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

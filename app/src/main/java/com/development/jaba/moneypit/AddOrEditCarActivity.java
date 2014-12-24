@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -47,6 +48,14 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_or_edit_car);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        // Set up the action bar.
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car
@@ -124,7 +133,6 @@ public class AddOrEditCarActivity extends ActionBarActivity {
             setTitle(getString(R.string.title_create_car));
         }
 
-        ActionBar actionBar = getSupportActionBar();
         if( actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

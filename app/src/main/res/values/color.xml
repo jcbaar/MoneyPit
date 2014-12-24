@@ -1,4 +1,12 @@
 <resources>
+    <color name="primaryColor">#2196F3</color>
+    <color name="primaryColorLight">#BBDEFB</color>
+    <color name="primaryColorDark">#0D47A1</color>
+    <color name="accentColor">#F44336</color>
+
+    <color name="slidingTabTextColor">#FFFFFF</color>
+    <color name="slidingTabSelectionColor">#FFFFFF</color>
+
     <color name="main">#2196F3</color>
     <color name="light">#BBDEFB</color>
     <color name="dark">#0D47A1</color>
