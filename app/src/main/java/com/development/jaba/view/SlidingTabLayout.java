@@ -17,17 +17,21 @@
 package com.development.jaba.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
+
+import com.development.jaba.moneypit.R;
 
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
@@ -67,6 +71,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
          * @return return the color of the tab title for {@code position}.
          */
         int getTitleColor(int position);
+
+        /**
+         * @return return the color of the tab title for {@code position} of a selected tab.
+         */
+        int getTitleSelectedColor(int position);
     }
 
     private static final int TITLE_OFFSET_DIPS = 24;
@@ -80,7 +89,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
-    private TabColorizer mCustomColorizer;
+
+    private int mTitleColor,
+                  mTitleSelectedColor,
+                  mDividerColor,
+                  mIndicatorColor;
 
     private final SlidingTabStrip mTabStrip;
 
@@ -95,14 +108,49 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public SlidingTabLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        // Setup the defaults for the colors.
+        mTitleColor = R.color.slidingTabTitleColor;
+        mTitleSelectedColor = R.color.slidingTabSelectedTitleColor;
+        mDividerColor = R.color.slidingTabDividerColor;
+        mIndicatorColor = R.color.slidingTabIndicatorColor;
+
+        // Dig through the attributes to find the colors that were
+        // set through the XML.
+        if(attrs != null) {
+            TypedArray a = context.getTheme().obtainStyledAttributes(
+                    attrs,
+                    R.styleable.SlidingTabLayout
+                    , 0, 0);
+
+            try {
+                mTitleColor = a.getColor(R.styleable.SlidingTabLayout_titleColor, mTitleColor);
+                mTitleSelectedColor = a.getColor(R.styleable.SlidingTabLayout_titleColorSelected, mTitleSelectedColor);
+                mDividerColor = a.getColor(R.styleable.SlidingTabLayout_dividerColor, mDividerColor);
+                mIndicatorColor = a.getColor(R.styleable.SlidingTabLayout_indicatorColor, mIndicatorColor);
+            }
+            catch(Exception e) {
+                Log.e("SlidingTabLayout", "Unable to load attributes");
+            }
+            finally {
+                a.recycle();
+            }
+        }
+
         // Disable the Scroll Bar
         setHorizontalScrollBarEnabled(false);
+
         // Make sure that the Tab Strips fills this View
         setFillViewport(true);
 
         mTitleOffset = (int) (TITLE_OFFSET_DIPS * getResources().getDisplayMetrics().density);
 
         mTabStrip = new SlidingTabStrip(context);
+
+        mTabStrip.setDividerColors(mDividerColor);
+        mTabStrip.setSelectedIndicatorColors(mIndicatorColor);
+        mTabStrip.setTitleColors(mTitleColor);
+        mTabStrip.setSelectedTitleColors(mTitleSelectedColor);
+
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
@@ -110,12 +158,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Set the custom {@link TabColorizer} to be used.
      *
      * If you only require simple custmisation then you can use
-     * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
+     * {@link #setSelectedIndicatorColors(int...)}, {@link #setDividerColors(int...)}, {@link #setTitleColors(int...)}
+     * and {@link #setSelectedTitleColors(int...)} to achieve
      * similar effects.
      */
     public void setCustomTabColorizer(TabColorizer tabColorizer) {
         mTabStrip.setCustomTabColorizer(tabColorizer);
-        mCustomColorizer = tabColorizer;
     }
 
     /**
@@ -124,7 +172,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
      */
     public void setSelectedIndicatorColors(int... colors) {
         mTabStrip.setSelectedIndicatorColors(colors);
-        mCustomColorizer = null;
     }
 
     /**
@@ -133,7 +180,22 @@ public class SlidingTabLayout extends HorizontalScrollView {
      */
     public void setDividerColors(int... colors) {
         mTabStrip.setDividerColors(colors);
-        mCustomColorizer = null;
+    }
+
+    /**
+     * Sets the colors to be used for tab titles. These colors are treated as a circular array.
+     * Providing one color will mean that all tabs are indicated with the same color.
+     */
+    public void setTitleColors(int... colors) {
+        mTabStrip.setTitleColors(colors);
+    }
+
+    /**
+     * Sets the colors to be used for tab titles of selected tabs. These colors are treated as a circular array.
+     * Providing one color will mean that all tabs are indicated with the same color.
+     */
+    public void setSelectedTitleColors(int... colors) {
+        mTabStrip.setSelectedTitleColors(colors);
     }
 
     /**
@@ -182,9 +244,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
 
-        if(mCustomColorizer != null) {
-            textView.setTextColor(mCustomColorizer.getTitleColor(position));
-        }
+        // By default use the unselected title color.
+        textView.setTextColor(mTitleColor);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // If we're running on Honeycomb or newer, then we can use the Theme's

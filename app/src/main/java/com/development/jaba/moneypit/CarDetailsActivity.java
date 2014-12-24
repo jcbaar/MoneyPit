@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -76,26 +75,6 @@ public class CarDetailsActivity extends ActionBarActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-
-        // Set this before attaching the {@link ViewPager}. This will make sure the tab
-        // {@link TextView} views are created with the correct text color.
-        mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.slidingTabSelectionColor);
-            }
-
-            @Override
-            public int getDividerColor(int position) {
-                return getResources().getColor(R.color.primaryColor);
-            }
-
-            @Override
-            public int getTitleColor(int position) {
-                return getResources().getColor(R.color.slidingTabTextColor);
-            }
-        });
-
         mSlidingTabLayout.setViewPager(mViewPager);
 
         // When swiping between different sections, select the corresponding

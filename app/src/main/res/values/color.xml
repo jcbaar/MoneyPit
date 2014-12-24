@@ -4,8 +4,10 @@
     <color name="primaryColorDark">#0D47A1</color>
     <color name="accentColor">#F44336</color>
 
-    <color name="slidingTabTextColor">#FFFFFF</color>
-    <color name="slidingTabSelectionColor">#FFFFFF</color>
+    <color name="slidingTabTitleColor">#78FFFFFF</color>
+    <color name="slidingTabSelectedTitleColor">#FFFFFF</color>
+    <color name="slidingTabIndicatorColor">#FFFFFF</color>
+    <color name="slidingTabDividerColor">#00000000</color>
 
     <color name="main">#2196F3</color>
     <color name="light">#BBDEFB</color>
