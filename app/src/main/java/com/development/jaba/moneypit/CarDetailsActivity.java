@@ -59,6 +59,9 @@ public class CarDetailsActivity extends ActionBarActivity {
         Bundle b = getIntent().getExtras();
         if( b != null) {
             mCarToShow = (Car)b.getSerializable("Car");
+            if(mCarToShow != null) {
+                setTitle(mCarToShow.toString());
+            }
         }
 
         // Set up the action bar.

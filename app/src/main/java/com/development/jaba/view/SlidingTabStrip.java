@@ -31,7 +31,6 @@
 
 package com.development.jaba.view;
 
-import android.R;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -41,8 +40,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 class SlidingTabStrip extends LinearLayout {
 
@@ -83,7 +80,7 @@ class SlidingTabStrip extends LinearLayout {
         final float density = getResources().getDisplayMetrics().density;
 
         TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorForeground, outValue, true);
+        context.getTheme().resolveAttribute(android.R.attr.colorForeground, outValue, true);
         final int themeForegroundColor =  outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
@@ -91,12 +88,11 @@ class SlidingTabStrip extends LinearLayout {
 
         mDefaultTabColorizer = new SimpleTabColorizer();
         mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
-        mDefaultTabColorizer.setDividerColors(setColorAlpha(themeForegroundColor,
-                DEFAULT_DIVIDER_COLOR_ALPHA));
-        mDefaultTabColorizer.setTitleColors(setColorAlpha(themeForegroundColor,
-                DEFAULT_DIVIDER_COLOR_ALPHA));
-        mDefaultTabColorizer.setTitleSelectedColors(setColorAlpha(themeForegroundColor,
-                DEFAULT_DIVIDER_COLOR_ALPHA));
+
+        int alphaColor = setColorAlpha(themeForegroundColor, DEFAULT_DIVIDER_COLOR_ALPHA);
+        mDefaultTabColorizer.setDividerColors(alphaColor);
+        mDefaultTabColorizer.setTitleColors(alphaColor);
+        mDefaultTabColorizer.setTitleSelectedColors(alphaColor);
 
         mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
         mBottomBorderPaint = new Paint();

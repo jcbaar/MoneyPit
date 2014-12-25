@@ -90,10 +90,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
-    private int mTitleColor,
-                  mTitleSelectedColor,
-                  mDividerColor,
-                  mIndicatorColor;
+    private int mTitleColor;
 
     private final SlidingTabStrip mTabStrip;
 
@@ -110,9 +107,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         // Setup the defaults for the colors.
         mTitleColor = R.color.slidingTabTitleColor;
-        mTitleSelectedColor = R.color.slidingTabSelectedTitleColor;
-        mDividerColor = R.color.slidingTabDividerColor;
-        mIndicatorColor = R.color.slidingTabIndicatorColor;
+        int titleSelectedColor = R.color.slidingTabSelectedTitleColor;
+        int dividerColor = R.color.slidingTabDividerColor;
+        int indicatorColor = R.color.slidingTabIndicatorColor;
 
         // Dig through the attributes to find the colors that were
         // set through the XML.
@@ -124,9 +121,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
             try {
                 mTitleColor = a.getColor(R.styleable.SlidingTabLayout_titleColor, mTitleColor);
-                mTitleSelectedColor = a.getColor(R.styleable.SlidingTabLayout_titleColorSelected, mTitleSelectedColor);
-                mDividerColor = a.getColor(R.styleable.SlidingTabLayout_dividerColor, mDividerColor);
-                mIndicatorColor = a.getColor(R.styleable.SlidingTabLayout_indicatorColor, mIndicatorColor);
+                titleSelectedColor = a.getColor(R.styleable.SlidingTabLayout_titleColorSelected, titleSelectedColor);
+                dividerColor = a.getColor(R.styleable.SlidingTabLayout_dividerColor, dividerColor);
+                indicatorColor = a.getColor(R.styleable.SlidingTabLayout_indicatorColor, indicatorColor);
             }
             catch(Exception e) {
                 Log.e("SlidingTabLayout", "Unable to load attributes");
@@ -146,10 +143,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         mTabStrip = new SlidingTabStrip(context);
 
-        mTabStrip.setDividerColors(mDividerColor);
-        mTabStrip.setSelectedIndicatorColors(mIndicatorColor);
+        mTabStrip.setDividerColors(dividerColor);
+        mTabStrip.setSelectedIndicatorColors(indicatorColor);
         mTabStrip.setTitleColors(mTitleColor);
-        mTabStrip.setSelectedTitleColors(mTitleSelectedColor);
+        mTabStrip.setSelectedTitleColors(titleSelectedColor);
 
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
@@ -238,7 +235,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
      */
-    protected TextView createDefaultTabView(Context context, int position) {
+    protected TextView createDefaultTabView(Context context) {
         TextView textView = new TextView(context);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
@@ -283,14 +280,16 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
 
             if (tabView == null) {
-                tabView = createDefaultTabView(getContext(), i);
+                tabView = createDefaultTabView(getContext());
             }
 
             if (tabTitleView == null && TextView.class.isInstance(tabView)) {
                 tabTitleView = (TextView) tabView;
             }
 
-            tabTitleView.setText(adapter.getPageTitle(i));
+            if(tabTitleView != null ) {
+                tabTitleView.setText(adapter.getPageTitle(i));
+            }
             tabView.setOnClickListener(tabClickListener);
 
             mTabStrip.addView(tabView);

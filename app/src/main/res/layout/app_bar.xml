@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/primaryColor"
     android:paddingTop="@dimen/app_bar_top_padding"
-    app:theme="@style/MoneyPitToolBar">
+    app:theme="@style/MoneyPitToolBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 </android.support.v7.widget.Toolbar>
