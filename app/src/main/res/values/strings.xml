@@ -56,4 +56,7 @@
     <string name="shortMile">mi</string>
 
     <string name="days">days</string>
+    <string name="general_settings">General settings</string>
+    <string name="estimate_odo_summary">When checked this will estimate the odometer setting when entering a new fill-up.</string>
+    <string name="export_import_pictures_summary">When checked this will include the images when importing and exporting cars.</string>
 </resources>

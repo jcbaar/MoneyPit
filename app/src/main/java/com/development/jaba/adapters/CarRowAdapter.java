@@ -64,7 +64,7 @@ public class CarRowAdapter extends ArrayAdapter<Car> {
             TextView make = (TextView) rowView.findViewById(R.id.carMakeModel);
             make.setText(item.toString());
             TextView build = (TextView) rowView.findViewById(R.id.carBuildYear);
-            build.setText(String.valueOf(item.getBuildYear()));
+            build.setText(String.valueOf(item.getLicensePlate()) + " (" + String.valueOf(item.getBuildYear()) + ")");
         }
         return rowView;
     }

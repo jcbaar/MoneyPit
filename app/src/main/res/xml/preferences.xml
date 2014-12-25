@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="estimate_odometer"
-        android:title="@string/estimate_odo"/>
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="export_import_pictures"
-        android:title="@string/export_import_pictures"/>
+    <PreferenceCategory android:title="@string/general_settings">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="estimate_odometer"
+            android:title="@string/estimate_odo"
+            android:summary="@string/estimate_odo_summary"
+            android:layout="@layout/settings_checkbox"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="export_import_pictures"
+            android:title="@string/export_import_pictures"
+            android:summary="@string/export_import_pictures_summary"
+            android:layout="@layout/settings_checkbox"/>
+    </PreferenceCategory>
 </PreferenceScreen>
