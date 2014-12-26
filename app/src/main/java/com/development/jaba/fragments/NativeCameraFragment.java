@@ -181,13 +181,13 @@ public class NativeCameraFragment extends BaseFragment {
     class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
         // SurfaceHolder
-        private SurfaceHolder mHolder;
+        private final SurfaceHolder mHolder;
 
         // Our Camera.
         private Camera mCamera;
 
         // Parent Context.
-        private Context mContext;
+        private final Context mContext;
 
         // Camera Sizing (For rotation, orientation changes)
         private Camera.Size mPreviewSize;
@@ -199,7 +199,7 @@ public class NativeCameraFragment extends BaseFragment {
         private List<String> mSupportedFlashModes;
 
         // View holding this camera.
-        private View mCameraView;
+        private final View mCameraView;
 
         public CameraPreview(Context context, Camera camera, View cameraView) {
             super(context);
@@ -425,7 +425,7 @@ public class NativeCameraFragment extends BaseFragment {
     /**
      * Picture Callback for handling a picture capture and saving it out to a file.
      */
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    private final Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -444,8 +444,6 @@ public class NativeCameraFragment extends BaseFragment {
 
                 // Restart the camera preview.
                 safeCameraOpenInView(mCameraView);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

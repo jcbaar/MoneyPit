@@ -6,7 +6,8 @@
 
     <color name="listCardBackground">#FFFFFF</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
-    <color name="listCardBorder">#B1B1B1</color>
+    <color name="listCardBorder">#ffdddddd</color>
+    <color name="listCardBorderShadow">#90dddddd</color>
     <color name="listCardBorderSelected">@color/primaryColor</color>
 
     <color name="slidingTabTitleColor">#78FFFFFF</color>

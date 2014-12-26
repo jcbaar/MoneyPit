@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Jan on 22-12-2014.
+ * Fragment for displaying the details of a {@link Car}.
  */
 public class CarDetailsFillupsFragment extends BaseFragment {
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -161,6 +162,7 @@ public class MainDrawerActivity extends ActionBarActivity
             try {
                 dbc.backup();
             } catch (IOException e) {
+                Log.e("Database backup", "Backing up the database failed");
             }
         }
         return super.onOptionsItemSelected(item);

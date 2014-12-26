@@ -15,7 +15,6 @@
         android:text="New Button"
         android:id="@+id/button"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:elevation="10dp" />
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

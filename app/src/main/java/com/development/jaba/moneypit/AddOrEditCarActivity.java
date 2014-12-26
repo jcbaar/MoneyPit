@@ -132,10 +132,6 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         else {
             setTitle(getString(R.string.title_create_car));
         }
-
-        if( actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     /**

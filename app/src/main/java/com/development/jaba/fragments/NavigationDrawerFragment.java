@@ -7,7 +7,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.development.jaba.moneypit.MainDrawerActivity;
 import com.development.jaba.moneypit.MoneyPitApp;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.SettingsHelper;
@@ -98,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         // Setup the items shown in the navigation drawer ListView.
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        mDrawerListView.setAdapter(new ArrayAdapter<>(
                 MoneyPitApp.getContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,

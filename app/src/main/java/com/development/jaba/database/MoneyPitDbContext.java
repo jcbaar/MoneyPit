@@ -32,8 +32,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
-    private MoneyPitDbManager mDbManager;                       // Database manager instance handling singleton SQLiteDatabase.
-    private Context mContext;                                   // The context.
+    private final MoneyPitDbManager mDbManager;                 // Database manager instance handling singleton SQLiteDatabase.
+    private final Context mContext;                             // The context.
     //endregion
 
     //region Construction.
@@ -317,7 +317,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @return A List of car entities queried from the database.
      */
     private List<Car> getCars(int id) {
-        List<Car> cars = new LinkedList<Car>();
+        List<Car> cars = new LinkedList<>();
 
         String query;
         String[] args = null;
@@ -536,7 +536,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @return A List of Fillup entities.
      */
     public List<Fillup> getFillupsOfCar(int carId, int year) {
-        List<Fillup> result = new LinkedList<Fillup>();
+        List<Fillup> result = new LinkedList<>();
         String query = "SELECT * FROM " + TABLE_FILLUP + " WHERE (? = 0 OR ? = CarId) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) ORDER BY Date DESC";
         String[] args = new String[] { String.valueOf(carId),
                                        String.valueOf(carId),
