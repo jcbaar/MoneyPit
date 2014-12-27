@@ -6,4 +6,11 @@
         <attr name="indicatorColor" format="color" />
         <attr name="dividerColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="RecyclerViewEx">
+        <attr name="itemPaddingLeft" format="dimension" />
+        <attr name="itemPaddingTop" format="dimension" />
+        <attr name="itemPaddingRight" format="dimension" />
+        <attr name="itemPaddingBottom" format="dimension" />
+    </declare-styleable>
 </resources>

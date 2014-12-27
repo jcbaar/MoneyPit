@@ -12,7 +12,32 @@ import android.view.View;
 public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
                                                   implements OnRecyclerItemClicked {
 
+    private View mEmptyView;
+    private RecyclerView.AdapterDataObserver mDataObserver;
     private OnRecyclerItemClicked mClickListener;
+    private int mLastClickedPosition;
+
+    /**
+     * Constructor. Initializes an instance of this object.
+     */
+    protected BaseRecyclerViewAdapter() {
+
+        // Register an observer which will show the mEmptyView View when the
+        // Adapter does not contain any data.
+        mDataObserver = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if(mEmptyView != null) {
+                    int viewMode = getItemCount() == 0 ? View.VISIBLE : View.GONE;
+                    if(viewMode != mEmptyView.getVisibility()) {
+                        mEmptyView.setVisibility(viewMode);
+                    }
+                }
+            }
+        };
+        registerAdapterDataObserver(mDataObserver);
+    }
 
     /**
      * Sets up the {@link com.development.jaba.adapters.OnRecyclerItemClicked} callback which will be called when a
@@ -33,6 +58,27 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
      */
     @Override
     public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
+        mLastClickedPosition = position;
         return mClickListener != null && mClickListener.onRecyclerItemClicked(view, position, isLongClick);
+    }
+
+    /**
+     * Gets the position of the last clicked item.
+     * @return The position of the last clicked item.
+     */
+    public int getLastClickedPosition() {
+        return mLastClickedPosition;
+    }
+
+    /**
+     * Setup the {@link View} which is shown when there are no items in the
+     * {@link com.development.jaba.adapters.BaseRecyclerViewAdapter}.
+     * @param view The {@link View} to show when there is no data.
+     */
+    public void setEmptyView(final View view) {
+        mEmptyView = view;
+        if(view != null) {
+            view.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
     }
 }

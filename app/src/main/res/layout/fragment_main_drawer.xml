@@ -1,15 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.development.jaba.moneypit.MainDrawerActivity$PlaceholderFragment">
 
-    <ListView
+    <com.development.jaba.view.RecyclerViewEx
         android:id="@+id/carList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="8dp"
-        android:divider="@android:color/transparent"
+        app:itemPaddingBottom="8dp"
         android:padding="8dp" />
 
     <TextView

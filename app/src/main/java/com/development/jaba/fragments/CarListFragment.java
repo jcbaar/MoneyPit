@@ -3,6 +3,8 @@ package com.development.jaba.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,10 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
+import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.model.Car;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.CarAverage;
@@ -35,7 +35,7 @@ public class CarListFragment extends BaseFragment {
                              REQUEST_ADD_CAR = 2;   // Request code for adding a new car.
 
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
-    private ListAdapter mCarAdapter;                 // Adapter for holding the Car list.
+    private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
 
     /**
@@ -74,16 +74,20 @@ public class CarListFragment extends BaseFragment {
         }
 
         mCarAdapter = new CarRowAdapter(getActivity(), mCars);
-        ListView carList = (ListView) view.findViewById(R.id.carList);
-        carList.setEmptyView(view.findViewById(R.id.listEmpty));
-
-        carList.setAdapter(mCarAdapter);
-        carList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mCarAdapter.setEmptyView(view.findViewById(R.id.listEmpty));
+        mCarAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showCarDetails((Car) mCarAdapter.getItem(position));
+            public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
+                if (!isLongClick) {
+                    showCarDetails(mCarAdapter.getItem(position));
+                }
+                return false;
             }
         });
+
+        RecyclerView carList = (RecyclerView) view.findViewById(R.id.carList);
+        carList.setAdapter(mCarAdapter);
+        carList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         registerForContextMenu(carList);
         return view;
@@ -121,7 +125,7 @@ public class CarListFragment extends BaseFragment {
                     } else {
                         mCars.add(car);
                     }
-                    ((ArrayAdapter)mCarAdapter).notifyDataSetChanged();
+                    mCarAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -130,8 +134,10 @@ public class CarListFragment extends BaseFragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if(v.getId() == R.id.carList) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+            // The RecyclerView does not give you the item for which the context menu must be built.
+            // Therefore we need to get the last item clicked from the adapter so we can get to the
+            // data we need.
+            Car selectedCar = mCarAdapter.getItem(mCarAdapter.getLastClickedPosition());
             menu.setHeaderTitle(selectedCar.toString());
             String[] menuItems = getResources().getStringArray(R.array.edit_delete);
             for(int i = 0; i < menuItems.length; i++) {
@@ -148,16 +154,16 @@ public class CarListFragment extends BaseFragment {
         switch(menuItemIndex) {
             case 0:
             {
-                Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+                Car selectedCar = mCarAdapter.getItem(info.position);
                 editCar(selectedCar);
                 return true;
             }
 
             case 1:
-                Car selectedCar = (Car) mCarAdapter.getItem(info.position);
+                Car selectedCar = mCarAdapter.getItem(info.position);
                 mContext.deleteCar(selectedCar);
                 mCars.remove(selectedCar);
-                ((ArrayAdapter)mCarAdapter).notifyDataSetChanged();
+                mCarAdapter.notifyDataSetChanged();
                 return true;
         }
         return false;
