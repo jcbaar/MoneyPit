@@ -12,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.CarListFragment;
-import com.development.jaba.fragments.NativeCameraFragment;
 import com.development.jaba.fragments.NavigationDrawerFragment;
 import com.development.jaba.fragments.SettingsFragment;
 
@@ -103,10 +102,6 @@ public class MainDrawerActivity extends ActionBarActivity
                 useNative = true;
                 break;
 
-            case 3: // Camera fragment.
-                mFragment = NativeCameraFragment.newInstance(position + 1);
-                break;
-
             default:
                 break;
         }
@@ -132,7 +127,6 @@ public class MainDrawerActivity extends ActionBarActivity
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(mTitle);
         }

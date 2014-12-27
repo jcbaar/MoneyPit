@@ -2,7 +2,7 @@
     <color name="primaryColor">#2196F3</color>
     <color name="primaryColorLight">#BBDEFB</color>
     <color name="primaryColorDark">#0D47A1</color>
-    <color name="accentColor">#F44336</color>
+    <color name="accentColor">#C95D63</color>
 
     <color name="listCardBackground">#FFFFFF</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
@@ -19,10 +19,8 @@
     <color name="light">#BBDEFB</color>
     <color name="dark">#0D47A1</color>
 
-    <color name="accent">#F44336</color>
 
     <color name="drawer_background">#FFFFFF</color>
-    <color name="drawer_text">#FF0000</color>
 
     <color name="action_bar_background">@color/main</color>
     <color name="action_bar_divider">@color/dark</color>

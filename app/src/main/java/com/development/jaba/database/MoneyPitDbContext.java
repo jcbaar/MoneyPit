@@ -11,6 +11,7 @@ import android.util.Log;
 
 
 import com.development.jaba.model.Car;
+import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.utilities.ConditionalHelper;
 
@@ -229,7 +230,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     }
     //endregion
 
-    //region Car CRUD
+    //region Car related methods
     /**
      * Adds a car to the database. It will return 0 when the car has a
      * license plate which is already present in the database.
@@ -413,9 +414,51 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             mDbManager.closeDatabase();
         }
     }
+
+    /**
+     * Gets the averages for all cars in the database. The averages are computed on
+     * full tank fill-ups only. Partial fill-ups are left out of the computation.
+     * @return A {@link @List} of {@link CarAverage} objects. One {@link CarAverage} for each
+     * car in the database.
+     */
+    public List<CarAverage> getCarAverages() {
+        List<CarAverage> avgs = new LinkedList<>();
+
+        String query;
+
+        query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
+                "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
+                "GROUP BY Car._id";
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    CarAverage avg = new CarAverage(cursor);
+                    avgs.add(avg);
+                } while (cursor.moveToNext());
+            }
+            return avgs;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getCarAverages", ex.getMessage());
+            avgs.clear();
+            return avgs;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
     //endregion
 
-    //region Fillup CRUD
+    //region Fillup related methods
     /**
      * Add a new fillup entity to the database.
      * @param fillup The fillup entity to add to the database.

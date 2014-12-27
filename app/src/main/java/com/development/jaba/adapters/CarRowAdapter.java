@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.development.jaba.model.Car;
+import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.FormattingHelper;
 
 import java.util.List;
 
@@ -65,6 +67,13 @@ public class CarRowAdapter extends ArrayAdapter<Car> {
             make.setText(item.toString());
             TextView build = (TextView) rowView.findViewById(R.id.carBuildYear);
             build.setText(String.valueOf(item.getLicensePlate()) + " (" + String.valueOf(item.getBuildYear()) + ")");
+
+            CarAverage avg = item.getAverages();
+            if(avg != null) {
+                TextView averages = (TextView) rowView.findViewById(R.id.carAverages);
+                averages.setText(String.format(getContext().getResources().getString(R.string.car_list_averages), FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
+                        FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
+            }
         }
         return rowView;
     }

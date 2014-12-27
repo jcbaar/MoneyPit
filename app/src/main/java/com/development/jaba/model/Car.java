@@ -37,6 +37,8 @@ public class Car implements Serializable {
     private VolumeUnit mVolumeUnit;
     private Bitmap mImage;
     private String mDateRange;
+
+    private CarAverage mAverages;
     //endregion
 
     //region Construction
@@ -158,6 +160,14 @@ public class Car implements Serializable {
 
     public void setDateRange(String dateRange) {
         this.mDateRange = dateRange;
+    }
+
+    public CarAverage getAverages() {
+        return mAverages;
+    }
+
+    public void setAverages(CarAverage averages) {
+        mAverages = averages;
     }
     //endregion
 

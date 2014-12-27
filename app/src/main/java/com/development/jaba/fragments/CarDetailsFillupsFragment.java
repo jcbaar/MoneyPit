@@ -83,7 +83,6 @@ public class CarDetailsFillupsFragment extends BaseFragment {
                     //showCarDetails((Car) mFillupAdapter.getItem(position));
                 }
             });
-
             registerForContextMenu(fillupList);
         }
         return view;

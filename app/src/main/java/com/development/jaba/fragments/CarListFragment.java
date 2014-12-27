@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.database.MoneyPitDbContext;
+import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.AddOrEditCarActivity;
 import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.moneypit.CarDetailsActivity;
@@ -62,6 +63,15 @@ public class CarListFragment extends BaseFragment {
 
         mContext = new MoneyPitDbContext(getActivity());
         mCars = mContext.getAllCars();
+
+        List<CarAverage> avgs = mContext.getCarAverages();
+        for(CarAverage avg : avgs) {
+            for(Car car : mCars) {
+                if(car.getId() == avg.getCarId()) {
+                    car.setAverages(avg);
+                }
+            }
+        }
 
         mCarAdapter = new CarRowAdapter(getActivity(), mCars);
         ListView carList = (ListView) view.findViewById(R.id.carList);

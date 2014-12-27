@@ -3,16 +3,22 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="3dp"
     android:background="@drawable/list_card_states">
 
     <ImageView
         android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
         android:id="@+id/carPicture"
         android:src="@drawable/nopicture"
         android:scaleType="fitXY"
-        android:layout_gravity="center" />
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="2007"
+            android:text="98-TX-NV (2007)"
             android:id="@+id/carBuildYear"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="Avg. 15L (EUR 32.36) per fill up"
+            android:id="@+id/carAverages"/>
     </LinearLayout>
 </LinearLayout>
