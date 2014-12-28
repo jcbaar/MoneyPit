@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.model.Car;
@@ -149,18 +148,21 @@ public class CarListFragment extends BaseFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        // The RecyclerView does not give you the item for which the menu item was selected.
+        // Therefore we need to get the last item clicked from the adapter so we can get to the
+        // data we need.
+        int position = mCarAdapter.getLastClickedPosition();
         int menuItemIndex = item.getItemId();
         switch(menuItemIndex) {
             case 0:
             {
-                Car selectedCar = mCarAdapter.getItem(info.position);
+                Car selectedCar = mCarAdapter.getItem(position);
                 editCar(selectedCar);
                 return true;
             }
 
             case 1:
-                Car selectedCar = mCarAdapter.getItem(info.position);
+                Car selectedCar = mCarAdapter.getItem(position);
                 mContext.deleteCar(selectedCar);
                 mCars.remove(selectedCar);
                 mCarAdapter.notifyDataSetChanged();
