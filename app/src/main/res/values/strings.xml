@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">MoneyPit</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="no_cars">It is very lonely in here. Please use the menu to add a new car.</string>
     <string name="no_fillups">It is very lonely in here. Please use the menu to add a new fill-up.\n\nPerhaps it is empty here because there is no data for the selected year. You can check this by selecting another year using the menu.</string>
@@ -24,14 +23,10 @@
     <string name="title_activity_main_drawer">MoneyPit</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
-    <string name="capture_button">Capture</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="estimate_odo">Estimate odometer</string>
     <string name="export_import_pictures">Export and import pictures</string>
     <string name="dialog_close">Close</string>
     <string name="add_car">Add new car</string>
-    <string name="section_cars">Cars</string>
     <string name="title_activity_activity_car_details">activity_car_details</string>
     <string name="title_activity_car_details">CarDetailsActivity</string>
     <string name="tab_fillups">Fill-ups</string>

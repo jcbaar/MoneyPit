@@ -75,7 +75,7 @@
                 android:id="@+id/fillupTotalCost"
                 android:text="EUR 43.20"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main"
+                android:textColor="@color/primaryColor"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal" />
 

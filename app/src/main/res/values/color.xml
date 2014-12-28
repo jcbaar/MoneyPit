@@ -15,15 +15,5 @@
     <color name="slidingTabIndicatorColor">#FFFFFF</color>
     <color name="slidingTabDividerColor">#00000000</color>
 
-    <color name="main">#2196F3</color>
-    <color name="light">#BBDEFB</color>
-    <color name="dark">#0D47A1</color>
-
-
     <color name="drawer_background">#FFFFFF</color>
-
-    <color name="action_bar_background">@color/main</color>
-    <color name="action_bar_divider">@color/dark</color>
-
-    <color name="action_bar_text">#FFFFFF</color>
 </resources>
