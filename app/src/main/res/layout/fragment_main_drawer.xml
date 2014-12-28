@@ -9,7 +9,7 @@
         android:id="@+id/carList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:itemPaddingBottom="8dp"
+        app:rveItemPaddingBottom="4dp"
         android:padding="8dp" />
 
     <TextView

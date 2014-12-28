@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,12 +49,23 @@ public class CarListFragment extends BaseFragment {
         return fragment;
     }
 
+    /**
+     * Called when the {@link android.app.Activity} is created.
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Called when the {@link View} is created.
+     * @param inflater The {@link android.view.LayoutInflater}.
+     * @param container The {@link android.view.ViewGroup}.
+     * @param savedInstanceState The saved instance state/
+     * @return The created {@link View}.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_drawer, container, false);
@@ -82,16 +92,42 @@ public class CarListFragment extends BaseFragment {
                 }
                 return false;
             }
+
+            @Override
+            public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
+                int menuItemIndex = item.getItemId();
+                switch(menuItemIndex) {
+                    case 0:
+                    {
+                        Car selectedCar = mCarAdapter.getItem(position);
+                        editCar(selectedCar);
+                        return true;
+                    }
+
+                    case 1:
+                        Car selectedCar = mCarAdapter.getItem(position);
+                        mContext.deleteCar(selectedCar);
+                        mCars.remove(selectedCar);
+                        mCarAdapter.notifyDataSetChanged();
+                        return true;
+
+                    default:
+                        break;
+                }
+                return false;
+            }
         });
 
         RecyclerView carList = (RecyclerView) view.findViewById(R.id.carList);
         carList.setAdapter(mCarAdapter);
         carList.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        registerForContextMenu(carList);
         return view;
     }
 
+    /**
+     * Open up the {@link Car} details activity for the given car.
+     * @param car The {@link Car} which to show in the details page.
+     */
     private void showCarDetails(Car car) {
         Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
         if(car != null) {
@@ -100,6 +136,10 @@ public class CarListFragment extends BaseFragment {
         startActivity(carDetails);
     }
 
+    /**
+     * Open up the {@link Car} edit activity for the given car.
+     * @param car The {@link Car} which to edit or null to create a new car.
+     */
     private void editCar(Car car) {
         Intent editCar = new Intent(getActivity(), AddOrEditCarActivity.class);
         if(car != null) {
@@ -108,13 +148,21 @@ public class CarListFragment extends BaseFragment {
         startActivityForResult(editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR);
     }
 
+    /**
+     * Evaluates the result for the {@link android.app.Activity}.
+     * @param requestCode The request code that is giving the result.
+     * @param resultCode The result code.
+     * @param data The data of the result.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().containsKey("Car")) {
                 Car car = (Car) data.getExtras().get("Car");
                 if (car != null) {
+                    // Was this an edit result?
                     if (requestCode == REQUEST_EDIT_CAR) {
+                        // Find the Car entity from the data and update it.
                         for (int i = 0; i < mCars.size(); i++) {
                             if (mCars.get(i).getId() == car.getId()) {
                                 mCars.set(i, car);
@@ -122,53 +170,15 @@ public class CarListFragment extends BaseFragment {
                             }
                         }
                     } else {
+                        // Simply add the Car to the data.
                         mCars.add(car);
                     }
+
+                    // Update the visuals.
                     mCarAdapter.notifyDataSetChanged();
                 }
             }
         }
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.carList) {
-            // The RecyclerView does not give you the item for which the context menu must be built.
-            // Therefore we need to get the last item clicked from the adapter so we can get to the
-            // data we need.
-            Car selectedCar = mCarAdapter.getItem(mCarAdapter.getLastClickedPosition());
-            menu.setHeaderTitle(selectedCar.toString());
-            String[] menuItems = getResources().getStringArray(R.array.edit_delete);
-            for(int i = 0; i < menuItems.length; i++) {
-                menu.add(Menu.NONE, i, i, menuItems[i]);
-            }
-
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        // The RecyclerView does not give you the item for which the menu item was selected.
-        // Therefore we need to get the last item clicked from the adapter so we can get to the
-        // data we need.
-        int position = mCarAdapter.getLastClickedPosition();
-        int menuItemIndex = item.getItemId();
-        switch(menuItemIndex) {
-            case 0:
-            {
-                Car selectedCar = mCarAdapter.getItem(position);
-                editCar(selectedCar);
-                return true;
-            }
-
-            case 1:
-                Car selectedCar = mCarAdapter.getItem(position);
-                mContext.deleteCar(selectedCar);
-                mCars.remove(selectedCar);
-                mCarAdapter.notifyDataSetChanged();
-                return true;
-        }
-        return false;
     }
 
     //region Options menu

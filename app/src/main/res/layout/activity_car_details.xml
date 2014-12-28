@@ -15,10 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryColor"
-        app:dividerColor="@color/slidingTabDividerColor"
-        app:indicatorColor="@color/slidingTabIndicatorColor"
-        app:titleColor="@color/slidingTabTitleColor"
-        app:titleColorSelected="@color/slidingTabSelectedTitleColor" />
+        app:stlDividerColor="@color/slidingTabDividerColor"
+        app:stlIndicatorColor="@color/slidingTabIndicatorColor"
+        app:stlTitleColor="@color/slidingTabTitleColor"
+        app:stlTitleColorSelected="@color/slidingTabSelectedTitleColor" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

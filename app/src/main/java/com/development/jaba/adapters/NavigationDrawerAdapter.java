@@ -19,7 +19,8 @@ import java.util.List;
  */
 public class NavigationDrawerAdapter extends BaseRecyclerViewAdapter<NavigationDrawerAdapter.NavigationDrawerViewHolder> {
 
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private List<NavigationDrawerItem> mData = Collections.emptyList();
 
     /**
@@ -28,6 +29,7 @@ public class NavigationDrawerAdapter extends BaseRecyclerViewAdapter<NavigationD
      * @param data The data that is to be managed by this adapter.
      */
     public NavigationDrawerAdapter(Context context, List<NavigationDrawerItem> data) {
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mData = data;
     }
@@ -42,7 +44,7 @@ public class NavigationDrawerAdapter extends BaseRecyclerViewAdapter<NavigationD
     @Override
     public NavigationDrawerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rowView = mInflater.inflate(R.layout.navigation_row_template, parent, false);
-        NavigationDrawerViewHolder viewHolder = new NavigationDrawerViewHolder(rowView);
+        NavigationDrawerViewHolder viewHolder = new NavigationDrawerViewHolder(mContext, rowView);
 
         // Make sure that we are listening to item clicks.
         viewHolder.setOnItemClickListener(this);
@@ -78,15 +80,16 @@ public class NavigationDrawerAdapter extends BaseRecyclerViewAdapter<NavigationD
      */
     public class NavigationDrawerViewHolder extends BaseViewHolder {
 
-        private TextView mLabel;
+        private final TextView mLabel;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
          * child {@link View} objects.
+         * @param context The context.
          * @param itemView The {@link View} which this instance will manage.
          */
-        public NavigationDrawerViewHolder(View itemView) {
-            super(itemView);
+        public NavigationDrawerViewHolder(Context context, View itemView) {
+            super(context, itemView);
             mLabel = (TextView) itemView.findViewById(R.id.navigationLabel);
         }
 

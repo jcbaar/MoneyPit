@@ -8,10 +8,6 @@
 
             <solid
                 android:color="@color/listCardBackgroundSelected"/>
-
-            <stroke
-                android:width="1dip"
-                android:color="@color/listCardBorderSelected" />
         </shape>
     </item>
 </layer-list>

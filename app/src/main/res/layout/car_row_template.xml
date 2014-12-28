@@ -1,46 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_card_states">
+    app:cardCornerRadius="3dp">
 
-    <ImageView
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:id="@+id/carPicture"
-        android:src="@drawable/nopicture"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center"
-        android:paddingLeft="8dp"
-        android:paddingTop="8dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="11dp" />
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="8dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="Peugeot 207"
-            android:id="@+id/carMakeModel"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="98-TX-NV (2007)"
-            android:id="@+id/carBuildYear"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="Avg. 15L (EUR 32.36) per fill up"
-            android:id="@+id/carAverages"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_card_states"
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:rowCount="1"
+            android:stretchColumns="1">
+
+            <TableRow>
+
+                <ImageView
+                    android:id="@+id/carPicture"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:adjustViewBounds="true"
+                    android:padding="8dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/nopicture" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:orientation="horizontal"
+                        android:rowCount="1"
+                        android:stretchColumns="0">
+
+                        <TableRow>
+
+                            <TextView
+                                android:id="@+id/carMakeModel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Peugeot 207"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:layout_gravity="center_vertical" />
+
+                            <ImageButton
+                                android:id="@+id/headerMenu"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:background="#0000"
+                                android:src="@drawable/card_menu_button_overflow_material"
+                                android:layout_weight="1" />
+                        </TableRow>
+                    </TableLayout>
+
+                    <TextView
+                        android:id="@+id/carBuildYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="98-TX-NV (2007)"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/carAverages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Avg. 15L (EUR 32.36) per fill up"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
-</LinearLayout>
+</android.support.v7.widget.CardView>

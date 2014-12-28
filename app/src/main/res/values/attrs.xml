@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SlidingTabLayout">
-        <attr name="titleColorSelected" format="color" />
-        <attr name="titleColor" format="color" />
-        <attr name="indicatorColor" format="color" />
-        <attr name="dividerColor" format="color" />
+        <attr name="stlTitleColorSelected" format="color" />
+        <attr name="stlTitleColor" format="color" />
+        <attr name="stlIndicatorColor" format="color" />
+        <attr name="stlDividerColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="RecyclerViewEx">
-        <attr name="itemPaddingLeft" format="dimension" />
-        <attr name="itemPaddingTop" format="dimension" />
-        <attr name="itemPaddingRight" format="dimension" />
-        <attr name="itemPaddingBottom" format="dimension" />
+        <attr name="rveItemPaddingLeft" format="dimension" />
+        <attr name="rveItemPaddingTop" format="dimension" />
+        <attr name="rveItemPaddingRight" format="dimension" />
+        <attr name="rveItemPaddingBottom" format="dimension" />
     </declare-styleable>
 </resources>

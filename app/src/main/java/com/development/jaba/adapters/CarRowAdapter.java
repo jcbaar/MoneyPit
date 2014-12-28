@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,14 +23,15 @@ import java.util.List;
  */
 public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowViewHolder> {
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private List<Car> mData = Collections.emptyList();
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Initializes an instance of the object.
+     *
      * @param context The context.
-     * @param data The data that is to be managed by this adapter.
+     * @param data    The data that is to be managed by this adapter.
      */
     public CarRowAdapter(Context context, List<Car> data) {
         mInflater = LayoutInflater.from(context);
@@ -40,14 +42,15 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
     /**
      * Creates a new {@link com.development.jaba.adapters.CarRowAdapter.CarRowViewHolder} object that manages
      * the {@link View} of the row.
-     * @param parent The parent {@link android.view.ViewGroup}.
+     *
+     * @param parent   The parent {@link android.view.ViewGroup}.
      * @param viewType The type of the view.
      * @return The created {@link com.development.jaba.adapters.CarRowAdapter.CarRowViewHolder}.
      */
     @Override
     public CarRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rowView = mInflater.inflate(R.layout.car_row_template, parent, false);
-        CarRowViewHolder viewHolder = new CarRowViewHolder(rowView);
+        CarRowViewHolder viewHolder = new CarRowViewHolder(mContext, rowView);
 
         // Make sure that we are listening to item clicks.
         viewHolder.setOnItemClickListener(this);
@@ -56,25 +59,26 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
 
     /**
      * Setup the data to display for the given {@link com.development.jaba.adapters.CarRowAdapter.CarRowViewHolder}.
-     * @param holder The {@link com.development.jaba.adapters.CarRowAdapter.CarRowViewHolder}.
+     *
+     * @param holder   The {@link com.development.jaba.adapters.CarRowAdapter.CarRowViewHolder}.
      * @param position The position to setup the data for.
      */
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CarRowViewHolder vh = (CarRowViewHolder)holder;
-        Car item = mData.get(position);
+        final CarRowViewHolder vh = (CarRowViewHolder) holder;
+        final Car item = mData.get(position);
 
-        // Setup the View with the item data.
         // Replace the default picture if one is provided from the database.
         if (item.getPicture() != null) {
             vh.getImage().setImageBitmap(item.getImage());
         }
 
+        // Setup the View with the item data.
         vh.getMake().setText(item.toString());
         vh.getBuild().setText(String.valueOf(item.getLicensePlate()) + " (" + String.valueOf(item.getBuildYear()) + ")");
 
         CarAverage avg = item.getAverages();
-        if(avg != null) {
+        if (avg != null) {
             vh.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
                     FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
                     FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
@@ -82,7 +86,8 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
     }
 
     /**
-     * Return the number of items in this adapter.
+     * Gets the number of items in this adapter.
+     *
      * @return The number of items in the adapter.
      */
     @Override
@@ -91,7 +96,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
     }
 
     public Car getItem(int position) {
-        if(mData != null && position >= 0 && position < mData.size()) {
+        if (mData != null && position >= 0 && position < mData.size()) {
             return mData.get(position);
         }
         return null;
@@ -103,20 +108,27 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
      */
     public class CarRowViewHolder extends BaseViewHolder {
 
-        private ImageView mImage;
-        private TextView mMake, mBuild, mAverage;
+        private final ImageButton mMenuButton;
+        private final ImageView mImage;
+        private final TextView mMake, mBuild, mAverage;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
          * child {@link View} objects.
+         *
+         * @param context The context.
          * @param itemView The {@link View} which this instance will manage.
          */
-        public CarRowViewHolder(View itemView) {
-            super(itemView);
+        public CarRowViewHolder(Context context, View itemView) {
+            super(context, itemView);
+            mMenuButton = (ImageButton) itemView.findViewById(R.id.headerMenu);
             mImage = (ImageView) itemView.findViewById(R.id.carPicture);
             mMake = (TextView) itemView.findViewById(R.id.carMakeModel);
             mBuild = (TextView) itemView.findViewById(R.id.carBuildYear);
             mAverage = (TextView) itemView.findViewById(R.id.carAverages);
+
+            // Attach a PopupMenu to the menu button.
+            setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));
         }
 
         public ImageView getImage() {

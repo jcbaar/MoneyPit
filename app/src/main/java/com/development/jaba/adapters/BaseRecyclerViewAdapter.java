@@ -1,6 +1,7 @@
 package com.development.jaba.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 
 /**
@@ -13,7 +14,7 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
                                                   implements OnRecyclerItemClicked {
 
     private View mEmptyView;
-    private RecyclerView.AdapterDataObserver mDataObserver;
+    private final RecyclerView.AdapterDataObserver mDataObserver;
     private OnRecyclerItemClicked mClickListener;
     private int mLastClickedPosition;
 
@@ -60,6 +61,18 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
     public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
         mLastClickedPosition = position;
         return mClickListener != null && mClickListener.onRecyclerItemClicked(view, position, isLongClick);
+    }
+
+    /**
+     * Forwards a menu item selection to the registered {@link com.development.jaba.adapters.OnRecyclerItemClicked} callback.
+     * @param position The position of the {@link View} that was clicked.
+     * @param item The selected {@link android.view.MenuItem}.
+     * @return true if the selection was handled, false if it was not.
+     */
+    @Override
+    public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
+        mLastClickedPosition = position;
+        return mClickListener != null && mClickListener.onRecyclerItemMenuSelected(position, item);
     }
 
     /**

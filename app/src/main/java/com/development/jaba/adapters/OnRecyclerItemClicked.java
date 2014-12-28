@@ -1,5 +1,6 @@
 package com.development.jaba.adapters;
 
+import android.view.MenuItem;
 import android.view.View;
 
 /**
@@ -16,4 +17,6 @@ public interface OnRecyclerItemClicked {
      * @return Must return true when the listener has processed the click and the isLongClick parameter is true.
      */
     public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick);
+
+    public boolean onRecyclerItemMenuSelected(int position, MenuItem item);
 }

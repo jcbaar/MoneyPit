@@ -10,7 +10,7 @@ import android.view.View;
  */
 public class PaddingDecoration extends RecyclerView.ItemDecoration {
 
-    private Rect mPadding;
+    private final Rect mPadding;
 
     /**
      * Constructor. Initializes an instance of the object.

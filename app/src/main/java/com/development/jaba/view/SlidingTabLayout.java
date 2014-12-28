@@ -120,10 +120,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
                     , 0, 0);
 
             try {
-                mTitleColor = a.getColor(R.styleable.SlidingTabLayout_titleColor, mTitleColor);
-                titleSelectedColor = a.getColor(R.styleable.SlidingTabLayout_titleColorSelected, titleSelectedColor);
-                dividerColor = a.getColor(R.styleable.SlidingTabLayout_dividerColor, dividerColor);
-                indicatorColor = a.getColor(R.styleable.SlidingTabLayout_indicatorColor, indicatorColor);
+                mTitleColor = a.getColor(R.styleable.SlidingTabLayout_stlTitleColor, mTitleColor);
+                titleSelectedColor = a.getColor(R.styleable.SlidingTabLayout_stlTitleColorSelected, titleSelectedColor);
+                dividerColor = a.getColor(R.styleable.SlidingTabLayout_stlDividerColor, dividerColor);
+                indicatorColor = a.getColor(R.styleable.SlidingTabLayout_stlIndicatorColor, indicatorColor);
             }
             catch(Exception e) {
                 Log.e("SlidingTabLayout", "Unable to load attributes");
