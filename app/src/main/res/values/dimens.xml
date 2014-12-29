@@ -8,4 +8,7 @@
     <dimen name="app_bar_top_padding">0dp</dimen>
     <dimen name="settings_margin">8dip</dimen>
 
+    <item name="edittextex_hint_scale" type="dimen" format="float">0.8</item>
+    <item name="edittextex_hint_animation_steps" type="dimen" format="integer">6</item>
+
 </resources>

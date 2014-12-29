@@ -13,4 +13,8 @@
         <attr name="rveItemPaddingRight" format="dimension" />
         <attr name="rveItemPaddingBottom" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="EditTextEx">
+        <attr name="eteHintEditTextStyle" format="reference" />
+    </declare-styleable>
 </resources>

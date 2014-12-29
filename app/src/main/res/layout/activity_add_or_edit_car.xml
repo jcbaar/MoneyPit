@@ -9,141 +9,107 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/car_brand" />
 
-            <EditText
+            <com.development.jaba.view.EditTextEx
                 android:id="@+id/carBrand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="50"
                 android:hint="@string/car_brand" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carModel" />
-
-            <EditText
+            <com.development.jaba.view.EditTextEx
                 android:id="@+id/carModel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/carModel" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carBuildYear" />
-
-            <EditText
+            <com.development.jaba.view.EditTextEx
                 android:id="@+id/carBuildYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/carBuildYear"
                 android:inputType="numberDecimal" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carLicense" />
-
-            <EditText
+            <com.development.jaba.view.EditTextEx
                 android:id="@+id/carLicense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/carLicense" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carCurrency" />
-
-            <EditText
+            <com.development.jaba.view.EditTextEx
                 android:id="@+id/carCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/carCurrency" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
+            <TableLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carDistanceUnit" />
+                android:columnCount="2"
+                android:orientation="horizontal"
+                android:rowCount="1"
+                android:stretchColumns="1"
+                android:paddingTop="12dp">>
 
-            <Spinner
-                android:id="@+id/carDistanceUnit"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_weight="1" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/carDistanceUnit"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:paddingLeft="6dp" />
+
+                        <Spinner
+                            android:id="@+id/carDistanceUnit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/carVolumeUnit"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:paddingLeft="6dp" />
+
+                        <Spinner
+                            android:id="@+id/carVolumeUnit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
+
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/carVolumeUnit" />
-
-            <Spinner
-                android:id="@+id/carVolumeUnit"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/abc_action_button_min_height_material"
-                android:layout_weight="1" />
-        </LinearLayout>
-    </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>
