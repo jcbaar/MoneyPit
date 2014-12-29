@@ -95,11 +95,26 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         return mData.size();
     }
 
+    /**
+     * Gets the {@link Car} entity from the given position.
+     * @param position The position from which to get the {@link Car} entity.
+     * @return The {@link Car} entity from the given position or null if a position was given that
+     * is out of bounds.
+     */
     public Car getItem(int position) {
         if (mData != null && position >= 0 && position < mData.size()) {
             return mData.get(position);
         }
         return null;
+    }
+
+    /**
+     * Gets the {@link Car} entity from the last clicked position.
+     * @return The {@link Car} entity from the last clicked position or null if there is no last
+     * clicked position or it was out of bounds.
+     */
+    public Car getLastClickedItem() {
+        return getItem(getLastClickedPosition());
     }
 
     /**

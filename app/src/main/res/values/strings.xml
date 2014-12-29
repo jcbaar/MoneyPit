@@ -25,7 +25,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="estimate_odo">Estimate odometer</string>
     <string name="export_import_pictures">Export and import pictures</string>
-    <string name="dialog_close">Close</string>
     <string name="add_car">Add new car</string>
     <string name="title_activity_activity_car_details">activity_car_details</string>
     <string name="title_activity_car_details">CarDetailsActivity</string>
@@ -53,4 +52,10 @@
     <string name="estimate_odo_summary">When checked this will estimate the odometer setting when entering a new fill-up.</string>
     <string name="export_import_pictures_summary">When checked this will include the images when importing and exporting cars.</string>
     <string name="car_list_averages">Avg. %1$s, %2$s per fill-up.</string>
+
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="dialog_close">Close</string>
+    <string name="dialog_delete_car_title">Delete \'%1$s\'...</string>
+    <string name="dialog_delete_car_content">This will delete the car from the database including all of it\'s fill-up information.\n\n<b><i>This can not be undone!</i></b>\n\nAre you sure you want to continue?</string>
 </resources>

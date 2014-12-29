@@ -10,6 +10,9 @@
     <color name="listCardBorderShadow">#90dddddd</color>
     <color name="listCardBorderSelected">@color/primaryColor</color>
 
+    <color name="listDividerDark">#1FFFFFFF</color>
+    <color name="listDividerLight">#1F000000</color>
+
     <color name="slidingTabTitleColor">#78FFFFFF</color>
     <color name="slidingTabSelectedTitleColor">#FFFFFF</color>
     <color name="slidingTabIndicatorColor">#FFFFFF</color>

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.model.Car;
 import com.development.jaba.database.MoneyPitDbContext;
@@ -20,6 +21,7 @@ import com.development.jaba.moneypit.AddOrEditCarActivity;
 import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.moneypit.CarDetailsActivity;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.DialogHelper;
 
 import java.util.List;
 
@@ -105,10 +107,19 @@ public class CarListFragment extends BaseFragment {
                     }
 
                     case 1:
-                        Car selectedCar = mCarAdapter.getItem(position);
-                        mContext.deleteCar(selectedCar);
-                        mCars.remove(selectedCar);
-                        mCarAdapter.notifyDataSetChanged();
+                        DialogHelper.showYesNoDialog(String.format(getString(R.string.dialog_delete_car_title), mCarAdapter.getLastClickedItem().toString()),
+                                getText(R.string.dialog_delete_car_content),
+                                new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        super.onPositive(dialog);
+                                        Car selectedCar = mCarAdapter.getLastClickedItem();
+                                        mContext.deleteCar(selectedCar);
+                                        mCars.remove(selectedCar);
+                                        mCarAdapter.notifyDataSetChanged();
+                                    }
+                                },
+                                getActivity());
                         return true;
 
                     default:
