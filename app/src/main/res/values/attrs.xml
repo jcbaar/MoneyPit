@@ -15,6 +15,7 @@
     </declare-styleable>
 
     <declare-styleable name="EditTextEx">
-        <attr name="eteHintEditTextStyle" format="reference" />
+        <attr name="eteDuration" format="integer" />
+        <attr name="eteErrorColor" format="color" />
     </declare-styleable>
 </resources>
