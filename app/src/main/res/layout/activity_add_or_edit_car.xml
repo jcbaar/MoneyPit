@@ -31,40 +31,44 @@
                 android:maxLength="50"
                 android:hint="@string/car_brand"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="8dp" />
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/carModel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="50"
                 android:hint="@string/carModel"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="8dp" />
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/carBuildYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="4"
                 android:hint="@string/carBuildYear"
                 android:inputType="numberDecimal"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="8dp" />
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/carLicense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="15"
                 android:hint="@string/carLicense"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="8dp" />
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/carCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/carCurrency"
+                android:maxLength="3"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="8dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
