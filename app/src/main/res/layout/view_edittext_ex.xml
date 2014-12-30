@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingLeft="4dp"
-            android:text="Error label" />
+            android:text="Error label"
+            android:paddingRight="4dp" />
 
         <TextView
             android:id="@+id/editEx_charCount"

@@ -71,7 +71,7 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         context = new MoneyPitDbContext(this);
 
         // Get the TextView objects..
-        make = (EditTextEx)findViewById(R.id.carBrand);
+        make = (EditTextEx) findViewById(R.id.carBrand);
         model = (EditTextEx) findViewById(R.id.carModel);
         buildYear = (EditTextEx) findViewById(R.id.carBuildYear);
         license = (EditTextEx) findViewById(R.id.carLicense);

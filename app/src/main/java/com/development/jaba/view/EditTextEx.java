@@ -1,7 +1,6 @@
 package com.development.jaba.view;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.text.Editable;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 
 import com.development.jaba.database.Utils;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.UtilsHelper;
 
 import java.util.Date;
 
@@ -83,6 +83,11 @@ public class EditTextEx extends LinearLayout {
         mCharCount = (TextView) findViewById(R.id.editEx_charCount);
         mEditor = (EditText) findViewById(R.id.editEx_editor);
         mBottomInfo = (LinearLayout) findViewById(R.id.editEx_bottomInfo);
+
+        // Re-generate an id for the EditText because when there are more than one
+        // instances of this view in the same activity androids restore on orientation
+        // changes will screw things up.
+        mEditor.setId(UtilsHelper.generateViewId());
 
         // Get the attributes.
         if (attrs != null) {
@@ -271,24 +276,22 @@ public class EditTextEx extends LinearLayout {
         mValidator = validator;
     }
 
-    public void setText(char[] text, int start, int len) {
-        mEditor.setText(text, start, len);
-    }
-
-    public void setText(CharSequence text, TextView.BufferType type) {
-        mEditor.setText(text, type);
-    }
-
+    /**
+     * Sets the text in the {@link EditText}.
+     *
+     * @param text The text to set in the {@link EditText}.
+     */
     public void setText(CharSequence text) {
         mEditor.setText(text);
     }
 
+    /**
+     * Sets the text in the {@link EditText}.
+     *
+     * @param resId The resource id of the text to set in the {@link EditText}.
+     */
     public void setText(int resId) {
         mEditor.setText(resId);
-    }
-
-    public void setText(int resId, TextView.BufferType type) {
-        mEditor.setText(resId, type);
     }
 
     /**
