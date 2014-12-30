@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -91,7 +92,7 @@ public class EditTextEx extends LinearLayout {
 
         // Get the attributes.
         if (attrs != null) {
-            int[] attrIntArray = new int[]{android.R.attr.maxLength};
+            int[] attrIntArray = new int[]{android.R.attr.maxLength, android.R.attr.inputType};
             int[] attrStrArray = new int[]{android.R.attr.hint};
             TypedArray a = context.obtainStyledAttributes(attrs, attrIntArray);
             TypedArray b = context.obtainStyledAttributes(attrs, attrStrArray);
@@ -102,6 +103,9 @@ public class EditTextEx extends LinearLayout {
                 mHintString = b.getString(0);
                 mAnimDuration = c.getInteger(R.styleable.EditTextEx_eteDuration, 400);
                 mErrorColor = c.getColor(R.styleable.EditTextEx_eteErrorColor, Color.argb(200, 255, 0, 0));
+
+                // Make sure we pass on the correct input type to the EditText.
+                mEditor.setInputType(a.getInteger(1, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS ));
             } catch (Exception e) {
                 Log.e("EditTextEx", "Unable to load attributes");
             } finally {
