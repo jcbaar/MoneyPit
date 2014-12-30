@@ -7,11 +7,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -19,7 +16,9 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.DistanceUnit;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.VolumeUnit;
-import com.development.jaba.utilities.ValidationHelper;
+import com.development.jaba.view.EditTextEx;
+
+import static com.development.jaba.view.EditTextEx.*;
 
 /**
  * Activity for creating a new Car entity or editing an existing
@@ -30,7 +29,7 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     private Spinner distanceUnits,
                     volumeUnits;
 
-    private TextView make,
+    private EditTextEx make,
                      model,
                      buildYear,
                      license,
@@ -71,34 +70,12 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         // Instantiate a database context..
         context = new MoneyPitDbContext(this);
 
-        // Setup the OnFocusChangeListener() objects used to validate the
-        // fields upon loosing focus.
-        View.OnFocusChangeListener mandatoryListener = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // Validate for a required field.
-                if (!hasFocus) {
-                    ValidationHelper.validateTextViewMandatory((TextView) v);
-                }
-            }
-        };
-
-        View.OnFocusChangeListener buildYearListener = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // Validate for a build year field.
-                if (!hasFocus) {
-                    ValidationHelper.validateTextViewBuildYear((EditText) v);
-                }
-            }
-        };
-
         // Get the TextView objects..
-        make = (TextView) findViewById(R.id.carBrand);
-        model = (TextView) findViewById(R.id.carModel);
-        buildYear = (TextView) findViewById(R.id.carBuildYear);
-        license = (TextView) findViewById(R.id.carLicense);
-        currency = (TextView) findViewById(R.id.carCurrency);
+        make = (EditTextEx)findViewById(R.id.carBrand);
+        model = (EditTextEx) findViewById(R.id.carModel);
+        buildYear = (EditTextEx) findViewById(R.id.carBuildYear);
+        license = (EditTextEx) findViewById(R.id.carLicense);
+        currency = (EditTextEx) findViewById(R.id.carCurrency);
 
         // And the Spinners.
         distanceUnits = (Spinner) findViewById(R.id.carDistanceUnit);
@@ -115,12 +92,12 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         volumeUnits.setAdapter(volumeAdapter);
 
         // Setup the validation listeners.
-        make.setOnFocusChangeListener(mandatoryListener);
-        model.setOnFocusChangeListener(mandatoryListener);
-        license.setOnFocusChangeListener(mandatoryListener);
-        currency.setOnFocusChangeListener(mandatoryListener);
+        make.setValidator(new EditTextEx.RequiredValidator(this));
+        model.setValidator(new EditTextEx.RequiredValidator(this));
+        license.setValidator(new EditTextEx.RequiredValidator(this));
+        currency.setValidator(new EditTextEx.RequiredValidator(this));
 
-        buildYear.setOnFocusChangeListener(buildYearListener);
+        buildYear.setValidator(new BuildYearValidator(this));
 
         // Setup the activity title depending on whether we are editing and
         // existing Car entity or a new one.
@@ -167,11 +144,11 @@ public class AddOrEditCarActivity extends ActionBarActivity {
      * of the fields failed validation.
      */
     private boolean validateFields() {
-        return ValidationHelper.validateTextViewMandatory(make) &&
-                ValidationHelper.validateTextViewMandatory(model) &&
-                ValidationHelper.validateTextViewBuildYear(buildYear) &&
-                ValidationHelper.validateTextViewMandatory(license) &&
-                ValidationHelper.validateTextViewMandatory(currency);
+        return make.validate() &&
+                model.validate() &&
+                buildYear.validate() &&
+                license.validate() &&
+                currency.validate();
     }
 
     /**

@@ -3,6 +3,7 @@
     <color name="primaryColorLight">#BBDEFB</color>
     <color name="primaryColorDark">#0D47A1</color>
     <color name="accentColor">#C95D63</color>
+    <color name="errorColor">#BF00</color>
 
     <color name="listCardBackground">#FFFFFF</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>

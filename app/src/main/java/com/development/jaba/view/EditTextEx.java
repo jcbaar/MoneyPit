@@ -1,233 +1,341 @@
 package com.development.jaba.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.FontMetricsInt;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.development.jaba.database.Utils;
 import com.development.jaba.moneypit.R;
 
-public class EditTextEx extends android.support.v7.internal.widget.TintEditText {
-    private static enum Animation {NONE, SHRINK, GROW}
+import java.util.Date;
 
-    private final Paint mFloatingHintPaint = new Paint();
-    private final ColorStateList mHintColors;
-    private final ColorStateList mTextColors;
-    private final float mHintScale;
-    private final int mAnimationSteps;
-    private int mMaxLength = -1;
+public class EditTextEx extends LinearLayout {
 
-    private boolean mWasEmpty;
-    private int mAnimationFrame;
-    private Animation mAnimation = Animation.NONE;
+    private Animation mAnimateVisible, mAnimateGone, mAnimateVisibleError, mAnimateGoneError;
+
+    private int mMaxLength;
+    private String mHintString;
+
+    private TextView mHint, mError, mCharCount;
+    private EditText mEditor;
+    private LinearLayout mBottomInfo;
+
+    private BaseValidator mValidator;
 
     public EditTextEx(Context context) {
-        this(context, null);
+        this(context, null, 0);
     }
 
     public EditTextEx(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.eteHintEditTextStyle);
+        this(context, attrs, 0);
     }
 
-    public EditTextEx(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public EditTextEx(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
 
-        TypedValue typedValue = new TypedValue();
-        getResources().getValue(R.dimen.edittextex_hint_scale, typedValue, true);
-        mHintScale = typedValue.getFloat();
-        mAnimationSteps = getResources().getInteger(R.dimen.edittextex_hint_animation_steps);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        inflater.inflate(R.layout.view_edittext_ex, this);
+
+        Animation.AnimationListener hideHintListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mHint.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+        Animation.AnimationListener showHintListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mHint.setTextColor(mEditor.getHintTextColors());
+                mHint.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+        mAnimateGone = new AlphaAnimation(1, 0);
+        mAnimateGone.setDuration(400);
+        mAnimateGone.setFillAfter(true);
+        mAnimateGone.setAnimationListener(hideHintListener);
+
+        mAnimateVisible = new AlphaAnimation(0, 1);
+        mAnimateVisible.setDuration(400);
+        mAnimateVisible.setFillAfter(true);
+        mAnimateVisible.setAnimationListener(showHintListener);
+
+        mAnimateGoneError = new AlphaAnimation(1, 0);
+        mAnimateGoneError.setDuration(400);
+        mAnimateGoneError.setFillAfter(true);
+
+        mAnimateVisibleError = new AlphaAnimation(0, 1);
+        mAnimateVisibleError.setDuration(400);
+        mAnimateVisibleError.setFillAfter(true);
 
         if (attrs != null) {
-            int[] maxLengthAttr = new int[]{android.R.attr.maxLength};
-            int indexOfAttrMaxLength = 0;
-            TypedArray a = context.obtainStyledAttributes(attrs, maxLengthAttr);
+            int[] attrIntArray = new int[]{android.R.attr.maxLength};
+            int[] attrStrArray = new int[]{android.R.attr.hint};
+            TypedArray a = context.obtainStyledAttributes(attrs, attrIntArray);
+            TypedArray b = context.obtainStyledAttributes(attrs, attrStrArray);
             try {
-                mMaxLength = a.getInteger(indexOfAttrMaxLength, -1);
+                mMaxLength = a.getInteger(0, -1);
+                mHintString = b.getString(0);
             } catch (Exception e) {
                 Log.e("EditTextEx", "Unable to load attributes");
             } finally {
                 a.recycle();
+                b.recycle();
             }
         }
 
-        mHintColors = getHintTextColors();
-        mTextColors = getTextColors();
+        mHint = (TextView) findViewById(R.id.editEx_hint);
+        mError = (TextView) findViewById(R.id.editEx_error);
+        mCharCount = (TextView) findViewById(R.id.editEx_charCount);
+        mEditor = (EditText) findViewById(R.id.editEx_editor);
+        mBottomInfo = (LinearLayout) findViewById(R.id.editEx_bottomInfo);
 
-        mWasEmpty = TextUtils.isEmpty(getText());
-
-//        initPadding();
-
-//        setBgDrawable(null);
-
-    }
-
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
-    public void setBgDrawable(Drawable d) {
-
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            setBackgroundDrawable(d);
-        }
-        else {
-            setBackground(d);
-        }
-    }
-
-    @Override
-    public int getCompoundPaddingTop() {
-        final FontMetricsInt metrics = getPaint().getFontMetricsInt();
-        final int floatingHintHeight = (int) ((metrics.bottom - metrics.top) * mHintScale);
-        return super.getCompoundPaddingTop() + floatingHintHeight;
-    }
-
-    @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore,
-                                 int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
-
-        final boolean isEmpty = TextUtils.isEmpty(getText());
-
-        // The empty state hasn't changed, so the hint stays the same.
-        if (mWasEmpty == isEmpty) {
-            return;
-        }
-
-        mWasEmpty = isEmpty;
-
-        // Don't animate if we aren't visible.
-        if (!isShown()) {
-            return;
-        }
-
-        if (isEmpty) {
-            mAnimation = Animation.GROW;
-            setHintTextColor(Color.TRANSPARENT);
-        } else {
-            mAnimation = Animation.SHRINK;
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @SuppressLint("NewApi")
-    private void initPadding() {
-        FontMetricsInt fontMetrics = getPaint().getFontMetricsInt();
-
-        int paddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * mHintScale) / 2;
-        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom() + paddingBottom + dp2px(getContext(), 2.0f));
-    }
-
-    private int fetchAccentColor() {
-        TypedValue typedValue = new TypedValue();
-
-        TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorAccent});
-        int color = a.getColor(0, 0);
-
-        a.recycle();
-
-        return color;
-    }
-
-    public static int dp2px(Context context, float dp) {
-        Resources r = context.getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
-        return (int) px;
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        final float normalHintSize = getTextSize();
-        final float floatingHintSize = normalHintSize * mHintScale;
-
-/*        Paint p = new Paint();
-
-        p.setStrokeWidth(dp2px(getContext(), 2.0f));
-        p.setColor(fetchAccentColor());
-
-        int y = getHeight() - (int)floatingHintSize;
-        canvas.drawLine(0, y, getWidth() - getCompoundPaddingRight(), y, p);
+        mHint.setVisibility(View.GONE);
 
         if (mMaxLength > 0) {
-            String t = String.format("%d/%d", getText().length(), mMaxLength);
-            p.setColor(fetchAccentColor());
-            p.setTextSize(getTextSize() * mHintScale);
-            Rect textSize = new Rect();
-            p.getTextBounds(t, 0, t.length(), textSize);
-
-            canvas.drawText(t, getWidth() - (textSize.width() + getCompoundPaddingRight()), getHeight(), p);
-        }*/
-
-        if (TextUtils.isEmpty(getHint())) {
-            return;
+            InputFilter[] filters = new InputFilter[1];
+            filters[0] = new InputFilter.LengthFilter(mMaxLength);
+            mEditor.setFilters(filters);
         }
+        mEditor.setHint(mHintString);
+        mHint.setText(mHintString);
+        mError.setText(null);
+        mError.setTextColor(getResources().getColor(R.color.errorColor));
+        mCharCount.setTextColor(getResources().getColor(R.color.accentColor));
 
-        final boolean isAnimating = mAnimation != Animation.NONE;
+        setCharCount();
+        checkBottomLine();
 
-        // The large hint is drawn by Android, so do nothing.
-        if (!isAnimating && TextUtils.isEmpty(getText())) {
-            return;
-        }
+        final View thisView = this;
+        mEditor.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                OnFocusChangeListener listner = getOnFocusChangeListener();
+                if (listner != null) {
+                    listner.onFocusChange(thisView, hasFocus);
+                }
 
-        mFloatingHintPaint.set(getPaint());
-        mFloatingHintPaint.setColor(
-                mHintColors.getColorForState(getDrawableState(), mHintColors.getDefaultColor()));
-
-        final float hintPosX = getCompoundPaddingLeft() + getScrollX();
-        final float normalHintPosY = getBaseline();
-        final float floatingHintPosY = normalHintPosY + getPaint().getFontMetricsInt().top + getScrollY();
-
-        // If we're not animating, we're showing the floating hint, so draw it and bail.
-        if (!isAnimating) {
-            mFloatingHintPaint.setTextSize(floatingHintSize);
-            canvas.drawText(getHint().toString(), hintPosX, floatingHintPosY, mFloatingHintPaint);
-            return;
-        }
-
-        if (mAnimation == Animation.SHRINK) {
-            drawAnimationFrame(canvas, normalHintSize, floatingHintSize,
-                    hintPosX, normalHintPosY, floatingHintPosY);
-        } else {
-            drawAnimationFrame(canvas, floatingHintSize, normalHintSize,
-                    hintPosX, floatingHintPosY, normalHintPosY);
-        }
-
-        mAnimationFrame++;
-
-        if (mAnimationFrame == mAnimationSteps) {
-            if (mAnimation == Animation.GROW) {
-                setHintTextColor(mHintColors);
+                if (!hasFocus) {
+                    validate();
+                    checkBottomLine();
+                }
             }
-            mAnimation = Animation.NONE;
-            mAnimationFrame = 0;
+        });
+
+        mEditor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int visibility = View.GONE;
+                if (s.length() != 0 && TextUtils.isEmpty(mHintString) == false) {
+                    visibility = View.VISIBLE;
+                }
+
+                if (mHint.getVisibility() != visibility) {
+                    if (visibility == View.GONE) {
+                        mHint.startAnimation(mAnimateGone);
+                    } else {
+                        mHint.startAnimation(mAnimateVisible);
+                    }
+                }
+                setCharCount();
+            }
+        });
+    }
+
+    private void checkBottomLine() {
+        if(TextUtils.isEmpty(mError.getText()) && mMaxLength <= 0) {
+            if (mBottomInfo.getVisibility() != View.GONE) {
+                mBottomInfo.setVisibility(View.GONE);
+            }
+        }
+        else {
+            if (mBottomInfo.getVisibility() != View.VISIBLE) {
+                mBottomInfo.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void setCharCount() {
+        if(mMaxLength <= 0 ) {
+            if(mCharCount.getVisibility() != View.GONE) {
+                mCharCount.setVisibility(View.GONE);
+            }
+        }
+        else {
+            if(mCharCount.getVisibility() != View.VISIBLE) {
+                mCharCount.setVisibility(View.VISIBLE);
+            }
+            mCharCount.setText(String.format("%d/%d", mEditor.getText().length(), mMaxLength));
+        }
+    }
+
+    public boolean validate() {
+        if (mValidator != null) {
+            if (mValidator.isValid(mEditor.getText().toString()) == false) {
+                setError(mValidator.getErrorMessage());
+                return false;
+            } else {
+                setError(null);
+            }
+        }
+        return true;
+    }
+
+    public void setValidator(BaseValidator validator) {
+        mValidator = validator;
+    }
+
+    public void setText(char[] text, int start, int len) {
+        mEditor.setText(text, start, len);
+    }
+
+    public void setText(CharSequence text, TextView.BufferType type) {
+        mEditor.setText(text, type);
+    }
+
+    public void setText(CharSequence text) {
+        mEditor.setText(text);
+    }
+
+    public void setText(int resId) {
+        mEditor.setText(resId);
+    }
+
+    public void setText(int resId, TextView.BufferType type) {
+        mEditor.setText(resId, type);
+    }
+
+    public Editable getText() {
+        return mEditor.getText();
+    }
+
+    public void setError(CharSequence error) {
+        mError.setText(error);
+        mError.startAnimation(TextUtils.isEmpty(error) ? mAnimateGoneError : mAnimateVisibleError);
+    }
+
+    public void setError(CharSequence error, Drawable icon) {
+        mError.setText(error);
+        mError.startAnimation(TextUtils.isEmpty(error) ? mAnimateGoneError : mAnimateVisibleError);
+    }
+
+    public EditText getEditor() {
+        return mEditor;
+    }
+
+    public static abstract class BaseValidator {
+        public String mErrorText;
+        public Context mContext;
+
+        public BaseValidator(Context context) {
+            mContext = context;
         }
 
-        invalidate();
+        public BaseValidator(Context context, int msgResId) {
+            mContext = context;
+            mErrorText = context.getResources().getString(msgResId);
+        }
+
+        public BaseValidator(Context context, String msg) {
+            mContext = context;
+            mErrorText = msg;
+        }
+
+        public abstract boolean isValid(String value);
+
+        public String getErrorMessage() {
+            return mErrorText;
+        }
+
+        public void setErrorMessage(String msg) {
+            mErrorText = msg;
+        }
+
+        public void setErrorMessage(int msgResId) {
+            mErrorText = mContext.getResources().getString(msgResId);
+        }
     }
 
-    private void drawAnimationFrame(Canvas canvas, float fromSize, float toSize,
-                                    float hintPosX, float fromY, float toY) {
-        final float textSize = lerp(fromSize, toSize);
-        final float hintPosY = lerp(fromY, toY);
-        mFloatingHintPaint.setTextSize(textSize);
-        canvas.drawText(getHint().toString(), hintPosX, hintPosY, mFloatingHintPaint);
+    public static class RequiredValidator extends BaseValidator {
+
+        public RequiredValidator(Context context) {
+            super(context, context.getResources().getString(R.string.no_text_error));
+        }
+
+        @Override
+        public boolean isValid(String value) {
+            return !TextUtils.isEmpty(value);
+        }
     }
 
-    private float lerp(float from, float to) {
-        final float alpha = (float) mAnimationFrame / (mAnimationSteps - 1);
-        return from * (1 - alpha) + to * alpha;
+    public static class BuildYearValidator extends BaseValidator {
+        public BuildYearValidator (Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean isValid(String value) {
+            Resources res = mContext.getResources();
+            try {
+                int year = Integer.parseInt(value);
+                if (year < 1672) {
+                    setErrorMessage(R.string.buildyear_to_low);
+                    return false;
+                } else if (year > Utils.getYearFromDate(new Date())) {
+                    setErrorMessage(R.string.buildyear_to_high);
+                    return false;
+                }
+            }
+            catch(NumberFormatException ex) {
+                setErrorMessage(R.string.buildyear_error);
+                return false;
+            }
+            setErrorMessage(null);
+            return true;
+        }
     }
 }
