@@ -2,21 +2,24 @@ package com.development.jaba.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.development.jaba.adapters.FillupRowAdapter;
+import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.database.Utils;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.view.RecyclerViewEx;
+import com.shamanland.fab.FloatingActionButton;
+import com.shamanland.fab.ShowHideOnScroll;
 
 import java.util.Date;
 import java.util.List;
@@ -27,9 +30,10 @@ import java.util.List;
 public class CarDetailsFillupsFragment extends BaseFragment {
 
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
-    private FillupRowAdapter mFillupAdapter;              // Adapter for holding the Fill-up list.
+    private FillupRowAdapter mFillupAdapter;         // Adapter for holding the Fill-up list.
     private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
     private Car mCar;
+    private ShowHideOnScroll mShowHideFab;           // Shows or hides the FloatingActionButton.
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -63,6 +67,13 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     }
 
     @Override
+    public void onFragmentSelectedInViewPager() {
+        if(mShowHideFab != null) {
+            mShowHideFab.onScrollDown();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car_details_fillups, container, false);
 
@@ -70,20 +81,31 @@ public class CarDetailsFillupsFragment extends BaseFragment {
         if(mCar != null) {
             mFillups = mContext.getFillupsOfCar(mCar.getId(), Utils.getYearFromDate(new Date()));
 
-            mFillupAdapter = new FillupRowAdapter(getActivity(), mFillups);
-            mFillupAdapter.setCar(mCar);
-
-            ListView fillupList = (ListView) view.findViewById(R.id.fillupList);
-            fillupList.setEmptyView(view.findViewById(R.id.fillupListEmpty));
-
-            fillupList.setAdapter(mFillupAdapter);
-            fillupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, mFillups);
+            mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
+            mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //showCarDetails((Car) mFillupAdapter.getItem(position));
+                public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
+                    if(!isLongClick) {
+                        //open up the item editor.
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
+                    // evaluate menu item clicks.
+                    return false;
                 }
             });
-            registerForContextMenu(fillupList);
+
+            RecyclerViewEx fillupList = (RecyclerViewEx) view.findViewById(R.id.fillupList);
+            fillupList.setAdapter(mFillupAdapter);
+            fillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+            FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
+            mShowHideFab = new ShowHideOnScroll(fab);
+            fillupList.setOnTouchListener(mShowHideFab);
         }
         return view;
     }

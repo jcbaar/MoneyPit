@@ -13,6 +13,13 @@ public class BaseFragment extends Fragment {
     }
 
     /**
+     * This is overridden in sub classes to detect when the fragment is selected
+     * in a viewpager.
+     */
+    public void onFragmentSelectedInViewPager() {
+    }
+
+    /**
      * This interface must be implemented by activities that contain this
      * mFragment to allow an interaction in this mFragment to be communicated
      * to the mActivity and potentially other fragments contained in that

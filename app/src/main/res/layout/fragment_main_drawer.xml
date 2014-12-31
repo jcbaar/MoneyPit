@@ -6,6 +6,7 @@
 
     <com.development.jaba.view.RecyclerViewEx
         android:id="@+id/carList"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
@@ -20,4 +21,15 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:text="@string/no_cars" />
 
+    <com.shamanland.fab.FloatingActionButton
+        android:id="@+id/addFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_action_add"
+        />
 </RelativeLayout>

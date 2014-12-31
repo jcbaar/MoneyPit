@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.view.SlidingTabLayout;
@@ -86,6 +87,12 @@ public class CarDetailsActivity extends ActionBarActivity {
         mSlidingTabLayout.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                // Get the fragment at the given position and tell it it's been
+                // selected in the ViewPager.
+                BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(position);
+                if(fragment != null) {
+                    fragment.onFragmentSelectedInViewPager();
+                }
             }
         });
     }
@@ -118,23 +125,36 @@ public class CarDetailsActivity extends ActionBarActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private final int NUM_PAGES = 4;
+        private BaseFragment[] mPages = new BaseFragment[NUM_PAGES];
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        public BaseFragment getFragmentAt(int position) {
+            if(position >= 0 && position < NUM_PAGES) {
+                return mPages[position];
+            }
+            return null;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0) {
-                return CarDetailsFillupsFragment.newInstance(position, mCarToShow);
+                CarDetailsFillupsFragment fragment = (CarDetailsFillupsFragment)CarDetailsFillupsFragment.newInstance(position, mCarToShow);
+                mPages[0] = fragment;
+                return fragment;
             }
-            return PlaceholderFragment.newInstance(position + 1);
+            PlaceholderFragment fragment = PlaceholderFragment.newInstance(position + 1);
+            mPages[position] = fragment;
+            return fragment;
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return NUM_PAGES;
         }
 
         @Override
@@ -157,7 +177,7 @@ public class CarDetailsActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends BaseFragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
