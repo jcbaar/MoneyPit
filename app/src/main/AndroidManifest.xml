@@ -41,6 +41,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.development.jaba.moneypit.AddOrEditCarActivity" />
         </activity>
+        <activity
+            android:name=".AddOrEditFillupActivity"
+            android:label="@string/title_activity_add_or_edit_fillup"
+            android:parentActivityName=".MainDrawerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.development.jaba.moneypit.MainDrawerActivity" />
+        </activity>
     </application>
 
 </manifest>

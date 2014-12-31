@@ -1,5 +1,7 @@
 package com.development.jaba.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,8 @@ import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.database.Utils;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
+import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.moneypit.AddOrEditFillupActivity;
 import com.development.jaba.view.RecyclerViewEx;
 import com.development.jaba.moneypit.R;
 import com.melnykov.fab.FloatingActionButton;
@@ -27,6 +31,9 @@ import java.util.List;
  * Fragment for displaying the details of a {@link Car}.
  */
 public class CarDetailsFillupsFragment extends BaseFragment {
+
+    private final int REQUEST_ADD_FILLUP = 0,
+            REQUEST_EDIT_FILLUP = 1;
 
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private FillupRowAdapter mFillupAdapter;         // Adapter for holding the Fill-up list.
@@ -102,85 +109,51 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 
             mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
             mFab.attachToRecyclerView(fillupList);
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editFillup(mCar, null);
+                }
+            });
         }
         return view;
     }
 
-/*    private void showCarDetails(Car car) {
-        Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
-        if(car != null) {
-            carDetails.putExtra("Car", car);
+    private void editFillup(Car car, Fillup fillup) {
+        Intent editFillup = new Intent(getActivity(), AddOrEditFillupActivity.class);
+        editFillup.putExtra("Car", car);
+        if(fillup != null) {
+            editFillup.putExtra("Fillup", fillup);
         }
-        startActivity(carDetails);
-    }
-
-    private void editCar(Car car) {
-        Intent editCar = new Intent(getActivity(), AddOrEditCarActivity.class);
-        if(car != null) {
-            editCar.putExtra("Car", car);
-        }
-        startActivityForResult(editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR);
+        startActivityForResult(editFillup, fillup == null ? REQUEST_ADD_FILLUP : REQUEST_EDIT_FILLUP);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (data.getExtras().containsKey("Car")) {
-                Car car = (Car) data.getExtras().get("Car");
-                if (car != null) {
-                    if (requestCode == REQUEST_EDIT_CAR) {
-                        for (int i = 0; i < mCars.size(); i++) {
-                            if (mCars.get(i).getId() == car.getId()) {
-                                mCars.set(i, car);
+            if (data.getExtras().containsKey("Fillup")) {
+                Fillup fillup = (Fillup) data.getExtras().get("Fillup");
+                if (fillup != null) {
+                    if (requestCode == REQUEST_EDIT_FILLUP) {
+                        for (int i = 0; i < mFillups.size(); i++) {
+                            if (mFillups.get(i).getId() == fillup.getId()) {
+                                mFillups.set(i, fillup);
                                 break;
                             }
                         }
                     } else {
-                        mCars.add(car);
+                        mFillups.add(fillup);
                     }
-                    ((ArrayAdapter) mFillupAdapter).notifyDataSetChanged();
+
+                    Fillup oldest = mFillupAdapter.getItem(mFillupAdapter.getItemCount() - 1);
+                    SurroundingFillups result = mContext.getSurroundingFillups(oldest.getDate(), oldest.getCarId(), oldest.getId());
+
+                    Utils.recomputeFillupTotals(mFillups, result != null ? result.getBefore() : null);
+                    mFillupAdapter.notifyDataSetChanged();
                 }
             }
         }
     }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.carList) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
-            menu.setHeaderTitle(selectedCar.toString());
-            String[] menuItems = getResources().getStringArray(R.array.edit_delete);
-            for(int i = 0; i < menuItems.length; i++) {
-                menu.add(Menu.NONE, i, i, menuItems[i]);
-            }
-
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        int menuItemIndex = item.getItemId();
-        switch(menuItemIndex) {
-            case 0:
-            {
-                Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
-                editCar(selectedCar);
-                return true;
-            }
-
-            case 1:
-                Car selectedCar = (Car) mFillupAdapter.getItem(info.position);
-                mContext.deleteCar(selectedCar);
-                mCars.remove(selectedCar);
-                ((ArrayAdapter) mFillupAdapter).notifyDataSetChanged();
-                return true;
-        }
-        return false;
-    }*/
-
-    //region Options menu
 
     /**
      * Creates the fragment menu items.

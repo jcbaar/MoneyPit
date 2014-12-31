@@ -13,11 +13,13 @@ import android.util.Log;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
+import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.utilities.ConditionalHelper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.File;
@@ -627,6 +629,62 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             Log.e("getFillupByCar", ex.getMessage());
             result.clear();
             return result;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
+
+    /**
+     * Get the first fill up entity before the given date and after
+     * the given date. If before returns null there are no older fill ups.
+     * If after returns null there are no later fill ups. When they both
+     * return null there are no fill ups at all.
+     *
+     * @param date The date to find the surrounding fill ups of.
+     * @param carId The id of the car the fill ups should belong to.
+     * @param fillupId The id of the fill up which is being edited. 0 for a new fill up.
+     */
+    public SurroundingFillups getSurroundingFillups(Date date, int carId, int fillupId)
+    {
+        SurroundingFillups result = new SurroundingFillups();
+
+        String query1 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date < ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date DESC LIMIT 1";
+        String query2 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date > ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date ASC LIMIT 1";
+        String[] args = new String[] { Utils.getDateTimeAsString(date),
+                String.valueOf(carId),
+                String.valueOf(fillupId) };
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query1, args);
+
+            if (cursor.moveToFirst()) {
+                Fillup fillup = new Fillup(cursor);
+                result.setBefore(fillup);
+            }
+
+            cursor.close();
+            cursor = null;
+
+            cursor = db.rawQuery(query2, args);
+            if (cursor.moveToFirst()) {
+                Fillup fillup = new Fillup(cursor);
+                result.setAfter(fillup);
+            }
+
+            cursor.close();
+            cursor = null;
+            return result;
+        }
+        catch(SQLiteException ex) {
+            Log.e("GetSurroundingFillups", ex.getMessage());
+            return null;
         }
         finally {
             if(cursor != null){

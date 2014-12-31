@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
 
         android:paddingLeft="4dp"
-        android:text="Hint" />
+        android:text="Hint"
+        android:textSize="@dimen/abc_text_size_small_material" />
 
     <EditText
         android:id="@+id/editEx_editor"
@@ -31,7 +32,8 @@
             android:layout_weight="1"
             android:paddingLeft="4dp"
             android:text="Error label"
-            android:paddingRight="4dp" />
+            android:paddingRight="4dp"
+            android:textSize="@dimen/abc_text_size_small_material" />
 
         <TextView
             android:id="@+id/editEx_charCount"
@@ -40,7 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
             android:paddingRight="4dp"
-            android:text="0/50" />
+            android:text="0/50"
+            android:textSize="@dimen/abc_text_size_small_material" />
 
     </LinearLayout>
 </LinearLayout>
