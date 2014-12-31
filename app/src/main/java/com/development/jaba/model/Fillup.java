@@ -146,7 +146,7 @@ public class Fillup implements Serializable {
         this.mPrice = price;
     }
 
-    public boolean isFullTank() {
+    public boolean getFullTank() {
         return mFullTank;
     }
 

@@ -65,5 +65,6 @@
     <string name="title_create_fillup">Create fill-up</string>
     <string name="title_activity_add_or_edit_fillup">AddOrEditFillup</string>
     <string name="hello_world">Hello world!</string>
+    <string name="odo_error">The odometer setting must be higher than the previous fill up and lower than the next fill up.</string>
 
 </resources>

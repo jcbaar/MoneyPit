@@ -1,5 +1,6 @@
 package com.development.jaba.moneypit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -15,11 +16,11 @@ import android.widget.Toast;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
+import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.view.EditTextEx;
 
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class AddOrEditFillupActivity extends ActionBarActivity {
 
@@ -32,6 +33,8 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             mPrice,
             mRemarks;
     private CheckBox mFullTank;
+    private SurroundingFillups mSurroundingFillups;
+    private OdoValidator mOdoValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,12 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
 
             // Link the new fill-up to the car.
             mFillupToEdit.setCarId(mCar.getId());
+            mFillupToEdit.setDate(new Date());
         }
 
         // Instantiate a database context..
         mContext = new MoneyPitDbContext(this);
+        mSurroundingFillups = mContext.getSurroundingFillups(mFillupToEdit.getDate(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
 
         mDate = (DatePicker)findViewById(R.id.fillupDate);
         mOdometer = (EditTextEx) findViewById(R.id.fillupOdo);
@@ -71,7 +76,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         mRemarks = (EditTextEx) findViewById(R.id.fillupRemark);
         mFullTank = (CheckBox) findViewById(R.id.fillupFullTank);
 
-        mOdometer.setValidator(new EditTextEx.RequiredValidator(this));
+        mOdometer.setValidator(new OdoValidator(this));
         mVolume.setValidator(new EditTextEx.RequiredValidator(this));
         mPrice.setValidator(new EditTextEx.RequiredValidator(this));
 
@@ -86,6 +91,11 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * Setup the given date in the {@link android.widget.DatePicker}.
+     *
+     * @param d The date to set in the {@link android.widget.DatePicker}.
+     */
     private void setupDate(Date d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
@@ -108,7 +118,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         mVolume.setText(String.valueOf(mFillupToEdit.getVolume()));
         mPrice.setText(String.valueOf(mFillupToEdit.getPrice()));
         mRemarks.setText(mFillupToEdit.getNote());
-//        mFullTank.setChecked(mFillupToEdit.getFullTank()));
+        mFullTank.setChecked(mFillupToEdit.getFullTank());
     }
 
     /**
@@ -160,16 +170,13 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_ok) {
             // Validate the fields before we continue.
             boolean isOk = validateFields();
             if(isOk) {
-                // Copy the UI contents into the Car entity.
+                // Copy the UI contents into the Fillup entity.
                 fromUi();
 
                 // When we have an ID of 0 here it means that this is a new
@@ -184,12 +191,12 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                         isOk = false;
                     }
                 } else {
-                    // Update the car entity in the database.
+                    // Update the Fillup entity in the database.
                     isOk = mContext.updateFillup(mFillupToEdit);
                 }
 
                 if (isOk) {
-                    // We have a successful database transaction. Return the Car entity
+                    // We have a successful database transaction. Return the Fillup entity
                     // to the calling Activity.
                     Intent result = new Intent();
                     result.putExtra("Fillup", mFillupToEdit);
@@ -201,6 +208,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                     }
                     finish();
                 } else {
+                    // TODO: Report this with a dialog instead of a toast.
                     Toast.makeText(this, getString(R.string.error_saving_fillup), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -220,5 +228,42 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             NavUtils.navigateUpTo(this, intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Validator class to validate the entered odometer value.
+     */
+    private class OdoValidator extends EditTextEx.BaseValidator {
+
+        /**
+         * Constructor. Initializes an instance of the object.
+         *
+         * @param context The context.
+         */
+        public OdoValidator (Context context) {
+            super(context);
+        }
+
+        /**
+         * Checks if the value is between the odometer settings of the previous fill-up
+         * and the next fill-up.
+         *
+         * @param value The value to validate.
+         * @return true if the value is valid, false if it was not.
+         */
+        @Override
+        public boolean isValid(String value) {
+            double odo = Double.parseDouble(value);
+
+            // Make sure the odometer value is between the previous and next fill up
+            // odometer settings.
+            if ((mSurroundingFillups.getBefore()!= null && odo <= mSurroundingFillups.getBefore().getOdometer()) ||
+                (mSurroundingFillups.getAfter() != null && odo >= mSurroundingFillups.getAfter().getOdometer()))
+            {
+                setErrorMessage(R.string.odo_error);
+                return false;
+            }
+            return true;
+        }
     }
 }

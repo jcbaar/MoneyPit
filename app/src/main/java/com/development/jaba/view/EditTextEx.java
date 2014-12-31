@@ -314,6 +314,7 @@ public class EditTextEx extends LinearLayout {
      */
     public void setError(CharSequence error) {
         mError.setText(error);
+        checkBottomLine();
         mError.startAnimation(TextUtils.isEmpty(error) ? mAnimateGoneError : mAnimateVisibleError);
     }
 

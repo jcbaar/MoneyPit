@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="4"
                 android:hint="@string/carBuildYear"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 app:eteErrorColor="@color/errorColor"
                 android:paddingBottom="8dp" />
 

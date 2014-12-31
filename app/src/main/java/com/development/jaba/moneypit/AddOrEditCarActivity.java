@@ -207,6 +207,7 @@ public class AddOrEditCarActivity extends ActionBarActivity {
                     }
                     finish();
                 } else {
+                    // TODO: Report this with a dialog instead of a toast.
                     Toast.makeText(this, getString(R.string.error_saving_car), Toast.LENGTH_SHORT).show();
                 }
             }
