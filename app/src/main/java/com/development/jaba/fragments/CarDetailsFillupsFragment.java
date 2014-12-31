@@ -16,10 +16,9 @@ import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.database.Utils;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
-import com.development.jaba.moneypit.R;
 import com.development.jaba.view.RecyclerViewEx;
-import com.shamanland.fab.FloatingActionButton;
-import com.shamanland.fab.ShowHideOnScroll;
+import com.development.jaba.moneypit.R;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +32,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     private FillupRowAdapter mFillupAdapter;         // Adapter for holding the Fill-up list.
     private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
     private Car mCar;
-    private ShowHideOnScroll mShowHideFab;           // Shows or hides the FloatingActionButton.
+    private FloatingActionButton mFab;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -68,9 +67,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 
     @Override
     public void onFragmentSelectedInViewPager() {
-        if(mShowHideFab != null) {
-            mShowHideFab.onScrollDown();
-        }
+        mFab.show();
     }
 
     @Override
@@ -103,9 +100,8 @@ public class CarDetailsFillupsFragment extends BaseFragment {
             fillupList.setAdapter(mFillupAdapter);
             fillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
-            mShowHideFab = new ShowHideOnScroll(fab);
-            fillupList.setOnTouchListener(mShowHideFab);
+            mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
+            mFab.attachToRecyclerView(fillupList);
         }
         return view;
     }

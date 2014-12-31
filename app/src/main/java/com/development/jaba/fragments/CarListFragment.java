@@ -22,8 +22,7 @@ import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.moneypit.CarDetailsActivity;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
-import com.shamanland.fab.FloatingActionButton;
-import com.shamanland.fab.ShowHideOnScroll;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class CarListFragment extends BaseFragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
-    private ShowHideOnScroll mFabScroller;           // Shows or hides the FloatingActionButton.
+    private FloatingActionButton mFab;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -136,10 +135,9 @@ public class CarListFragment extends BaseFragment {
         carList.setAdapter(mCarAdapter);
         carList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
-        mFabScroller = new ShowHideOnScroll(fab);
-        carList.setOnTouchListener(mFabScroller);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
+        mFab.attachToRecyclerView(carList);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editCar(null);
