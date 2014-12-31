@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -253,7 +254,20 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
          */
         @Override
         public boolean isValid(String value) {
-            double odo = Double.parseDouble(value);
+            // We need something to parse...
+            if(TextUtils.isEmpty(value)) {
+                setErrorMessage(R.string.no_text_error);
+                return false;
+            }
+
+            double odo = 0;
+            try {
+                odo = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                // Not a valid double string.
+                setErrorMessage(R.string.nan);
+                return false;
+            }
 
             // Make sure the odometer value is between the previous and next fill up
             // odometer settings.
