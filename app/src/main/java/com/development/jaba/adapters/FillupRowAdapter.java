@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -120,6 +121,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         private final TextView mDate, mOdometer, mDistance,
                 mDays, mTotalCost, mVolume, mCost, mEconomy;
+        private final ImageButton mMenuButton;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
@@ -139,6 +141,10 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             mVolume = (TextView) itemView.findViewById(R.id.fillupVolume);
             mCost = (TextView) itemView.findViewById(R.id.fillupCost);
             mEconomy = (TextView) itemView.findViewById(R.id.fillupEconomy);
+            mMenuButton = (ImageButton) itemView.findViewById(R.id.headerMenu);
+
+            // Attach a PopupMenu to the menu button.
+            setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));
         }
 
         public TextView getDate() {

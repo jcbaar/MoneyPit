@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/list_card_states">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/rowHeader">
+
+        <TextView
+            android:id="@+id/fillupDate"
+            android:text="21-12-2014"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+
+        <TextView
+            android:id="@+id/fillupSpan"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="(6 days)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/headerMenu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="#0000"
+            android:src="@drawable/card_menu_button_overflow_material" />
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/fillupContainer"
@@ -14,26 +53,20 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:rowCount="3"
-        android:stretchColumns="1">
+        android:stretchColumns="1"
+        android:layout_below="@+id/rowHeader"
+        android:layout_marginTop="-8dp">
 
         <TableRow android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/fillupDate"
-                android:text="21-12-2014"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_column="0" />
-
-            <TextView
-                android:id="@+id/fillupSpan"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="(6 days)"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_column="1" />
+                android:id="@+id/fillupOdometer"
+                android:layout_gravity="left"
+                android:text="130278km"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"/>
 
             <TextView
                 android:id="@+id/fillupVolume"
@@ -48,28 +81,22 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/fillupOdometer"
-                android:layout_gravity="left"
-                android:text="130278km"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView />
+                android:id="@+id/fillupDistance"
+                android:text="412km"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"/>
 
             <TextView
                 android:id="@+id/fillupCost"
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:text="EUR 1.47/L"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="2"/>
         </TableRow>
 
         <TableRow android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/fillupDistance"
-                android:text="412km"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/fillupTotalCost"
@@ -77,18 +104,19 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/primaryColor"
                 android:textStyle="bold"
-                android:layout_gravity="center_horizontal" />
+                android:layout_column="0"/>
 
             <TextView
                 android:id="@+id/fillupEconomy"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:text="14.01km/L"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="2"/>
         </TableRow>
     </TableLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/listDividerLight" />
-</LinearLayout>
+</RelativeLayout>

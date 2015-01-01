@@ -10,7 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
+import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -33,9 +34,8 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             mVolume,
             mPrice,
             mRemarks;
-    private CheckBox mFullTank;
+    private CheckedTextView mFullTank;
     private SurroundingFillups mSurroundingFillups;
-    private OdoValidator mOdoValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,14 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         mVolume = (EditTextEx) findViewById(R.id.fillupVolume);
         mPrice = (EditTextEx) findViewById(R.id.fillupPrice);
         mRemarks = (EditTextEx) findViewById(R.id.fillupRemark);
-        mFullTank = (CheckBox) findViewById(R.id.fillupFullTank);
+        mFullTank = (CheckedTextView) findViewById(R.id.fillupFullTank);
+
+        mFullTank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFullTank.toggle();
+            }
+        });
 
         mOdometer.setValidator(new OdoValidator(this));
         mVolume.setValidator(new EditTextEx.RequiredValidator(this));
@@ -260,7 +267,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                 return false;
             }
 
-            double odo = 0;
+            double odo;
             try {
                 odo = Double.parseDouble(value);
             } catch (NumberFormatException e) {

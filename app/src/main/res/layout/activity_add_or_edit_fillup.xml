@@ -31,6 +31,20 @@
                 android:calendarViewShown="false"
                 android:layout_gravity="center_horizontal" />
 
+            <CheckedTextView
+                android:id="@+id/fillupFullTank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fillupFullTank"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="-12dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"/>
+
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/fillupOdo"
                 android:layout_width="match_parent"
@@ -57,13 +71,6 @@
                 android:inputType="numberDecimal"
                 app:eteErrorColor="@color/errorColor"
                 android:paddingBottom="8dp" />
-
-            <CheckBox
-                android:id="@+id/fillupFullTank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fillupFullTank"
-                android:paddingBottom="8dp"/>
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/fillupRemark"

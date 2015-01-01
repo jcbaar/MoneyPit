@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.FillupRowAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.database.MoneyPitDbContext;
@@ -20,6 +21,8 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.moneypit.AddOrEditFillupActivity;
+import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.view.RecyclerViewEx;
 import com.development.jaba.moneypit.R;
 import com.melnykov.fab.FloatingActionButton;
@@ -98,7 +101,34 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 
                 @Override
                 public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
-                    // evaluate menu item clicks.
+                    int menuItemIndex = item.getItemId();
+                    switch(menuItemIndex) {
+                        case 0:
+                        {
+                            Fillup selectedFillup = mFillupAdapter.getItem(position);
+                            editFillup(mCar, selectedFillup);
+                            return true;
+                        }
+
+                        case 1:
+                            DialogHelper.showYesNoDialog(String.format(getString(R.string.dialog_delete_car_title), FormattingHelper.toShortDate(mFillupAdapter.getLastClickedItem().getDate())),
+                                    getText(R.string.dialog_delete_fillup_content),
+                                    new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            super.onPositive(dialog);
+                                            Fillup selectedFillup = mFillupAdapter.getLastClickedItem();
+                                            mContext.deleteFillup(selectedFillup);
+                                            mFillups.remove(selectedFillup);
+                                            mFillupAdapter.notifyDataSetChanged();
+                                        }
+                                    },
+                                    getActivity());
+                            return true;
+
+                        default:
+                            break;
+                    }
                     return false;
                 }
             });
