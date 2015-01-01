@@ -1,5 +1,6 @@
 package com.development.jaba.moneypit;
 
+import java.util.Date;
 import java.util.Locale;
 
 import android.support.v7.app.ActionBarActivity;
@@ -15,10 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.development.jaba.database.Utils;
 import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
+import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.SlidingTabLayout;
 
 public class CarDetailsActivity extends ActionBarActivity {
@@ -27,6 +32,11 @@ public class CarDetailsActivity extends ActionBarActivity {
      * The {@link Car} entity to show the details of.
      */
     private Car mCarToShow;
+
+    /**
+     * The currently selected year.
+     */
+    private int mCurrentYear;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -56,12 +66,15 @@ public class CarDetailsActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
+        // By default we show the current year.
+        mCurrentYear = Utils.getYearFromDate(new Date());
+
         // Extract the Car instance
         Bundle b = getIntent().getExtras();
         if( b != null) {
             mCarToShow = (Car)b.getSerializable("Car");
             if(mCarToShow != null) {
-                setTitle(mCarToShow.toString());
+                setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
             }
         }
 
@@ -112,7 +125,35 @@ public class CarDetailsActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if(id == R.id.selectYear) {
+            // Let the user select the year of data they want to see.
+            DialogHelper.showYearSelectionDialog(mCarToShow, mCurrentYear, new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
+                    super.onPositive(dialog);
+
+                    // Get the currently selected item from the view. This
+                    // will contain the selected year.
+                    View view = dialog.getCustomView();
+                    Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+                    int year = Integer.parseInt(spinner.getSelectedItem().toString());
+
+                    // Broadcast the year selection to all fragments. They need to know what year
+                    // was selected so they they can update their contents.
+                    for ( int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+                        BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(mViewPager.getCurrentItem());
+                        if (fragment != null) {
+                            fragment.onYearSelected(year);
+                        }
+                    }
+
+                    // Save the selected year.
+                    mCurrentYear = year;
+                    setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
+                }
+            }, this);
+        }
+        else if (id == R.id.action_settings) {
             return true;
         }
 

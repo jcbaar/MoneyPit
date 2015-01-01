@@ -95,7 +95,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/carDistanceUnit"
                             android:textSize="@dimen/abc_text_size_small_material"
-                            android:paddingLeft="8dp" />
+                            android:paddingLeft="4dp" />
 
                         <Spinner
                             android:id="@+id/carDistanceUnit"
@@ -115,7 +115,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/carVolumeUnit"
                             android:textSize="@dimen/abc_text_size_small_material"
-                            android:paddingLeft="8dp" />
+                            android:paddingLeft="4dp" />
 
                         <Spinner
                             android:id="@+id/carVolumeUnit"

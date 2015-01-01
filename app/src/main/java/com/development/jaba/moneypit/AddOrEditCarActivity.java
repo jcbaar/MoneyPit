@@ -82,8 +82,8 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         volumeUnits = (Spinner) findViewById(R.id.carVolumeUnit);
 
         // Load up the contents of the Spinners.
-        ArrayAdapter<CharSequence> distanceAdapter = ArrayAdapter.createFromResource(this, R.array.distance_units, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> volumeAdapter = ArrayAdapter.createFromResource(this, R.array.volume_units, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> distanceAdapter = ArrayAdapter.createFromResource(this, R.array.distance_units, R.layout.spinner_row_template);
+        ArrayAdapter<CharSequence> volumeAdapter = ArrayAdapter.createFromResource(this, R.array.volume_units, R.layout.spinner_row_template);
 
         distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         volumeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

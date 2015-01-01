@@ -20,6 +20,15 @@ public class BaseFragment extends Fragment {
     }
 
     /**
+     * This is overridden in sub classes to inform the fragment the used selected
+     * another year of data to display.
+     *
+     * @param year The year the user has selected.
+     */
+    public void onYearSelected(int year) {
+    }
+
+    /**
      * This interface must be implemented by activities that contain this
      * mFragment to allow an interaction in this mFragment to be communicated
      * to the mActivity and potentially other fragments contained in that

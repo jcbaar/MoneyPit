@@ -149,6 +149,13 @@ public class CarDetailsFillupsFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onYearSelected(int year) {
+        super.onYearSelected(year);
+        mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
+        mFillupAdapter.setData(mFillups);
+    }
+
     private void editFillup(Car car, Fillup fillup) {
         Intent editFillup = new Intent(getActivity(), AddOrEditFillupActivity.class);
         editFillup.putExtra("Car", car);
@@ -206,10 +213,6 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 //        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_add_car) {
-//            editCar(null);
-//            return true;
-//        }
 
         // All other items are not our's...
         return false;

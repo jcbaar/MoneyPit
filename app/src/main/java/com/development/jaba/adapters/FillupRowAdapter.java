@@ -43,6 +43,16 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
     //endregion
 
     /**
+     * Setyup a complete new data set for this adapter.
+     *
+     * @param data The new dataset.
+     */
+    public void setData(List<Fillup> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
+
+    /**
      * Creates a new {@link com.development.jaba.adapters.FillupRowAdapter.FillupRowViewHolder} object that manages
      * the {@link View} of the row.
      *

@@ -693,5 +693,42 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             mDbManager.closeDatabase();
         }
     }
+
+    /**
+     * Get the oldest year which the given car has fillup data.
+     *
+     */
+    public int getOldestDataYear(int carId)
+    {
+        int year = Utils.getYearFromDate(new Date());
+
+        String query = "SELECT Date FROM " + TABLE_FILLUP + " WHERE (CarId = ?) ORDER BY Date ASC LIMIT 1";
+        String[] args = new String[] { String.valueOf(carId) };
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            if (cursor.moveToFirst()) {
+                year = Utils.getYearFromDate(Utils.getDateFromDateTime(cursor.getString(0)));
+            }
+
+            cursor.close();
+            cursor = null;
+            return year;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getOldestDataYear", ex.getMessage());
+            return year;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
     //endregion
 }
