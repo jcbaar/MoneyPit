@@ -7,6 +7,8 @@
     <color name="accentColorRipple">#ffe16167</color>
     <color name="errorColor">#BF00</color>
 
+    <color name="legendBackgroundColor">#96bbdefb</color>
+
     <color name="listCardBackground">#FFFFFF</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
     <color name="listCardBorder">#ffdddddd</color>

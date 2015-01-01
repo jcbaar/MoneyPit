@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +25,6 @@ import com.development.jaba.view.RecyclerViewEx;
 import com.development.jaba.moneypit.R;
 import com.melnykov.fab.FloatingActionButton;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +40,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
     private Car mCar;
     private FloatingActionButton mFab;
+    private int mCurrentYear;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -62,16 +60,18 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if(mCar == null && savedInstanceState != null) {
-            mCar = (Car)savedInstanceState.getSerializable("Car");
+        if(savedInstanceState != null) {
+            if (mCar == null) {
+                mCar = (Car) savedInstanceState.getSerializable("Car");
+            }
+            mCurrentYear = savedInstanceState.getInt("CurrentYear");
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable("Car", mCar);
+        outState.putInt("CurrentYear", mCurrentYear);
         super.onSaveInstanceState(outState);
     }
 
@@ -86,7 +86,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 
         mContext = new MoneyPitDbContext(getActivity());
         if(mCar != null) {
-            mFillups = mContext.getFillupsOfCar(mCar.getId(), Utils.getYearFromDate(new Date()));
+            mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
 
             mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, mFillups);
             mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
@@ -149,11 +149,20 @@ public class CarDetailsFillupsFragment extends BaseFragment {
         return view;
     }
 
+    /**
+     * The user selected another year. Update the data to show the data
+     * of the new year.
+     *
+     * @param year The year the user has selected.
+     */
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
-        mFillupAdapter.setData(mFillups);
+        mCurrentYear = year;
+        if(mContext != null &&mCar != null) {
+            mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
+            mFillupAdapter.setData(mFillups);
+        }
     }
 
     private void editFillup(Car car, Fillup fillup) {
@@ -191,31 +200,4 @@ public class CarDetailsFillupsFragment extends BaseFragment {
             }
         }
     }
-
-    /**
-     * Creates the fragment menu items.
-     * @param menu The menu to create the fragment menu items in.
-     * @param inflater The @{link MenuItemInflater}
-     */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.menu_carlist, menu);
-    }
-
-    /**
-     * Handler for selection of a option menu item.
-     * @param item The item that was selected.
-     * @return true if the item was handled, false if it was not.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-        // All other items are not our's...
-        return false;
-    }
-    //endregion
 }

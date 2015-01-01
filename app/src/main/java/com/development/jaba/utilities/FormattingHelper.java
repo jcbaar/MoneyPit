@@ -64,6 +64,20 @@ public class FormattingHelper {
     }
 
     /**
+     * Converts a price-per-distance-unit value to a {@link String} using the currency indicator and
+     * {@link com.development.jaba.model.DistanceUnit} of the given {@link Car}.
+     * @param car The {@link Car} entity to use.
+     * @param price The price value to convert.
+     * @return The {@link String} containing the price-per-distance-unit value.
+     */
+    public static String toPricePerDistanceUnit(Car car, double price) {
+        if(car == null) {
+            return String.format("%.02f", price);
+        }
+        return String.format("%s %.2f/%s", car.getCurrency(), price, car.getDistanceUnit().getShortUnitName());
+    }
+
+    /**
      * Converts a volume-unit value to a {@link String} using the
      * {@link com.development.jaba.model.VolumeUnit} of the given {@link Car}.
      * @param car The {@link Car} entity to use.

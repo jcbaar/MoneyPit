@@ -73,4 +73,10 @@
     <string name="dialog_select_year_body">Please select the year from which you wish to see the information.</string>
     <string name="dialog_select_year_hint">Year</string>
     <string name="action_select_year">Show year...</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="graph_fuel_cost">fuel cost per month</string>
+    <string name="graph_fuel_cost_per_distance_unit">fuel cost per kilometer per month</string>
+    <string name="graph_cost">cost</string>
+    <string name="graph_average">average</string>
+
 </resources>

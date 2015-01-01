@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.Utils;
 import com.development.jaba.fragments.BaseFragment;
+import com.development.jaba.fragments.CarDetailsCostFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DialogHelper;
@@ -59,6 +60,12 @@ public class CarDetailsActivity extends ActionBarActivity {
     SlidingTabLayout mSlidingTabLayout;
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("CurrentYear", mCurrentYear);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_details);
@@ -68,6 +75,9 @@ public class CarDetailsActivity extends ActionBarActivity {
 
         // By default we show the current year.
         mCurrentYear = Utils.getYearFromDate(new Date());
+        if(savedInstanceState != null) {
+            mCurrentYear = savedInstanceState.getInt("CurrentYear");
+        }
 
         // Extract the Car instance
         Bundle b = getIntent().getExtras();
@@ -141,7 +151,7 @@ public class CarDetailsActivity extends ActionBarActivity {
                     // Broadcast the year selection to all fragments. They need to know what year
                     // was selected so they they can update their contents.
                     for ( int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-                        BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(mViewPager.getCurrentItem());
+                        BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
                         if (fragment != null) {
                             fragment.onYearSelected(year);
                         }
@@ -185,7 +195,14 @@ public class CarDetailsActivity extends ActionBarActivity {
             // getItem is called to instantiate the fragment for the given page.
             if(position == 0) {
                 CarDetailsFillupsFragment fragment = (CarDetailsFillupsFragment)CarDetailsFillupsFragment.newInstance(position, mCarToShow);
+                fragment.onYearSelected(mCurrentYear);
                 mPages[0] = fragment;
+                return fragment;
+            }
+            else if(position == 1) {
+                CarDetailsCostFragment fragment = (CarDetailsCostFragment)CarDetailsCostFragment.newInstance(position, mCarToShow);
+                fragment.onYearSelected(mCurrentYear);
+                mPages[1] = fragment;
                 return fragment;
             }
             PlaceholderFragment fragment = PlaceholderFragment.newInstance(position + 1);

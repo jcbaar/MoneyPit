@@ -15,6 +15,7 @@ import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.utilities.ConditionalHelper;
+import com.jjoe64.graphview.series.DataPoint;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -722,6 +723,106 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         catch(SQLiteException ex) {
             Log.e("getOldestDataYear", ex.getMessage());
             return year;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
+
+    /**
+     * Get the average fuel cost of the given car per month in the given year.
+     *
+     * @param carId The id of the car the information is read for.
+     * @param year The year the data should belong to.
+     */
+    public DataPoint[] getFuelCostPerMonth(int carId, int year)
+    {
+        DataPoint[] result = new DataPoint[12];
+        for ( int m = 0; m < 12; m++) {
+            result[ m ] = new DataPoint(m, 0);
+        }
+
+        String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(year) };
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    int m = cursor.getInt(0) - 1;
+                    if(m >= 0) {
+                        result[m] = new DataPoint(m, cursor.getDouble(1));
+                    }
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            cursor = null;
+            return result;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getFuelCostPerMonth", ex.getMessage());
+            return result;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
+
+    /**
+     * Get the average fuel cost of the given car per month, per kilometer in the given year.
+     *
+     * @param carId The id of the car the information is read for.
+     * @param year The year the data should belong to.
+     */
+    public DataPoint[] getFuelCostPerKilometerPerMonth(int carId, int year)
+    {
+        DataPoint[] result = new DataPoint[12];
+        for ( int m = 0; m < 12; m++) {
+            result[ m ] = new DataPoint(m, 0);
+        }
+
+        String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price*Volume) / " +
+                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
+                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "GROUP BY CAST(strftime('%m', Date) AS INT)";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(year) };
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    int m = cursor.getInt(0) - 1;
+                    if(m >= 0) {
+                        result[m] = new DataPoint(m, cursor.getDouble(1));
+                    }
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            cursor = null;
+            return result;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getFuelCostPerKilometerPerMonth", ex.getMessage());
+            return result;
         }
         finally {
             if(cursor != null){
