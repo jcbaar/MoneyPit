@@ -134,7 +134,7 @@ public class GraphFragment extends BaseFragment {
     private BarGraphSeries<DataPoint> getBars(DataPoint[] data) {
         Resources res = getResources();
         BarGraphSeries<DataPoint> bars = new BarGraphSeries<>(data);
-        bars.setSpacing((int) dpToPixels(getActivity(), 8));
+        bars.setSpacing(30);
         bars.setColor(res.getColor(R.color.primaryColor));
         bars.setTitle(res.getString(R.string.graph_cost));
         return bars;
