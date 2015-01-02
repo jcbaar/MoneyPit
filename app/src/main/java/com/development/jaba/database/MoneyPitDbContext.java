@@ -746,7 +746,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         String[] args = new String[] { String.valueOf(carId),
                 String.valueOf(year) };
 
-        return getGraphDataPoints(carId, year, query, args);
+        return getGraphDataPoints(query, args);
     }
 
     /**
@@ -765,7 +765,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 String.valueOf(carId),
                 String.valueOf(year) };
 
-        return getGraphDataPoints(carId, year, query, args);
+        return getGraphDataPoints(query, args);
     }
 
     /**
@@ -784,7 +784,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 String.valueOf(carId),
                 String.valueOf(year) };
 
-        return getGraphDataPoints(carId, year, query, args);
+        return getGraphDataPoints(query, args);
     }
 
     /**
@@ -803,20 +803,18 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 String.valueOf(carId),
                 String.valueOf(year) };
 
-        return getGraphDataPoints(carId, year, query, args);
+        return getGraphDataPoints(query, args);
     }
 
     /**
      * Get the statistical information for the graphs.
      *
-     * @param carId The id of the car the information is read for.
-     * @param year The year the data should belong to.
      * @param query The query to run.
      * @param args The query arguments.
      *
      * @return An array of 12 {@link DataPoint} objects containing the information.
      */
-    public DataPoint[] getGraphDataPoints(int carId, int year, String query, String[] args)
+    public DataPoint[] getGraphDataPoints(String query, String[] args)
     {
         DataPoint[] result = new DataPoint[12];
         for ( int m = 0; m < 12; m++) {

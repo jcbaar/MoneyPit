@@ -178,7 +178,7 @@ public class CarDetailsActivity extends ActionBarActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private final int NUM_PAGES = 4;
-        private BaseFragment[] mPages = new BaseFragment[NUM_PAGES];
+        private final BaseFragment[] mPages = new BaseFragment[NUM_PAGES];
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

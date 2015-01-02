@@ -21,8 +21,6 @@ import java.io.IOException;
 public class MainDrawerActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private Toolbar mToolBar;
-
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -71,8 +69,8 @@ public class MainDrawerActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolBar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(mToolBar);
+        Toolbar toolBar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolBar);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -83,7 +81,7 @@ public class MainDrawerActivity extends ActionBarActivity
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolBar);
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
     }
 
     @Override

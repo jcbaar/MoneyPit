@@ -2,7 +2,6 @@ package com.development.jaba.utilities;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.test.suitebuilder.annotation.Suppress;
 import android.view.View;
 
 import java.util.concurrent.atomic.AtomicInteger;

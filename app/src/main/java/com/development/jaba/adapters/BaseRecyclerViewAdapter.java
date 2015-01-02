@@ -14,7 +14,6 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
                                                   implements OnRecyclerItemClicked {
 
     private View mEmptyView;
-    private final RecyclerView.AdapterDataObserver mDataObserver;
     private OnRecyclerItemClicked mClickListener;
     private int mLastClickedPosition;
 
@@ -25,19 +24,19 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
 
         // Register an observer which will show the mEmptyView View when the
         // Adapter does not contain any data.
-        mDataObserver = new RecyclerView.AdapterDataObserver() {
+        RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                if(mEmptyView != null) {
+                if (mEmptyView != null) {
                     int viewMode = getItemCount() == 0 ? View.VISIBLE : View.GONE;
-                    if(viewMode != mEmptyView.getVisibility()) {
+                    if (viewMode != mEmptyView.getVisibility()) {
                         mEmptyView.setVisibility(viewMode);
                     }
                 }
             }
         };
-        registerAdapterDataObserver(mDataObserver);
+        registerAdapterDataObserver(dataObserver);
     }
 
     /**

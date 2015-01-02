@@ -15,7 +15,7 @@ import android.view.View;
  */
 public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-    private Context mContext;
+    private final Context mContext;
     private PopupMenu mPopupMenu;
     private View mMenuView;
     private OnRecyclerItemClicked mClickListener;

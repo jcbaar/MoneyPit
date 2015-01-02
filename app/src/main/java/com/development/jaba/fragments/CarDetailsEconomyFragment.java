@@ -1,5 +1,6 @@
 package com.development.jaba.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -73,7 +74,7 @@ public class CarDetailsEconomyFragment extends GraphFragment {
                     if (value >= 0 && value <= 12) {
                         return mMonths[(int) value];
                     }
-                    return super.formatLabel(value, isValueX);
+                    return super.formatLabel(value, true);
                 } else {
                     return FormattingHelper.toDistance(mCar, value) + " ";
                 }
@@ -87,7 +88,7 @@ public class CarDetailsEconomyFragment extends GraphFragment {
                     if (value >= 0 && value <= 12) {
                         return mMonths[(int) value];
                     }
-                    return super.formatLabel(value, isValueX);
+                    return super.formatLabel(value, true);
                 } else {
                     return FormattingHelper.toEconomy(mCar, value) + " ";
                 }
@@ -107,10 +108,11 @@ public class CarDetailsEconomyFragment extends GraphFragment {
         }
 
         if( mDbContext != null && mCar != null) {
+            Resources res = getResources();
             DataPoint[] data = mDbContext.getDistancePerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mDistancePerMonth, data);
+            setupBarsSeries(mDistancePerMonth, data, res.getString(R.string.graph_distance_legend));
             data = mDbContext.getEconomyPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mEconomyPerMonth, data);
+            setupBarsSeries(mEconomyPerMonth, data, res.getString(R.string.graph_economy_legend));
         }
     }
 

@@ -38,7 +38,6 @@ public class CarListFragment extends BaseFragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
-    private FloatingActionButton mFab;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -135,9 +134,9 @@ public class CarListFragment extends BaseFragment {
         carList.setAdapter(mCarAdapter);
         carList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
-        mFab.attachToRecyclerView(carList);
-        mFab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
+        fab.attachToRecyclerView(carList);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editCar(null);
@@ -223,7 +222,7 @@ public class CarListFragment extends BaseFragment {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+//        int id = item.getItemId();
 
         // All other items are not our's...
         return false;

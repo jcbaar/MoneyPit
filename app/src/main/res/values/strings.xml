@@ -54,7 +54,7 @@
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="dialog_close">Close</string>
-    <string name="dialog_delete_car_title">Delete \'%1$s\'...</string>
+    <string name="dialog_delete_car_title">Delete \'%1$s\'…</string>
     <string name="dialog_delete_car_content">This will delete the car from the database including all of it\'s fill-up information.\n\n<b><i>This can not be undone!</i></b>\n\nAre you sure you want to continue?</string>
     <string name="dialog_delete_fillup_content">This will delete the fill-up from the database.\n\n<b><i>This can not be undone!</i></b>\n\nAre you sure you want to continue?</string>
     <string name="fillupOdometer">Odometer</string>
@@ -72,11 +72,13 @@
     <string name="dialog_select_year_title">Select year</string>
     <string name="dialog_select_year_body">Please select the year from which you wish to see the information.</string>
     <string name="dialog_select_year_hint">Year</string>
-    <string name="action_select_year">Show year...</string>
+    <string name="action_select_year">Show year…</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="graph_fuel_cost">fuel cost per month</string>
     <string name="graph_fuel_cost_per_distance_unit">fuel cost per %1$s per month</string>
-    <string name="graph_cost">cost</string>
+    <string name="graph_cost_legend">cost</string>
+    <string name="graph_distance_legend">distance</string>
+    <string name="graph_economy_legend">economy</string>
     <string name="graph_average">average</string>
     <string name="graph_distance">driven distance per month</string>
     <string name="graph_economy">average fuel economy per month</string>

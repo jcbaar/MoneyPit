@@ -128,24 +128,29 @@ public class GraphFragment extends BaseFragment {
      * data set.
      *
      * @param data The data set to create the {@link com.jjoe64.graphview.series.BarGraphSeries} for.
+     * @param title The title of the data series.
      *
      * @return The {@link com.jjoe64.graphview.series.BarGraphSeries} with the data.
      */
-    private BarGraphSeries<DataPoint> getBars(DataPoint[] data) {
+    private BarGraphSeries<DataPoint> getBars(DataPoint[] data, String title) {
         Resources res = getResources();
         BarGraphSeries<DataPoint> bars = new BarGraphSeries<>(data);
         bars.setSpacing(30);
         bars.setColor(res.getColor(R.color.primaryColor));
-        bars.setTitle(res.getString(R.string.graph_cost));
+        bars.setTitle(title);
         return bars;
     }
 
     /**
      * Setup the series in the {@link com.jjoe64.graphview.GraphView} views.
+     *
+     * @param gv The {@link com.jjoe64.graphview.GraphView} to setup.
+     * @param data The data to show in the {@link com.jjoe64.graphview.GraphView}
+     * @param title The title of the data series.
      */
-    public void setupBarsSeries(GraphView gv, DataPoint[] data) {
+    public void setupBarsSeries(GraphView gv, DataPoint[] data, String title) {
         gv.removeAllSeries();
-        gv.addSeries(getBars(data));
+        gv.addSeries(getBars(data, title));
         gv.addSeries(getAverages(data));
     }
 }

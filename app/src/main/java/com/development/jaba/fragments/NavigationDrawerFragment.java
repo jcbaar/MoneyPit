@@ -35,7 +35,6 @@ import java.util.List;
 public class NavigationDrawerFragment extends Fragment {
 
     private RecyclerView mDrawerList;
-    private NavigationDrawerAdapter mAdapter;
 
     /**
      * Remember the position of the selected item.
@@ -107,12 +106,12 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerList = (RecyclerView) layout.findViewById(R.id.navigationList);
-        mAdapter = new NavigationDrawerAdapter(getActivity(), getData());
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getActivity(), getData());
 
-        mAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
+        adapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
             @Override
             public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
-                if(!isLongClick) {
+                if (!isLongClick) {
                     selectItem(position);
                 }
                 return false;
@@ -124,7 +123,7 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-        mDrawerList.setAdapter(mAdapter);
+        mDrawerList.setAdapter(adapter);
         mDrawerList.setLayoutManager(new LinearLayoutManager(getActivity()));
         return layout;
     }

@@ -1,5 +1,6 @@
 package com.development.jaba.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -74,7 +75,7 @@ public class CarDetailsCostFragment extends GraphFragment {
                     if (value >= 0 && value <= 12) {
                         return mMonths[(int) value];
                     }
-                    return super.formatLabel(value, isValueX);
+                    return super.formatLabel(value, true);
                 } else {
                     return FormattingHelper.toPrice(mCar, value) + " ";
                 }
@@ -88,7 +89,7 @@ public class CarDetailsCostFragment extends GraphFragment {
                     if (value >= 0 && value <= 12) {
                         return mMonths[(int) value];
                     }
-                    return super.formatLabel(value, isValueX);
+                    return super.formatLabel(value, true);
                 } else {
                     return FormattingHelper.toPricePerDistanceUnit(mCar, value) + " ";
                 }
@@ -108,10 +109,11 @@ public class CarDetailsCostFragment extends GraphFragment {
         }
 
         if( mDbContext != null && mCar != null) {
+            Resources res = getResources();
             DataPoint[] data = mDbContext.getFuelCostPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerMonth, data);
+            setupBarsSeries(mCostPerMonth, data, res.getString(R.string.graph_cost_legend));
             data = mDbContext.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerDistanceUnit, data);
+            setupBarsSeries(mCostPerDistanceUnit, data, res.getString(R.string.graph_cost_legend));
         }
     }
 

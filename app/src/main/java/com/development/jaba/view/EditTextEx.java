@@ -38,11 +38,11 @@ public class EditTextEx extends LinearLayout {
             mAnimDuration;              // The animation duration.
     private int mErrorColor;            // The error color.
     private String mHintString;         // The hint string.
-    private TextView mHint,             // The hint TextView.
+    private final TextView mHint,             // The hint TextView.
             mError,                     // The error TextView.
             mCharCount;
-    private EditText mEditor;           // The EditText.
-    private LinearLayout mBottomInfo;   // The LinearLayout containing the error and character counter views.
+    private final EditText mEditor;           // The EditText.
+    private final LinearLayout mBottomInfo;   // The LinearLayout containing the error and character counter views.
     private BaseValidator mValidator;   // Validator for this instance.
 
     /**
@@ -333,7 +333,7 @@ public class EditTextEx extends LinearLayout {
     public static abstract class BaseValidator {
 
         public String mErrorText;   // The validation error text.
-        public Context mContext;    // The context.
+        public final Context mContext;    // The context.
 
         /**
          * Constructor. Initializes an instance of the object.
@@ -475,8 +475,8 @@ public class EditTextEx extends LinearLayout {
      */
     private static class MyAnimationListner implements Animation.AnimationListener {
 
-        private View mView;     // The view the animation is linked to.
-        private boolean mHide,  // Hide animation?
+        private final View mView;     // The view the animation is linked to.
+        private final boolean mHide,  // Hide animation?
                 mShowHideView;  // Change view visibility?
 
         /**

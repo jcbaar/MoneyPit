@@ -93,9 +93,6 @@ public class CarDetailsFillupsFragment extends BaseFragment {
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
                 @Override
                 public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
-                    if(!isLongClick) {
-                        //open up the item editor.
-                    }
                     return false;
                 }
 
