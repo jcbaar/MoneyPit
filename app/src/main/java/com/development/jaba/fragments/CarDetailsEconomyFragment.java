@@ -18,14 +18,14 @@ import com.jjoe64.graphview.series.DataPoint;
 import java.util.Date;
 
 /**
- * A {@link BaseFragment} subclass containing the const-per-month
- * and cost-per-month-per-distance-unit graphs.
+ * A {@link BaseFragment} subclass containing the distance-per-month
+ * and economy-per-month graphs.
  */
-public class CarDetailsCostFragment extends GraphFragment {
+public class CarDetailsEconomyFragment extends GraphFragment {
 
     private MoneyPitDbContext mDbContext;
-    private GraphView mCostPerMonth,
-            mCostPerDistanceUnit;
+    private GraphView mDistancePerMonth,
+            mEconomyPerMonth;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -33,7 +33,7 @@ public class CarDetailsCostFragment extends GraphFragment {
      * @return The created fragment.
      */
     public static Fragment newInstance(int sectionNumber, Car carToShow) {
-        CarDetailsCostFragment fragment = new CarDetailsCostFragment();
+        CarDetailsEconomyFragment fragment = new CarDetailsEconomyFragment();
         fragment.mCar = carToShow;
 
         Bundle args = new Bundle();
@@ -55,19 +55,18 @@ public class CarDetailsCostFragment extends GraphFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_car_details_cost, container, false);
+        View view = inflater.inflate(R.layout.fragment_car_details_economy, container, false);
 
         mDbContext = new MoneyPitDbContext(getActivity());
         mMonths = getResources().getStringArray(R.array.months);
 
-        mCostPerMonth = (GraphView) view.findViewById(R.id.costPerMonth);
-        mCostPerDistanceUnit = (GraphView) view.findViewById(R.id.costPerDistanceUnit);
+        mDistancePerMonth = (GraphView) view.findViewById(R.id.distancePerMonth);
+        mEconomyPerMonth = (GraphView) view.findViewById(R.id.economyPerMonth);
 
-        mCostPerMonth.setTitle(getResources().getString(R.string.graph_fuel_cost));
-        mCostPerDistanceUnit.setTitle(String.format(getResources().getString(R.string.graph_fuel_cost_per_distance_unit),
-                mCar.getDistanceUnit().getUnitName().toLowerCase()));
+        mDistancePerMonth.setTitle(getResources().getString(R.string.graph_distance));
+        mEconomyPerMonth.setTitle(getResources().getString(R.string.graph_economy));
 
-        setupRenderers(mCostPerMonth, new DefaultLabelFormatter() {
+        setupRenderers(mDistancePerMonth, new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
@@ -76,12 +75,12 @@ public class CarDetailsCostFragment extends GraphFragment {
                     }
                     return super.formatLabel(value, isValueX);
                 } else {
-                    return FormattingHelper.toPrice(mCar, value) + " ";
+                    return FormattingHelper.toDistance(mCar, value) + " ";
                 }
             }
         });
 
-        setupRenderers(mCostPerDistanceUnit, new DefaultLabelFormatter() {
+        setupRenderers(mEconomyPerMonth, new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
@@ -90,7 +89,7 @@ public class CarDetailsCostFragment extends GraphFragment {
                     }
                     return super.formatLabel(value, isValueX);
                 } else {
-                    return FormattingHelper.toPricePerDistanceUnit(mCar, value) + " ";
+                    return FormattingHelper.toEconomy(mCar, value) + " ";
                 }
             }
         });
@@ -108,10 +107,10 @@ public class CarDetailsCostFragment extends GraphFragment {
         }
 
         if( mDbContext != null && mCar != null) {
-            DataPoint[] data = mDbContext.getFuelCostPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerMonth, data);
-            data = mDbContext.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerDistanceUnit, data);
+            DataPoint[] data = mDbContext.getDistancePerMonth(mCar.getId(), mCurrentYear);
+            setupBarsSeries(mDistancePerMonth, data);
+            data = mDbContext.getEconomyPerMonth(mCar.getId(), mCurrentYear);
+            setupBarsSeries(mEconomyPerMonth, data);
         }
     }
 

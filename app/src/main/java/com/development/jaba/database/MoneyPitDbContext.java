@@ -698,6 +698,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     /**
      * Get the oldest year which the given car has fillup data.
      *
+     * @param carId The id of the {@link Car} to get the oldest year of.
+     * @return The oldest year of the {@link Car}
      */
     public int getOldestDataYear(int carId)
     {
@@ -740,44 +742,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public DataPoint[] getFuelCostPerMonth(int carId, int year)
     {
-        DataPoint[] result = new DataPoint[12];
-        for ( int m = 0; m < 12; m++) {
-            result[ m ] = new DataPoint(m, 0);
-        }
-
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[] { String.valueOf(carId),
                 String.valueOf(year) };
 
-        SQLiteDatabase db;
-        Cursor cursor = null;
-        try {
-            db = mDbManager.openDatabase();
-            cursor = db.rawQuery(query, args);
-
-            if (cursor.moveToFirst()) {
-                do {
-                    int m = cursor.getInt(0) - 1;
-                    if(m >= 0) {
-                        result[m] = new DataPoint(m, cursor.getDouble(1));
-                    }
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
-            cursor = null;
-            return result;
-        }
-        catch(SQLiteException ex) {
-            Log.e("getFuelCostPerMonth", ex.getMessage());
-            return result;
-        }
-        finally {
-            if(cursor != null){
-                cursor.close();
-            }
-            mDbManager.closeDatabase();
-        }
+        return getGraphDataPoints(carId, year, query, args);
     }
 
     /**
@@ -788,11 +757,6 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public DataPoint[] getFuelCostPerKilometerPerMonth(int carId, int year)
     {
-        DataPoint[] result = new DataPoint[12];
-        for ( int m = 0; m < 12; m++) {
-            result[ m ] = new DataPoint(m, 0);
-        }
-
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price*Volume) / " +
                 "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
@@ -800,6 +764,64 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         String[] args = new String[] { String.valueOf(carId),
                 String.valueOf(carId),
                 String.valueOf(year) };
+
+        return getGraphDataPoints(carId, year, query, args);
+    }
+
+    /**
+     * Get the average driven distance of the given car per month in the given year.
+     *
+     * @param carId The id of the car the information is read for.
+     * @param year The year the data should belong to.
+     */
+    public DataPoint[] getDistancePerMonth(int carId, int year)
+    {
+        String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
+                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
+                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "GROUP BY CAST(strftime('%m', Date) AS INT)";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(year) };
+
+        return getGraphDataPoints(carId, year, query, args);
+    }
+
+    /**
+     * Get the average fuel economy of the given car per month in the given year.
+     *
+     * @param carId The id of the car the information is read for.
+     * @param year The year the data should belong to.
+     */
+    public DataPoint[] getEconomyPerMonth(int carId, int year)
+    {
+        String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
+                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / SUM(Volume)" +
+                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "GROUP BY CAST(strftime('%m', Date) AS INT)";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(year) };
+
+        return getGraphDataPoints(carId, year, query, args);
+    }
+
+    /**
+     * Get the statistical information for the graphs.
+     *
+     * @param carId The id of the car the information is read for.
+     * @param year The year the data should belong to.
+     * @param query The query to run.
+     * @param args The query arguments.
+     *
+     * @return An array of 12 {@link DataPoint} objects containing the information.
+     */
+    public DataPoint[] getGraphDataPoints(int carId, int year, String query, String[] args)
+    {
+        DataPoint[] result = new DataPoint[12];
+        for ( int m = 0; m < 12; m++) {
+            result[ m ] = new DataPoint(m, 0);
+        }
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -821,7 +843,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return result;
         }
         catch(SQLiteException ex) {
-            Log.e("getFuelCostPerKilometerPerMonth", ex.getMessage());
+            Log.e("getGraphDataPoints", ex.getMessage());
             return result;
         }
         finally {

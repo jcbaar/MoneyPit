@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.Utils;
 import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
+import com.development.jaba.fragments.CarDetailsEconomyFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DialogHelper;
@@ -203,6 +204,12 @@ public class CarDetailsActivity extends ActionBarActivity {
                 CarDetailsCostFragment fragment = (CarDetailsCostFragment)CarDetailsCostFragment.newInstance(position, mCarToShow);
                 fragment.onYearSelected(mCurrentYear);
                 mPages[1] = fragment;
+                return fragment;
+            }
+            else if(position == 2) {
+                CarDetailsEconomyFragment fragment = (CarDetailsEconomyFragment)CarDetailsEconomyFragment.newInstance(position, mCarToShow);
+                fragment.onYearSelected(mCurrentYear);
+                mPages[2] = fragment;
                 return fragment;
             }
             PlaceholderFragment fragment = PlaceholderFragment.newInstance(position + 1);
