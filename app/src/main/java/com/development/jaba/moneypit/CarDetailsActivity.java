@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.development.jaba.database.Utils;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
 import com.development.jaba.fragments.CarDetailsEconomyFragment;
@@ -75,7 +75,7 @@ public class CarDetailsActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         // By default we show the current year.
-        mCurrentYear = Utils.getYearFromDate(new Date());
+        mCurrentYear = DateHelper.getYearFromDate(new Date());
         if(savedInstanceState != null) {
             mCurrentYear = savedInstanceState.getInt("CurrentYear");
         }

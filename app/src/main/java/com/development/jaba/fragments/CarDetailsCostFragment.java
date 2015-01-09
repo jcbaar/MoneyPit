@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.database.Utils;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
@@ -105,7 +105,7 @@ public class CarDetailsCostFragment extends GraphFragment {
      */
     private void setupBarsAndAverages() {
         if(mCurrentYear == 0) {
-            mCurrentYear = Utils.getYearFromDate(new Date());
+            mCurrentYear = DateHelper.getYearFromDate(new Date());
         }
 
         if( mDbContext != null && mCar != null) {

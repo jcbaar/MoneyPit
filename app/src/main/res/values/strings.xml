@@ -16,7 +16,7 @@
     <string name="buildyear_to_high">You have entered a year higher than the current year. Please enter a year lower than, or equal to the current year.</string>
     <string name="buildyear_error">You have entered an illegal value or no value at all. Please enter a year between 1672 and the current year.</string>
     <string name="no_text_error">This field may not be empty.</string>
-    <string name="title_edit_car">Edit existing car</string>
+    <string name="title_edit_car">Edit an existing car</string>
     <string name="title_create_car">Create a new car</string>
     <string name="error_saving_car">There was a problem saving the car into the database.</string>
     <string name="error_saving_fillup">There was a problem saving the fill-up into the database.</string>
@@ -62,8 +62,8 @@
     <string name="fillupPrice">Price</string>
     <string name="fillupFullTank">Full tank</string>
     <string name="fillupRemarks">Remarks</string>
-    <string name="title_edit_fillup">Edit fill-up</string>
-    <string name="title_create_fillup">Create fill-up</string>
+    <string name="title_edit_fillup">Edit an existing fill-up</string>
+    <string name="title_create_fillup">Create a new fill-up</string>
     <string name="title_activity_add_or_edit_fillup">AddOrEditFillup</string>
     <string name="nan">This is not a number.</string>
     <string name="odo_error">The odometer setting must be higher than the previous fill up and lower than the next fill up.</string>

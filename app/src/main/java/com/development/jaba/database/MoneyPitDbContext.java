@@ -15,6 +15,7 @@ import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.utilities.ConditionalHelper;
+import com.development.jaba.utilities.DateHelper;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.io.FileInputStream;
@@ -577,14 +578,25 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     /**
      * Gets all the fillups belonging to the given car from the given year.
-     * @param carId The id of the car for which to get the fillups or 0 to get them all..
+     * @param carId The id of the car for which to get the fillups.
      * @param year The year for which to get the fillups or 0 to get them all.
      * @return A List of Fillup entities.
      */
     public List<Fillup> getFillupsOfCar(int carId, int year) {
         List<Fillup> result = new LinkedList<>();
-        String query = "SELECT * FROM " + TABLE_FILLUP + " WHERE (? = 0 OR ? = CarId) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) ORDER BY Date DESC";
+        String query = "SELECT *, " +
+                       "Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
+                       "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
+                       "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
+                       "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer))) / Volume AS Economy, " +
+                       "Price * Volume AS TotalPrice " +
+                       "FROM Fillup AS T1 " +
+                       "WHERE (CarId = ?) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) " +
+                       "ORDER BY Date DESC";
         String[] args = new String[] { String.valueOf(carId),
+                                       String.valueOf(carId),
+                                       String.valueOf(carId),
+                                       String.valueOf(carId),
                                        String.valueOf(carId),
                                        String.valueOf(year),
                                        String.valueOf(year) };
@@ -599,31 +611,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 do {
                     Fillup fillup = new Fillup(cursor);
                     result.add(fillup);
+
                 } while (cursor.moveToNext());
             }
             cursor.close();
             cursor = null;
-
-            // When we have items we need to try to get the first fillup that
-            // is dated older than the oldest fillup in the list. This is then used
-            // to compute the values for the oldest fillup in the list.
-            if(result.size() > 0) {
-                Fillup fillup = result.get(result.size() - 1);
-                query = "SELECT * FROM " + TABLE_FILLUP + " WHERE Date < ? AND carId = ? ORDER BY Date DESC LIMIT 1";
-                args = new String[] { String.valueOf(Utils.getDateTimeAsString(fillup.getDate())),
-                                      String.valueOf(carId) };
-
-                cursor = db.rawQuery(query, args);
-                if(cursor.moveToFirst()) {
-                    fillup = new Fillup(cursor);
-                }
-                else {
-                    fillup = null;
-                }
-                Utils.recomputeFillupTotals(result, fillup);
-                cursor.close();
-                cursor = null;
-            }
             return result;
         }
         catch(SQLiteException ex) {
@@ -655,7 +647,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         String query1 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date < ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date DESC LIMIT 1";
         String query2 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date > ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date ASC LIMIT 1";
-        String[] args = new String[] { Utils.getDateTimeAsString(date),
+        String[] args = new String[] { DateHelper.getDateTimeAsString(date),
                 String.valueOf(carId),
                 String.valueOf(fillupId) };
 
@@ -703,7 +695,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public int getOldestDataYear(int carId)
     {
-        int year = Utils.getYearFromDate(new Date());
+        int year = DateHelper.getYearFromDate(new Date());
 
         String query = "SELECT Date FROM " + TABLE_FILLUP + " WHERE (CarId = ?) ORDER BY Date ASC LIMIT 1";
         String[] args = new String[] { String.valueOf(carId) };
@@ -715,7 +707,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, args);
 
             if (cursor.moveToFirst()) {
-                year = Utils.getYearFromDate(Utils.getDateFromDateTime(cursor.getString(0)));
+                year = DateHelper.getYearFromDate(DateHelper.getDateFromDateTime(cursor.getString(0)));
             }
 
             cursor.close();
@@ -875,25 +867,22 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
-            double fullDist = 0, partDist = 0;
+            double fullDist = 0;
             int count = 0;
             if (cursor.moveToFirst()) {
                 do {
                     double dist = cursor.getDouble(0);
                     boolean isFull = cursor.getInt(1) == 1;
-                    if( isFull ) {
+                    if( isFull && dist > 0) {
                         fullDist += dist;
                         count++;
-                    }
-                    else {
-                        partDist += dist;
                     }
                 } while (cursor.moveToNext());
             }
 
             cursor.close();
             cursor = null;
-            return (fullDist - partDist) / count;
+            return fullDist / count;
         }
         catch(SQLiteException ex) {
             Log.e("getEstimatedOdometer", ex.getMessage());

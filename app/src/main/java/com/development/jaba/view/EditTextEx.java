@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.development.jaba.database.Utils;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.UtilsHelper;
 
@@ -456,7 +456,7 @@ public class EditTextEx extends LinearLayout {
                 if (year < 1672) {
                     setErrorMessage(R.string.buildyear_to_low);
                     return false;
-                } else if (year > Utils.getYearFromDate(new Date())) {
+                } else if (year > DateHelper.getYearFromDate(new Date())) {
                     setErrorMessage(R.string.buildyear_to_high);
                     return false;
                 }

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.development.jaba.database.Utils;
+import com.development.jaba.utilities.DateHelper;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -62,7 +62,7 @@ public class Fillup implements Serializable {
         try {
             this.mId = cursor.getInt(0);
             this.mCarId = cursor.getInt(1);
-            this.mDate = Utils.getDateFromDateTime(cursor.getString(2));
+            this.mDate = DateHelper.getDateFromDateTime(cursor.getString(2));
             this.mOdometer = cursor.getDouble(3);
             this.mVolume = cursor.getDouble(4);
             this.mPrice = cursor.getDouble(5);
@@ -70,6 +70,12 @@ public class Fillup implements Serializable {
             this.mNote = cursor.getString(7);
             this.mLongitude = cursor.getDouble(8);
             this.mLatitude = cursor.getDouble(9);
+
+            // Computed in query, not stored in data model.
+            this.mDistance = cursor.getDouble(10);
+            this.mDaysSinceLastFillup = cursor.getInt(11);
+            this.mFuelConsumption = cursor.getDouble(12);
+            this.mTotalPrice = cursor.getDouble(13);
         } catch (Exception e) {
             Log.e("Fillup(cursor)", Log.getStackTraceString(e));
         }
@@ -85,7 +91,7 @@ public class Fillup implements Serializable {
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_CAR, this.mCarId);
-        values.put(KEY_DATE, Utils.getDateTimeAsString(this.mDate));
+        values.put(KEY_DATE, DateHelper.getDateTimeAsString(this.mDate));
         values.put(KEY_ODOMETER, this.mOdometer);
         values.put(KEY_VOLUME, this.mVolume);
         values.put(KEY_PRICE, this.mPrice);

@@ -14,10 +14,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.FillupRowAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.database.Utils;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
-import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.moneypit.AddOrEditFillupActivity;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
@@ -175,25 +173,10 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().containsKey("Fillup")) {
-                Fillup fillup = (Fillup) data.getExtras().get("Fillup");
-                if (fillup != null) {
-                    if (requestCode == REQUEST_EDIT_FILLUP) {
-                        for (int i = 0; i < mFillups.size(); i++) {
-                            if (mFillups.get(i).getId() == fillup.getId()) {
-                                mFillups.set(i, fillup);
-                                break;
-                            }
-                        }
-                    } else {
-                        mFillups.add(fillup);
-                    }
-
-                    Fillup oldest = mFillupAdapter.getItem(mFillupAdapter.getItemCount() - 1);
-                    SurroundingFillups result = mContext.getSurroundingFillups(oldest.getDate(), oldest.getCarId(), oldest.getId());
-
-                    Utils.recomputeFillupTotals(mFillups, result != null ? result.getBefore() : null);
-                    mFillupAdapter.notifyDataSetChanged();
-                }
+                // At this point the easiest thing to do is to re-load the
+                // information from the database so that data reflects the changes.
+                mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
+                mFillupAdapter.setData(mFillups);
             }
         }
     }

@@ -73,6 +73,7 @@
                 android:paddingBottom="8dp" />
 
             <com.development.jaba.view.EditTextEx
+                android:inputType="textMultiLine"
                 android:id="@+id/fillupRemark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

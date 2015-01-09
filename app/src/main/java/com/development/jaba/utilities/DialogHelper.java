@@ -7,7 +7,6 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.database.Utils;
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
 
@@ -79,7 +78,7 @@ public class DialogHelper {
         // load the spinner with this year upto the current year.
         MoneyPitDbContext db = new MoneyPitDbContext(context);
         Integer start = db.getOldestDataYear(car.getId()),
-                end = Utils.getYearFromDate(new Date());
+                end = DateHelper.getYearFromDate(new Date());
         Integer[] years = new Integer[end - start + 1];
 
         int toSelect = 0;
