@@ -13,12 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.EditTextEx;
 
 import java.util.Calendar;
@@ -49,6 +50,10 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        // Instantiate a database context..
+        mContext = new MoneyPitDbContext(this);
+
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car
         // entity.
@@ -66,8 +71,6 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             mFillupToEdit.setDate(new Date());
         }
 
-        // Instantiate a database context..
-        mContext = new MoneyPitDbContext(this);
         mSurroundingFillups = mContext.getSurroundingFillups(mFillupToEdit.getDate(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
 
         mDate = (DatePicker)findViewById(R.id.fillupDate);
@@ -96,6 +99,16 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             setupDate(new Date());
             mFullTank.setChecked(true);
             setTitle(getString(R.string.title_create_fillup));
+
+            // If settings tell us to, estimate the odometer setting.
+            SettingsHelper settings = new SettingsHelper(this);
+            if(settings.getEstimateOdometer()) {
+                Fillup before = mSurroundingFillups.getBefore();
+                if(before != null) {
+                    mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
+                    mOdometer.setText(String.valueOf(Math.round(before.getOdometer() + mFillupToEdit.getOdometer())));
+                }
+            }
         }
     }
 
@@ -122,7 +135,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
      */
     private void toUi() {
         setupDate(mFillupToEdit.getDate());
-        mOdometer.setText(String.valueOf(mFillupToEdit.getOdometer()));
+        mOdometer.setText(String.valueOf(Math.round(mFillupToEdit.getOdometer())));
         mVolume.setText(String.valueOf(mFillupToEdit.getVolume()));
         mPrice.setText(String.valueOf(mFillupToEdit.getPrice()));
         mRemarks.setText(mFillupToEdit.getNote());
@@ -176,50 +189,54 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         return true;
     }
 
+    private boolean addOrUpdateFillup() {
+        // Validate the fields before we continue.
+        boolean isOk = validateFields();
+        if(isOk) {
+            // Copy the UI contents into the Fill-up entity.
+            fromUi();
+
+            // When we have an ID of 0 here it means that this is a new
+            // Fill-up entity.
+            if (mFillupToEdit.getId() == 0) {
+                // Add the Fillup to the database and store it's ID.
+                int fillupId = (int) mContext.addFillup(mFillupToEdit);
+                if (fillupId != 0) {
+                    mFillupToEdit.setId(fillupId);
+                } else {
+                    // That failed for some reason...
+                    isOk = false;
+                }
+            } else {
+                // Update the Fill-up entity in the database.
+                isOk = mContext.updateFillup(mFillupToEdit);
+            }
+
+            if (isOk) {
+                // We have a successful database transaction. Return the Fill-up entity
+                // to the calling Activity.
+                Intent result = new Intent();
+                result.putExtra("Fillup", mFillupToEdit);
+                if (getParent() == null) {
+                    setResult(RESULT_OK, result);
+                } else {
+                    getParent().setResult(RESULT_OK, result);
+                }
+                finish();
+            } else {
+                DialogHelper.showMessageDialog(getString(R.string.dialog_error_title), getString(R.string.error_saving_fillup), this);
+            }
+        }
+        return isOk;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_ok) {
-            // Validate the fields before we continue.
-            boolean isOk = validateFields();
-            if(isOk) {
-                // Copy the UI contents into the Fillup entity.
-                fromUi();
-
-                // When we have an ID of 0 here it means that this is a new
-                // Fillup entity.
-                if (mFillupToEdit.getId() == 0) {
-                    // Add the Fillup to the database and store it's ID.
-                    int fillupId = (int) mContext.addFillup(mFillupToEdit);
-                    if (fillupId != 0) {
-                        mFillupToEdit.setId(fillupId);
-                    } else {
-                        // That failed for some reason...
-                        isOk = false;
-                    }
-                } else {
-                    // Update the Fillup entity in the database.
-                    isOk = mContext.updateFillup(mFillupToEdit);
-                }
-
-                if (isOk) {
-                    // We have a successful database transaction. Return the Fillup entity
-                    // to the calling Activity.
-                    Intent result = new Intent();
-                    result.putExtra("Fillup", mFillupToEdit);
-                    if(getParent() == null) {
-                        setResult(RESULT_OK, result);
-                    }
-                    else {
-                        getParent().setResult(RESULT_OK, result);
-                    }
-                    finish();
-                } else {
-                    // TODO: Report this with a dialog instead of a toast.
-                    Toast.makeText(this, getString(R.string.error_saving_fillup), Toast.LENGTH_SHORT).show();
-                }
-            }
+            addOrUpdateFillup();
+            return true;
         }
         else if (id == R.id.action_cancel) {
             if(getParent() == null) {
@@ -229,6 +246,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                 getParent().setResult(RESULT_CANCELED);
             }
             finish();
+            return true;
         }
         else if(id == android.R.id.home) {
             Intent intent = NavUtils.getParentActivityIntent(this);

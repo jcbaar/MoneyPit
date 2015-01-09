@@ -82,5 +82,6 @@
     <string name="graph_average">average</string>
     <string name="graph_distance">driven distance per month</string>
     <string name="graph_economy">average fuel economy per month</string>
+    <string name="dialog_error_title">Error</string>
 
 </resources>

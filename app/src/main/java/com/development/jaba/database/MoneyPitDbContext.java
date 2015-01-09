@@ -777,7 +777,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public DataPoint[] getDistancePerMonth(int carId, int year)
     {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[] { String.valueOf(carId),
@@ -796,7 +796,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public DataPoint[] getEconomyPerMonth(int carId, int year)
     {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / SUM(Volume)" +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[] { String.valueOf(carId),
@@ -843,6 +843,61 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         catch(SQLiteException ex) {
             Log.e("getGraphDataPoints", ex.getMessage());
             return result;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
+
+    /**
+     * Get the estimated odometer setting for the next fill-up.
+     *
+     * @param carId The ID of the {@link Car} for which to return the estimated odometer setting.
+     *
+     * @return The estimated odometer for the given car.
+     */
+    public double getEstimatedOdometer(int carId)
+    {
+        SQLiteDatabase db;
+        Cursor cursor = null;
+
+        String query = "SELECT Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer), " +
+                "FullTank " +
+                "FROM Fillup AS T1 WHERE CarId= ?" +
+                "ORDER BY DATE DESC";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(carId) };
+
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            double fullDist = 0, partDist = 0;
+            int count = 0;
+            if (cursor.moveToFirst()) {
+                do {
+                    double dist = cursor.getDouble(0);
+                    boolean isFull = cursor.getInt(1) == 1;
+                    if( isFull ) {
+                        fullDist += dist;
+                        count++;
+                    }
+                    else {
+                        partDist += dist;
+                    }
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            cursor = null;
+            return (fullDist - partDist) / count;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getEstimatedOdometer", ex.getMessage());
+            return 0.0f;
         }
         finally {
             if(cursor != null){

@@ -10,12 +10,12 @@ import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.DistanceUnit;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.VolumeUnit;
+import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.EditTextEx;
 
 import static com.development.jaba.view.EditTextEx.*;
@@ -163,6 +163,53 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     }
 
     /**
+     * Adds a new {@link Car} entity to the database or updates an existing one.
+     *
+     * @return true for success, false for failure.
+     */
+    private boolean addOrUpdateCar() {
+        // Validate the fields before we continue.
+        boolean isOk = validateFields();
+        if(isOk) {
+            // Copy the UI contents into the Car entity.
+            fromUi();
+
+            // When we have an ID of 0 here it means that this is a new
+            // Car entity.
+            if (carToEdit.getId() == 0) {
+                // Add the Car to the database and store it's ID.
+                int carId = (int) context.addCar(carToEdit);
+                if (carId != 0) {
+                    carToEdit.setId(carId);
+                } else {
+                    // That failed for some reason...
+                    isOk = false;
+                }
+            } else {
+                // Update the car entity in the database.
+                isOk = context.updateCar(carToEdit);
+            }
+
+            if (isOk) {
+                // We have a successful database transaction. Return the Car entity
+                // to the calling Activity.
+                Intent result = new Intent();
+                result.putExtra("Car", carToEdit);
+                if(getParent() == null) {
+                    setResult(RESULT_OK, result);
+                }
+                else {
+                    getParent().setResult(RESULT_OK, result);
+                }
+                finish();
+            } else {
+                DialogHelper.showMessageDialog(getString(R.string.dialog_error_title), getString(R.string.error_saving_car), this);
+            }
+        }
+        return isOk;
+    }
+
+    /**
      * Callback the is called when the user has selected an item from the options
      * menu.
      * @param item The item the user selected.
@@ -172,45 +219,8 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_ok) {
-            // Validate the fields before we continue.
-            boolean isOk = validateFields();
-            if(isOk) {
-                // Copy the UI contents into the Car entity.
-                fromUi();
-
-                // When we have an ID of 0 here it means that this is a new
-                // Car entity.
-                if (carToEdit.getId() == 0) {
-                    // Add the Car to the database and store it's ID.
-                    int carId = (int) context.addCar(carToEdit);
-                    if (carId != 0) {
-                        carToEdit.setId(carId);
-                    } else {
-                        // That failed for some reason...
-                        isOk = false;
-                    }
-                } else {
-                    // Update the car entity in the database.
-                    isOk = context.updateCar(carToEdit);
-                }
-
-                if (isOk) {
-                    // We have a successful database transaction. Return the Car entity
-                    // to the calling Activity.
-                    Intent result = new Intent();
-                    result.putExtra("Car", carToEdit);
-                    if(getParent() == null) {
-                        setResult(RESULT_OK, result);
-                    }
-                    else {
-                        getParent().setResult(RESULT_OK, result);
-                    }
-                    finish();
-                } else {
-                    // TODO: Report this with a dialog instead of a toast.
-                    Toast.makeText(this, getString(R.string.error_saving_car), Toast.LENGTH_SHORT).show();
-                }
-            }
+            addOrUpdateCar();
+            return true;
         }
         else if (id == R.id.action_cancel) {
             if(getParent() == null) {
@@ -220,6 +230,7 @@ public class AddOrEditCarActivity extends ActionBarActivity {
                 getParent().setResult(RESULT_CANCELED);
             }
             finish();
+            return true;
         }
         else if(id == android.R.id.home) {
             Intent intent = NavUtils.getParentActivityIntent(this);
