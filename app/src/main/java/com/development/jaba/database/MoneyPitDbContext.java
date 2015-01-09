@@ -895,5 +895,47 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             mDbManager.closeDatabase();
         }
     }
+
+    /**
+     * Check to see if the given car has any data for the given year.
+     *
+     * @param carId The ID of the {@link Car} for which check.
+     * @param year The year for which to check if there is data.
+     *
+     * @return true if data was found, false if not.
+     */
+    public boolean hasData(int carId, int year)
+    {
+        SQLiteDatabase db;
+        Cursor cursor = null;
+
+        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId= ? AND CAST(strftime('%Y', Date) AS INT) = ?";
+        String[] args = new String[] { String.valueOf(carId),
+                String.valueOf(year) };
+
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            boolean hasData = false;
+            if (cursor.moveToFirst()) {
+                hasData = cursor.getInt(0) > 0;
+            }
+
+            cursor.close();
+            cursor = null;
+            return hasData;
+        }
+        catch(SQLiteException ex) {
+            Log.e("hasData", ex.getMessage());
+            return false;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
     //endregion
 }

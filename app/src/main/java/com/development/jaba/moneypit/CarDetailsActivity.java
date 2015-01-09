@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
@@ -27,8 +28,9 @@ import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.SlidingTabLayout;
+import com.development.jaba.view.ViewPagerEx;
 
-public class CarDetailsActivity extends ActionBarActivity {
+public class CarDetailsActivity extends ActionBarActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
     /**
      * The {@link Car} entity to show the details of.
@@ -53,7 +55,9 @@ public class CarDetailsActivity extends ActionBarActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    ViewPagerEx mViewPager;
+
+    MoneyPitDbContext mDbContext;
 
     /**
      * The {@link SlidingTabLayout} that will control the {@link ViewPager},
@@ -94,16 +98,22 @@ public class CarDetailsActivity extends ActionBarActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Check if there is any data available.
+        mDbContext = new MoneyPitDbContext(this);
+        boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPagerEx) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
+        mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
+
+        checkSlidingAvailability();
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -126,6 +136,21 @@ public class CarDetailsActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_car_details, menu);
         return true;
+    }
+
+    /**
+     * Checks to see whether or not paging and tabs should be present.
+     */
+    private void checkSlidingAvailability() {
+        boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear);
+
+        // No data? Go to the first page...
+        if(!hasData) {
+            mViewPager.setCurrentItem(0);
+        }
+
+        mViewPager.setSwipeEnabled(hasData);
+        mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -161,6 +186,7 @@ public class CarDetailsActivity extends ActionBarActivity {
                     // Save the selected year.
                     mCurrentYear = year;
                     setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
+                    checkSlidingAvailability();
                 }
             }, this);
         }
@@ -169,6 +195,11 @@ public class CarDetailsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDataChanged() {
+        checkSlidingAvailability();
     }
 
     /**

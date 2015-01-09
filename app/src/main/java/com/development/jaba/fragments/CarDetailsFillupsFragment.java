@@ -39,6 +39,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     private Car mCar;
     private FloatingActionButton mFab;
     private int mCurrentYear;
+    private OnDataChangedListener mCallback;
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -116,6 +117,11 @@ public class CarDetailsFillupsFragment extends BaseFragment {
                                             mContext.deleteFillup(selectedFillup);
                                             mFillups.remove(selectedFillup);
                                             mFillupAdapter.notifyDataSetChanged();
+
+                                            // Notify the activity the data has changed.
+                                            if(mCallback != null) {
+                                                mCallback.onDataChanged();
+                                            }
                                         }
                                     },
                                     getActivity());
@@ -177,7 +183,34 @@ public class CarDetailsFillupsFragment extends BaseFragment {
                 // information from the database so that data reflects the changes.
                 mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
                 mFillupAdapter.setData(mFillups);
+
+                // Notify the activity the data has changed.
+                if(mCallback != null) {
+                    mCallback.onDataChanged();
+                }
             }
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnDataChangedListener)activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnDataChangedListener");
+        }
+    }
+
+    /**
+     * A parent activity should implement this if it's wan't to know about
+     * data changes.
+     */
+    public interface OnDataChangedListener {
+        public void onDataChanged();
     }
 }
