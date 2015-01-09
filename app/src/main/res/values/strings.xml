@@ -9,7 +9,7 @@
     <string name="car_brand">Brand</string>
     <string name="carModel">Model</string>
     <string name="carBuildYear">Build year</string>
-    <string name="carLicense">Licenseplate</string>
+    <string name="carLicense">License plate</string>
     <string name="carCurrency">Currency</string>
     <string name="carDistanceUnit">Distance unit</string>
     <string name="buildyear_to_low">You have entered a year lower than 1672. That was the year the first ever steam car was built. Please enter a year higher than or equal to 1672.</string>
@@ -83,5 +83,6 @@
     <string name="graph_distance">driven distance per month</string>
     <string name="graph_economy">average fuel economy per month</string>
     <string name="dialog_error_title">Error</string>
+    <string name="license_error">There is already a car in the database with this license plate. The license plate of a new car must be unique.</string>
 
 </resources>

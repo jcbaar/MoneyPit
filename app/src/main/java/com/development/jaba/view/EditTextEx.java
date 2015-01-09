@@ -18,11 +18,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.UtilsHelper;
-
-import java.util.Date;
 
 /**
  * View class which contains an @{link EditText} adorned with a "number of characters" indication,
@@ -427,46 +424,6 @@ public class EditTextEx extends LinearLayout {
         @Override
         public boolean isValid(String value) {
             return !TextUtils.isEmpty(value.trim());
-        }
-    }
-
-    /**
-     * Build year validator. Checks if the value is between 1672 and the current year.
-     */
-    public static class BuildYearValidator extends BaseValidator {
-        /**
-         * Constructor. Initializes an instance of the object.
-         *
-         * @param context The context.
-         */
-        public BuildYearValidator (Context context) {
-            super(context);
-        }
-
-        /**
-         * Checks if the value is between 1672 and the current year.
-         *
-         * @param value The value to validate.
-         * @return true for success, false for failure.
-         */
-        @Override
-        public boolean isValid(String value) {
-            try {
-                int year = Integer.parseInt(value);
-                if (year < 1672) {
-                    setErrorMessage(R.string.buildyear_to_low);
-                    return false;
-                } else if (year > DateHelper.getYearFromDate(new Date())) {
-                    setErrorMessage(R.string.buildyear_to_high);
-                    return false;
-                }
-            }
-            catch(NumberFormatException ex) {
-                setErrorMessage(R.string.buildyear_error);
-                return false;
-            }
-            setErrorMessage(null);
-            return true;
         }
     }
 

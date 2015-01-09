@@ -391,7 +391,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public Car getCarByLicensePlate(String licensePlate) {
         Car result = null;
-        String query = "SELECT * FROM " + TABLE_CAR + " WHERE LicensePlate = ?";
+        String query = "SELECT * FROM " + TABLE_CAR + " WHERE LicensePlate = ? COLLATE NOCASE";
         String[] args = new String[] { String.valueOf(licensePlate) };
 
         SQLiteDatabase db;

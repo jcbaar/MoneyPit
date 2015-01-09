@@ -1,11 +1,13 @@
 package com.development.jaba.moneypit;
 
+import android.content.Context;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -15,8 +17,11 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.DistanceUnit;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.VolumeUnit;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.EditTextEx;
+
+import java.util.Date;
 
 import static com.development.jaba.view.EditTextEx.*;
 
@@ -26,17 +31,17 @@ import static com.development.jaba.view.EditTextEx.*;
  */
 public class AddOrEditCarActivity extends ActionBarActivity {
 
-    private Spinner distanceUnits,
-                    volumeUnits;
+    private Spinner mDistanceUnits,
+                    mVolumeUnits;
 
-    private EditTextEx make,
-                     model,
-                     buildYear,
-                     license,
-                     currency;
+    private EditTextEx mMake,
+            mModel,
+            mBuildYear,
+            mLicense,
+            mCurrency;
 
     private MoneyPitDbContext context;
-    private Car carToEdit;
+    private Car mCarToEdit;
 
     /**
      * Called when the Activity is starting.
@@ -61,25 +66,25 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         // entity.
         Bundle b = getIntent().getExtras();
         if( b != null) {
-            carToEdit = (Car)b.getSerializable("Car");
+            mCarToEdit = (Car)b.getSerializable("Car");
         }
         else {
-            carToEdit = new Car();
+            mCarToEdit = new Car();
         }
 
         // Instantiate a database context..
         context = new MoneyPitDbContext(this);
 
         // Get the TextView objects..
-        make = (EditTextEx) findViewById(R.id.carBrand);
-        model = (EditTextEx) findViewById(R.id.carModel);
-        buildYear = (EditTextEx) findViewById(R.id.carBuildYear);
-        license = (EditTextEx) findViewById(R.id.carLicense);
-        currency = (EditTextEx) findViewById(R.id.carCurrency);
+        mMake = (EditTextEx) findViewById(R.id.carBrand);
+        mModel = (EditTextEx) findViewById(R.id.carModel);
+        mBuildYear = (EditTextEx) findViewById(R.id.carBuildYear);
+        mLicense = (EditTextEx) findViewById(R.id.carLicense);
+        mCurrency = (EditTextEx) findViewById(R.id.carCurrency);
 
         // And the Spinners.
-        distanceUnits = (Spinner) findViewById(R.id.carDistanceUnit);
-        volumeUnits = (Spinner) findViewById(R.id.carVolumeUnit);
+        mDistanceUnits = (Spinner) findViewById(R.id.carDistanceUnit);
+        mVolumeUnits = (Spinner) findViewById(R.id.carVolumeUnit);
 
         // Load up the contents of the Spinners.
         ArrayAdapter<CharSequence> distanceAdapter = ArrayAdapter.createFromResource(this, R.array.distance_units, R.layout.spinner_row_template);
@@ -88,20 +93,19 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         volumeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        distanceUnits.setAdapter(distanceAdapter);
-        volumeUnits.setAdapter(volumeAdapter);
+        mDistanceUnits.setAdapter(distanceAdapter);
+        mVolumeUnits.setAdapter(volumeAdapter);
 
         // Setup the validation listeners.
-        make.setValidator(new EditTextEx.RequiredValidator(this));
-        model.setValidator(new EditTextEx.RequiredValidator(this));
-        license.setValidator(new EditTextEx.RequiredValidator(this));
-        currency.setValidator(new EditTextEx.RequiredValidator(this));
-
-        buildYear.setValidator(new BuildYearValidator(this));
+        mMake.setValidator(new EditTextEx.RequiredValidator(this));
+        mModel.setValidator(new EditTextEx.RequiredValidator(this));
+        mLicense.setValidator(new LicensePlateValidator(this));
+        mCurrency.setValidator(new EditTextEx.RequiredValidator(this));
+        mBuildYear.setValidator(new BuildYearValidator(this));
 
         // Setup the activity title depending on whether we are editing and
         // existing Car entity or a new one.
-        if(carToEdit.getId() != 0)
+        if(mCarToEdit.getId() != 0)
         {
             toUi();
             setTitle(getString(R.string.title_edit_car));
@@ -116,26 +120,26 @@ public class AddOrEditCarActivity extends ActionBarActivity {
      * UI fields.
      */
     private void toUi() {
-        make.setText(carToEdit.getMake());
-        model.setText(carToEdit.getModel());
-        buildYear.setText(String.valueOf(carToEdit.getBuildYear()));
-        license.setText(carToEdit.getLicensePlate());
-        currency.setText(carToEdit.getCurrency());
-        distanceUnits.setSelection(carToEdit.getDistanceUnit().getValue() - 1);
-        volumeUnits.setSelection(carToEdit.getVolumeUnit().getValue() - 1);
+        mMake.setText(mCarToEdit.getMake());
+        mModel.setText(mCarToEdit.getModel());
+        mBuildYear.setText(String.valueOf(mCarToEdit.getBuildYear()));
+        mLicense.setText(mCarToEdit.getLicensePlate());
+        mCurrency.setText(mCarToEdit.getCurrency());
+        mDistanceUnits.setSelection(mCarToEdit.getDistanceUnit().getValue() - 1);
+        mVolumeUnits.setSelection(mCarToEdit.getVolumeUnit().getValue() - 1);
     }
 
     /**
      * Copy the values from the UI to the Car entity we are editing.
      */
     private void fromUi() {
-        carToEdit.setMake(make.getText().toString());
-        carToEdit.setModel(model.getText().toString());
-        carToEdit.setBuildYear(Integer.parseInt(buildYear.getText().toString()));
-        carToEdit.setLicensePlate(license.getText().toString());
-        carToEdit.setCurrency(currency.getText().toString());
-        carToEdit.setDistanceUnit(DistanceUnit.fromValue(distanceUnits.getSelectedItemPosition()+1));
-        carToEdit.setVolumeUnit(VolumeUnit.fromValue(volumeUnits.getSelectedItemPosition()+1));
+        mCarToEdit.setMake(mMake.getText().toString());
+        mCarToEdit.setModel(mModel.getText().toString());
+        mCarToEdit.setBuildYear(Integer.parseInt(mBuildYear.getText().toString()));
+        mCarToEdit.setLicensePlate(mLicense.getText().toString());
+        mCarToEdit.setCurrency(mCurrency.getText().toString());
+        mCarToEdit.setDistanceUnit(DistanceUnit.fromValue(mDistanceUnits.getSelectedItemPosition() + 1));
+        mCarToEdit.setVolumeUnit(VolumeUnit.fromValue(mVolumeUnits.getSelectedItemPosition() + 1));
     }
 
     /**
@@ -144,11 +148,11 @@ public class AddOrEditCarActivity extends ActionBarActivity {
      * of the fields failed validation.
      */
     private boolean validateFields() {
-        return make.validate() &&
-                model.validate() &&
-                buildYear.validate() &&
-                license.validate() &&
-                currency.validate();
+        return mMake.validate() &&
+                mModel.validate() &&
+                mBuildYear.validate() &&
+                mLicense.validate() &&
+                mCurrency.validate();
     }
 
     /**
@@ -176,25 +180,25 @@ public class AddOrEditCarActivity extends ActionBarActivity {
 
             // When we have an ID of 0 here it means that this is a new
             // Car entity.
-            if (carToEdit.getId() == 0) {
+            if (mCarToEdit.getId() == 0) {
                 // Add the Car to the database and store it's ID.
-                int carId = (int) context.addCar(carToEdit);
+                int carId = (int) context.addCar(mCarToEdit);
                 if (carId != 0) {
-                    carToEdit.setId(carId);
+                    mCarToEdit.setId(carId);
                 } else {
                     // That failed for some reason...
                     isOk = false;
                 }
             } else {
                 // Update the car entity in the database.
-                isOk = context.updateCar(carToEdit);
+                isOk = context.updateCar(mCarToEdit);
             }
 
             if (isOk) {
                 // We have a successful database transaction. Return the Car entity
                 // to the calling Activity.
                 Intent result = new Intent();
-                result.putExtra("Car", carToEdit);
+                result.putExtra("Car", mCarToEdit);
                 if(getParent() == null) {
                     setResult(RESULT_OK, result);
                 }
@@ -237,5 +241,82 @@ public class AddOrEditCarActivity extends ActionBarActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             NavUtils.navigateUpTo(this, intent);        }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Build year validator. Checks if the value is between 1672 and the current year.
+     */
+    public class BuildYearValidator extends BaseValidator {
+        /**
+         * Constructor. Initializes an instance of the object.
+         *
+         * @param context The context.
+         */
+        public BuildYearValidator (Context context) {
+            super(context);
+        }
+
+        /**
+         * Checks if the value is between 1672 and the current year.
+         *
+         * @param value The value to validate.
+         * @return true for success, false for failure.
+         */
+        @Override
+        public boolean isValid(String value) {
+            try {
+                int year = Integer.parseInt(value);
+                if (year < 1672) {
+                    setErrorMessage(R.string.buildyear_to_low);
+                    return false;
+                } else if (year > DateHelper.getYearFromDate(new Date())) {
+                    setErrorMessage(R.string.buildyear_to_high);
+                    return false;
+                }
+            }
+            catch(NumberFormatException ex) {
+                setErrorMessage(R.string.buildyear_error);
+                return false;
+            }
+            setErrorMessage(null);
+            return true;
+        }
+    }
+
+    /**
+     * Validator class to validate the entered license plate value.
+     */
+    private class LicensePlateValidator extends EditTextEx.BaseValidator {
+
+        /**
+         * Constructor. Initializes an instance of the object.
+         *
+         * @param context The context.
+         */
+        public LicensePlateValidator(Context context) {
+            super(context);
+        }
+
+        /**
+         * Checks if a value has been entered and if the value is not the same as another
+         * license plate in the database.
+         *
+         * @param value The value to validate.
+         * @return true if the value is valid, false if it was not.
+         */
+        @Override
+        public boolean isValid(String value) {
+            // We need a value...
+            if(TextUtils.isEmpty(value)) {
+                setErrorMessage(R.string.no_text_error);
+                return false;
+            }
+
+            if(mCarToEdit.getId() == 0 && context.getCarByLicensePlate(value) != null) {
+                setErrorMessage(getString(R.string.license_error));
+                return false;
+            }
+            return true;
+        }
     }
 }
