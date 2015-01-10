@@ -197,9 +197,22 @@ public class CarDetailsActivity extends ActionBarActivity implements CarDetailsF
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Called whenever the full-up list fragment reported a data change. From here
+     * we also need to pass this event on to the other fragments.
+     */
     @Override
     public void onDataChanged() {
         checkSlidingAvailability();
+
+        // Skip the first fragment since this is the fill-up list fragment which sent
+        // the event in the first place.
+        for (int i = 1; i <= mSectionsPagerAdapter.getCount(); i++) {
+            BaseFragment b = mSectionsPagerAdapter.getFragmentAt(i);
+            if(b != null) {
+                b.onDataChanged();
+            }
+        }
     }
 
     /**

@@ -128,4 +128,13 @@ public class CarDetailsEconomyFragment extends GraphFragment {
         mCurrentYear = year;
         setupBarsAndAverages();
     }
+
+    /**
+     * The data to display has changed. Reload it.
+     */
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+        setupBarsAndAverages();
+    }
 }

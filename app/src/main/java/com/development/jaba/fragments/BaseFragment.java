@@ -20,12 +20,19 @@ public class BaseFragment extends Fragment {
     }
 
     /**
-     * This is overridden in sub classes to inform the fragment the used selected
+     * This is overridden in sub classes to inform the fragment the user selected
      * another year of data to display.
      *
      * @param year The year the user has selected.
      */
     public void onYearSelected(int year) {
+    }
+
+    /**
+     * This is overridden in sub classes to inform the fragment the containing data
+     * has changed.
+     */
+    public void onDataChanged() {
     }
 
     /**
