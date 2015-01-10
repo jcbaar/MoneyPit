@@ -41,7 +41,7 @@
     <string name="longGallon">Gallon</string>
     <string name="shortLiter">L</string>
     <string name="shortImperialGallon">gal</string>
-    <string name="shortGallon">gal</string>
+    <string name="shortUSGallon">gal</string>
     <string name="longKilometer">Kilometer</string>
     <string name="longMile">Mile</string>
     <string name="shortKilometer">km</string>

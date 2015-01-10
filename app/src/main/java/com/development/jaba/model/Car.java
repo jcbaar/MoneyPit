@@ -62,8 +62,8 @@ public class Car implements Serializable {
             this.mLicensePlate = cursor.getString(4);
             this.mBuildYear = cursor.getInt(5);
             this.mCurrency = cursor.getString(6);
-            this.mDistanceUnit = DistanceUnit.fromValue(cursor.getInt(7));
-            this.mVolumeUnit = VolumeUnit.fromValue(cursor.getInt(8));
+            this.mVolumeUnit = VolumeUnit.fromValue(cursor.getInt(7));
+            this.mDistanceUnit = DistanceUnit.fromValue(cursor.getInt(8));
             if (this.mPicture != null) {
                 this.mImage = BitmapFactory.decodeByteArray(this.mPicture, 0, this.mPicture.length);
             }

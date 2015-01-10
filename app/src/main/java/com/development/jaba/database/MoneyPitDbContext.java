@@ -4,11 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
-
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
@@ -18,14 +17,14 @@ import com.development.jaba.utilities.ConditionalHelper;
 import com.development.jaba.utilities.DateHelper;
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.io.File;
-import java.io.FileOutputStream;
 
 /**
  * Database context class containing the MoneyPit database functionality.
@@ -432,6 +431,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
                 "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
+                "WHERE Fillup.FullTank = 1 " +
                 "GROUP BY Car._id";
 
         SQLiteDatabase db;
@@ -452,6 +452,42 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             Log.e("getCarAverages", ex.getMessage());
             avgs.clear();
             return avgs;
+        }
+        finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            mDbManager.closeDatabase();
+        }
+    }
+
+    /**
+     * Gets the average for a single {@link Car} from the database. The averages are computed on
+     * full tank fill-ups only. Partial fill-ups are left out of the computation.
+     * @return A {@link CarAverage} object.
+     */
+    public CarAverage getCarAverage(int carId) {
+        String query;
+        query = "SELECT SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
+                "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
+                "WHERE Fillup.FullTank = 1 AND Car._id = ?";
+        String[] args = new String[] { String.valueOf(carId) };
+
+        SQLiteDatabase db;
+        Cursor cursor = null;
+        try {
+            db = mDbManager.openDatabase();
+            cursor = db.rawQuery(query, args);
+
+            CarAverage avg = null;
+            if (cursor.moveToFirst()) {
+                avg = new CarAverage(cursor);
+            }
+            return avg;
+        }
+        catch(SQLiteException ex) {
+            Log.e("getCarAverage", ex.getMessage());
+            return null;
         }
         finally {
             if(cursor != null){

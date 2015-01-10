@@ -13,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
-import com.development.jaba.model.Car;
 import com.development.jaba.database.MoneyPitDbContext;
+import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.AddOrEditCarActivity;
-import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.moneypit.CarDetailsActivity;
 import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
@@ -184,6 +184,9 @@ public class CarListFragment extends BaseFragment {
             if (data.getExtras().containsKey(Keys.EK_CAR)) {
                 Car car = (Car) data.getExtras().get(Keys.EK_CAR);
                 if (car != null) {
+                    // Get it's averages.
+                    car.setAverages(mContext.getCarAverage(car.getId()));
+
                     // Was this an edit result?
                     if (requestCode == REQUEST_EDIT_CAR) {
                         // Find the Car entity from the data and update it.
