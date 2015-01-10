@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.development.jaba.model.Car;
+import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -58,16 +59,16 @@ public class GraphFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             if (mCar == null) {
-                mCar = (Car) savedInstanceState.getSerializable("Car");
+                mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
-            mCurrentYear = savedInstanceState.getInt("CurrentYear");
+            mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable("Car", mCar);
-        outState.putInt("CurrentYear", mCurrentYear);
+        outState.putSerializable(Keys.EK_CAR, mCar);
+        outState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
         super.onSaveInstanceState(outState);
     }
 
