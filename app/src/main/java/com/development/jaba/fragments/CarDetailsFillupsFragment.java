@@ -17,6 +17,7 @@ import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.AddOrEditFillupActivity;
+import com.development.jaba.moneypit.Keys;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.view.RecyclerViewEx;
@@ -61,16 +62,16 @@ public class CarDetailsFillupsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             if (mCar == null) {
-                mCar = (Car) savedInstanceState.getSerializable("Car");
+                mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
-            mCurrentYear = savedInstanceState.getInt("CurrentYear");
+            mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable("Car", mCar);
-        outState.putInt("CurrentYear", mCurrentYear);
+        outState.putSerializable(Keys.EK_CAR, mCar);
+        outState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
         super.onSaveInstanceState(outState);
     }
 
@@ -96,13 +97,13 @@ public class CarDetailsFillupsFragment extends BaseFragment {
                 }
 
                 @Override
-                public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
+                public boolean onRecyclerItemMenuSelected(final int position, MenuItem item) {
                     int menuItemIndex = item.getItemId();
                     switch(menuItemIndex) {
                         case 0:
                         {
                             Fillup selectedFillup = mFillupAdapter.getItem(position);
-                            editFillup(mCar, selectedFillup);
+                            editFillup(mCar, selectedFillup, position);
                             return true;
                         }
 
@@ -113,10 +114,10 @@ public class CarDetailsFillupsFragment extends BaseFragment {
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {
                                             super.onPositive(dialog);
-                                            Fillup selectedFillup = mFillupAdapter.getLastClickedItem();
+                                            Fillup selectedFillup = mFillupAdapter.getItem(position);
                                             mContext.deleteFillup(selectedFillup);
                                             mFillups.remove(selectedFillup);
-                                            mFillupAdapter.notifyDataSetChanged();
+                                            mFillupAdapter.notifyItemRemoved(position);
 
                                             // Notify the activity the data has changed.
                                             if(mCallback != null) {
@@ -143,7 +144,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editFillup(mCar, null);
+                    editFillup(mCar, null, -1);
                 }
             });
         }
@@ -166,11 +167,12 @@ public class CarDetailsFillupsFragment extends BaseFragment {
         }
     }
 
-    private void editFillup(Car car, Fillup fillup) {
+    private void editFillup(Car car, Fillup fillup, int position) {
         Intent editFillup = new Intent(getActivity(), AddOrEditFillupActivity.class);
-        editFillup.putExtra("Car", car);
+        editFillup.putExtra(Keys.EK_CAR, car);
         if(fillup != null) {
-            editFillup.putExtra("Fillup", fillup);
+            editFillup.putExtra(Keys.EK_FILLUP, fillup);
+            editFillup.putExtra(Keys.EK_VIEWPOSITION, position);
         }
         startActivityForResult(editFillup, fillup == null ? REQUEST_ADD_FILLUP : REQUEST_EDIT_FILLUP);
     }
@@ -178,7 +180,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (data.getExtras().containsKey("Fillup")) {
+            if (data.getExtras().containsKey(Keys.EK_FILLUP)) {
                 // At this point the easiest thing to do is to re-load the
                 // information from the database so that data reflects the changes.
                 mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);

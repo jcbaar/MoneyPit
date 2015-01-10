@@ -37,6 +37,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
             mRemarks;
     private CheckedTextView mFullTank;
     private SurroundingFillups mSurroundingFillups;
+    private int mViewPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,9 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
         // entity.
         Bundle b = getIntent().getExtras();
         if( b != null) {
-            mCar = (Car)b.getSerializable("Car");
-            mFillupToEdit = (Fillup)b.getSerializable("Fillup");
+            mCar = (Car)b.getSerializable(Keys.EK_CAR);
+            mFillupToEdit = (Fillup)b.getSerializable(Keys.EK_FILLUP);
+            mViewPosition = b.getInt(Keys.EK_VIEWPOSITION);
         }
 
         if(mFillupToEdit == null) {
@@ -216,7 +218,8 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                 // We have a successful database transaction. Return the Fill-up entity
                 // to the calling Activity.
                 Intent result = new Intent();
-                result.putExtra("Fillup", mFillupToEdit);
+                result.putExtra(Keys.EK_FILLUP, mFillupToEdit);
+                result.putExtra(Keys.EK_VIEWPOSITION, mViewPosition);
                 if (getParent() == null) {
                     setResult(RESULT_OK, result);
                 } else {

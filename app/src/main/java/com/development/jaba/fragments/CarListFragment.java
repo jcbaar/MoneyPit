@@ -20,6 +20,7 @@ import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.AddOrEditCarActivity;
 import com.development.jaba.adapters.CarRowAdapter;
 import com.development.jaba.moneypit.CarDetailsActivity;
+import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
 import com.melnykov.fab.FloatingActionButton;
@@ -97,13 +98,13 @@ public class CarListFragment extends BaseFragment {
             }
 
             @Override
-            public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
+            public boolean onRecyclerItemMenuSelected(final int position, MenuItem item) {
                 int menuItemIndex = item.getItemId();
                 switch(menuItemIndex) {
                     case 0:
                     {
                         Car selectedCar = mCarAdapter.getItem(position);
-                        editCar(selectedCar);
+                        editCar(selectedCar, position);
                         return true;
                     }
 
@@ -114,10 +115,10 @@ public class CarListFragment extends BaseFragment {
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         super.onPositive(dialog);
-                                        Car selectedCar = mCarAdapter.getLastClickedItem();
+                                        Car selectedCar = mCarAdapter.getItem(position);
                                         mContext.deleteCar(selectedCar);
                                         mCars.remove(selectedCar);
-                                        mCarAdapter.notifyDataSetChanged();
+                                        mCarAdapter.notifyItemRemoved(position);
                                     }
                                 },
                                 getActivity());
@@ -139,7 +140,7 @@ public class CarListFragment extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editCar(null);
+                editCar(null, -1);
             }
         });
         return view;
@@ -152,7 +153,7 @@ public class CarListFragment extends BaseFragment {
     private void showCarDetails(Car car) {
         Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
         if(car != null) {
-            carDetails.putExtra("Car", car);
+            carDetails.putExtra(Keys.EK_CAR, car);
         }
         startActivity(carDetails);
     }
@@ -160,11 +161,13 @@ public class CarListFragment extends BaseFragment {
     /**
      * Open up the {@link Car} edit activity for the given car.
      * @param car The {@link Car} which to edit or null to create a new car.
+     * @param position The position in the {@link android.support.v7.widget.RecyclerView} the item has or -1 in case of a new item.
      */
-    private void editCar(Car car) {
+    private void editCar(Car car, int position) {
         Intent editCar = new Intent(getActivity(), AddOrEditCarActivity.class);
         if(car != null) {
-            editCar.putExtra("Car", car);
+            editCar.putExtra(Keys.EK_CAR, car);
+            editCar.putExtra(Keys.EK_VIEWPOSITION, position);
         }
         startActivityForResult(editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR);
     }
@@ -178,8 +181,8 @@ public class CarListFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (data.getExtras().containsKey("Car")) {
-                Car car = (Car) data.getExtras().get("Car");
+            if (data.getExtras().containsKey(Keys.EK_CAR)) {
+                Car car = (Car) data.getExtras().get(Keys.EK_CAR);
                 if (car != null) {
                     // Was this an edit result?
                     if (requestCode == REQUEST_EDIT_CAR) {
@@ -190,13 +193,22 @@ public class CarListFragment extends BaseFragment {
                                 break;
                             }
                         }
+
+                        // If all was ok we did get a RecyclerView position with the
+                        // Intent data.
+                        int position = (int)data.getExtras().get(Keys.EK_VIEWPOSITION);
+                        if(position >= 0) {
+                            // Notify the item change.
+                            mCarAdapter.notifyItemChanged(position);
+                        }
                     } else {
                         // Simply add the Car to the data.
                         mCars.add(car);
-                    }
 
-                    // Update the visuals.
-                    mCarAdapter.notifyDataSetChanged();
+                        // We do not know the position of the item so we do a full
+                        // rebind.
+                        mCarAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         }

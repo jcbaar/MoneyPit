@@ -109,7 +109,6 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mMenuView = view;
         buildPopupMenu(menuId, menuItems);
 
-
         mMenuView.setSelected(false);
         mMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +119,6 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 }
             }
         });
-
     }
 
     /**

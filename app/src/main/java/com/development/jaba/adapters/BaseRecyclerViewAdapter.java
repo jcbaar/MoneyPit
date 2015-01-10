@@ -25,15 +25,32 @@ public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
         // Register an observer which will show the mEmptyView View when the
         // Adapter does not contain any data.
         RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
+
+            private void checkEmptyView() {
                 if (mEmptyView != null) {
                     int viewMode = getItemCount() == 0 ? View.VISIBLE : View.GONE;
                     if (viewMode != mEmptyView.getVisibility()) {
                         mEmptyView.setVisibility(viewMode);
                     }
                 }
+            }
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmptyView();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                checkEmptyView();
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                checkEmptyView();
             }
         };
         registerAdapterDataObserver(dataObserver);

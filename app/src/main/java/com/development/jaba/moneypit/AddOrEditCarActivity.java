@@ -42,6 +42,7 @@ public class AddOrEditCarActivity extends ActionBarActivity {
 
     private MoneyPitDbContext context;
     private Car mCarToEdit;
+    private int mViewPosition = -1;
 
     /**
      * Called when the Activity is starting.
@@ -66,7 +67,8 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         // entity.
         Bundle b = getIntent().getExtras();
         if( b != null) {
-            mCarToEdit = (Car)b.getSerializable("Car");
+            mCarToEdit = (Car)b.getSerializable(Keys.EK_CAR);
+            mViewPosition = b.getInt(Keys.EK_VIEWPOSITION);
         }
         else {
             mCarToEdit = new Car();
@@ -198,7 +200,8 @@ public class AddOrEditCarActivity extends ActionBarActivity {
                 // We have a successful database transaction. Return the Car entity
                 // to the calling Activity.
                 Intent result = new Intent();
-                result.putExtra("Car", mCarToEdit);
+                result.putExtra(Keys.EK_CAR, mCarToEdit);
+                result.putExtra(Keys.EK_VIEWPOSITION, mViewPosition);
                 if(getParent() == null) {
                     setResult(RESULT_OK, result);
                 }

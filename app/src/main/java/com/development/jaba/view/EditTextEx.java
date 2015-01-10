@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,10 +29,15 @@ import com.development.jaba.utilities.UtilsHelper;
  */
 public class EditTextEx extends LinearLayout {
 
-    private Animation mAnimateVisible,  // Animation for showing the hint indication.
+    private final AnimationSet mHideHintSet;
+    private final AnimationSet mShowHintSet;
+    private final AnimationSet mHideErrorSet;
+    private final AnimationSet mShowErrSet;
+/*    private Animation mAnimateVisible,  // Animation for showing the hint indication.
             mAnimateGone,               // Animation for hiding the hint indication.
             mAnimateVisibleError,       // Animation for showing the error indication.
             mAnimateGoneError;          // Animation for hiding the error indication.
+            */
     private int mMaxLength,             // The maximum number of characters the EditText can contain.
             mAnimDuration;              // The animation duration.
     private int mErrorColor;            // The error color.
@@ -120,7 +127,13 @@ public class EditTextEx extends LinearLayout {
         MyAnimationListner showErrListener = new MyAnimationListner(mError, false, false);
 
         // And the animations.
-        mAnimateGone = new AlphaAnimation(1, 0);
+        mHideHintSet = createAnimationSet(hideHintListener, true);
+        mShowHintSet = createAnimationSet(showHintListener, false);
+
+        mHideErrorSet = createAnimationSet(hideErrListener, true);
+        mShowErrSet = createAnimationSet(showErrListener, false);
+
+/*        mAnimateGone = new AlphaAnimation(1, 0);
         mAnimateGone.setDuration(mAnimDuration);
         mAnimateGone.setFillAfter(true);
         mAnimateGone.setAnimationListener(hideHintListener);
@@ -138,7 +151,7 @@ public class EditTextEx extends LinearLayout {
         mAnimateVisibleError = new AlphaAnimation(0, 1);
         mAnimateVisibleError.setDuration(mAnimDuration);
         mAnimateVisibleError.setFillAfter(true);
-        mAnimateGoneError.setAnimationListener(showErrListener);
+        mAnimateGoneError.setAnimationListener(showErrListener);*/
 
         // Hide the hint by default.
         mHint.setVisibility(View.GONE);
@@ -204,16 +217,38 @@ public class EditTextEx extends LinearLayout {
 
                 if (mHint.getVisibility() != visibility) {
                     if (visibility == View.GONE) {
-                        mHint.startAnimation(mAnimateGone);
+                        mHint.startAnimation(mHideHintSet);
                     } else {
-                        mHint.startAnimation(mAnimateVisible);
+                        mHint.startAnimation(mShowHintSet);
                     }
                 }
                 setCharCount();
             }
         });
+    }
 
+    /**
+     * Creates a scale + alpha animation set for showing or hiding
+     * @param listener The {@link com.development.jaba.view.EditTextEx.MyAnimationListner} for the {@link android.view.animation.AnimationSet}.
+     * @param isHideSet True when the {@link android.view.animation.AnimationSet} is to hide a view, false if is not.
+     * @return The created {@link android.view.animation.AnimationSet}
+     */
+    private AnimationSet createAnimationSet(Animation.AnimationListener listener, boolean isHideSet) {
+        // And the animations.
+        AnimationSet as = new AnimationSet(false);
+        as.setAnimationListener(listener);
 
+        AlphaAnimation alpha = new AlphaAnimation(isHideSet ? 1 : 0, isHideSet ? 0 : 1);
+        alpha.setDuration(mAnimDuration);
+        alpha.setFillAfter(true);
+
+        ScaleAnimation scale = new ScaleAnimation(isHideSet ? 1 : 0, isHideSet ? 0 : 1, isHideSet ? 1 : 0, isHideSet ? 0 : 1, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
+        scale.setDuration(mAnimDuration);
+        scale.setFillAfter(true);
+
+        as.addAnimation(alpha);
+        as.addAnimation(scale);
+        return as;
     }
 
     /**
@@ -312,7 +347,7 @@ public class EditTextEx extends LinearLayout {
     public void setError(CharSequence error) {
         mError.setText(error);
         checkBottomLine();
-        mError.startAnimation(TextUtils.isEmpty(error) ? mAnimateGoneError : mAnimateVisibleError);
+        mError.startAnimation(TextUtils.isEmpty(error) ? mHideErrorSet : mShowErrSet);
     }
 
     /**
