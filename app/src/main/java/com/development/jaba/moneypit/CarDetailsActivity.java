@@ -198,21 +198,37 @@ public class CarDetailsActivity extends ActionBarActivity implements CarDetailsF
     }
 
     /**
-     * Called whenever the full-up list fragment reported a data change. From here
+     * Called whenever the fill-up list fragment reported a data change. From here
      * we also need to pass this event on to the other fragments.
+     *
+     * @param year The year in which the data was changed.
      */
     @Override
-    public void onDataChanged() {
-        checkSlidingAvailability();
-
+    public void onDataChanged(int year) {
         // Skip the first fragment since this is the fill-up list fragment which sent
         // the event in the first place.
         for (int i = 1; i <= mSectionsPagerAdapter.getCount(); i++) {
             BaseFragment b = mSectionsPagerAdapter.getFragmentAt(i);
             if(b != null) {
-                b.onDataChanged();
+                // If the year has changed we set the new year to the
+                // other fragments which will trigger a data refresh
+                // on those fragments. If the year did not change we need
+                // to tell the other fragments the data of the current
+                // year changed.
+                if(year != mCurrentYear) {
+                    b.onYearSelected(year);
+                }
+                else {
+                    b.onDataChanged();
+                }
             }
         }
+
+        if(year != mCurrentYear) {
+            mCurrentYear = year;
+            setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
+        }
+        checkSlidingAvailability();
     }
 
     /**

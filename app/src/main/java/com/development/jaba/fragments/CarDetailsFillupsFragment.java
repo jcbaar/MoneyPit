@@ -18,6 +18,7 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.AddOrEditFillupActivity;
 import com.development.jaba.moneypit.Keys;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.view.RecyclerViewEx;
@@ -121,7 +122,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
 
                                             // Notify the activity the data has changed.
                                             if(mCallback != null) {
-                                                mCallback.onDataChanged();
+                                                mCallback.onDataChanged(mCurrentYear);
                                             }
                                         }
                                     },
@@ -161,7 +162,7 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     public void onYearSelected(int year) {
         super.onYearSelected(year);
         mCurrentYear = year;
-        if(mContext != null &&mCar != null) {
+        if(mContext != null && mCar != null) {
             mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
             mFillupAdapter.setData(mFillups);
         }
@@ -181,14 +182,28 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().containsKey(Keys.EK_FILLUP)) {
-                // At this point the easiest thing to do is to re-load the
-                // information from the database so that data reflects the changes.
-                mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
-                mFillupAdapter.setData(mFillups);
+                int newYear = mCurrentYear;
+                if(requestCode == REQUEST_ADD_FILLUP) {
+                    Fillup fu = (Fillup)data.getExtras().getSerializable(Keys.EK_FILLUP);
+                    if(fu != null) {
+                        newYear = DateHelper.getYearFromDate(fu.getDate());
+                    }
+                }
 
                 // Notify the activity the data has changed.
                 if(mCallback != null) {
-                    mCallback.onDataChanged();
+                    mCallback.onDataChanged(newYear);
+                }
+
+                // Setup the new year if it changed.
+                if(newYear != mCurrentYear) {
+                    onYearSelected(newYear);
+                }
+                else {
+                    // At this point the easiest thing to do is to re-load the
+                    // information from the database so that data reflects the changes.
+                    mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
+                    mFillupAdapter.setData(mFillups);
                 }
             }
         }
@@ -209,10 +224,10 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     }
 
     /**
-     * A parent activity should implement this if it's wan't to know about
+     * A parent activity should implement this if it want's to know about
      * data changes.
      */
     public interface OnDataChangedListener {
-        public void onDataChanged();
+        public void onDataChanged(int year);
     }
 }
