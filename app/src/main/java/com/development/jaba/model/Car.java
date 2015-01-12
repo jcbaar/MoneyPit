@@ -1,11 +1,17 @@
 package com.development.jaba.model;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 
+import com.development.jaba.moneypit.R;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 /**
@@ -29,13 +35,12 @@ public class Car implements Serializable {
     private int mId;
     private String mMake; // 50
     private String mModel; // 50
-    private byte[] mPicture;
     private String mLicensePlate; // 15
     private int mBuildYear;
     private String mCurrency; // 3
     private DistanceUnit mDistanceUnit;
     private VolumeUnit mVolumeUnit;
-    private Bitmap mImage;
+    private byte[] mImage;
     private String mDateRange;
 
     private CarAverage mAverages;
@@ -58,15 +63,12 @@ public class Car implements Serializable {
             this.mId = cursor.getInt(0);
             this.mMake = cursor.getString(1);
             this.mModel = cursor.getString(2);
-            this.mPicture = cursor.getBlob(3);
+            this.mImage = cursor.getBlob(3);
             this.mLicensePlate = cursor.getString(4);
             this.mBuildYear = cursor.getInt(5);
             this.mCurrency = cursor.getString(6);
             this.mVolumeUnit = VolumeUnit.fromValue(cursor.getInt(7));
             this.mDistanceUnit = DistanceUnit.fromValue(cursor.getInt(8));
-            if (this.mPicture != null) {
-                this.mImage = BitmapFactory.decodeByteArray(this.mPicture, 0, this.mPicture.length);
-            }
         } catch (Exception e) {
             Log.e("Car(cursor)", Log.getStackTraceString(e));
         }
@@ -96,14 +98,6 @@ public class Car implements Serializable {
 
     public void setModel(String model) {
         this.mModel = model;
-    }
-
-    public byte[] getPicture() {
-        return mPicture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.mPicture = picture;
     }
 
     public String getLicensePlate() {
@@ -147,11 +141,24 @@ public class Car implements Serializable {
     }
 
     public Bitmap getImage() {
-        return mImage;
+        if(mImage != null) {
+            return BitmapFactory.decodeByteArray(this.mImage, 0, this.mImage.length);
+        }
+        return null;
     }
 
-    public void setImage(Bitmap image) {
-        this.mImage = image;
+    public void setImage(Context context, Uri bitmapUri) {
+        if(bitmapUri != null) {
+            try {
+                mImage = decodeUri(context, bitmapUri);
+            } catch (FileNotFoundException e) {
+                Log.e("setImage", "Image file not found.");
+                mImage = null;
+            }
+        }
+        else {
+            mImage = null;
+        }
     }
 
     public String getDateRange() {
@@ -185,7 +192,7 @@ public class Car implements Serializable {
         values.put(KEY_CURRENCY, this.mCurrency);
         values.put(KEY_DISTANCEUNIT, this.mDistanceUnit.getValue());
         values.put(KEY_LICENSEPLATE, this.mLicensePlate);
-        values.put(KEY_PICTURE, this.mPicture);
+        values.put(KEY_PICTURE, this.mImage);
         values.put(KEY_VOLUMEUNIT, this.mVolumeUnit.getValue());
         return values;
     }
@@ -197,6 +204,50 @@ public class Car implements Serializable {
     @Override
     public String toString() {
         return mMake + " " + mModel;
+    }
+    //endregion
+
+
+    //region Helpers
+    /**
+     * Decodes the image at the given Uri and automatically scales it to the proper size.
+     *
+     * @param context The {@link android.content.Context}
+     * @param selectedImage The {@link android.net.Uri} of the picture to decode.
+     *
+     * @return A array of bytes holding the complete image file.
+     * @throws FileNotFoundException
+     */
+    private byte[] decodeUri(Context context, Uri selectedImage) throws FileNotFoundException {
+
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o);
+
+        // The new size we want to scale to
+        final int maxSize = context.getResources().getInteger(R.dimen.image_scale_max_size);
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < maxSize || height_tmp / 2 < maxSize) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        Bitmap bm = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o2);
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bs);
+        bm.recycle();
+        return bs.toByteArray();
     }
     //endregion
 }

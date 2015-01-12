@@ -46,7 +46,8 @@
                         android:background="#0000"
                         android:src="@drawable/card_menu_button_overflow_material"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="-10dp" />
 
                     <TextView
                         android:id="@+id/carMakeModel"
@@ -61,8 +62,8 @@
                         android:textStyle="bold"
                         android:layout_alignParentStart="false"
                         android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/headerMenu" />
+                        android:layout_toStartOf="@id/headerMenu"
+                        android:layout_marginTop="2dp" />
                 </RelativeLayout>
 
                 <TextView
@@ -70,14 +71,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="98-TX-NV (2007)"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:layout_marginTop="-6dp" />
 
                 <TextView
                     android:id="@+id/carAverages"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Avg. 15L (EUR 32.36) per fill up"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
             </LinearLayout>
         </TableRow>
     </TableLayout>

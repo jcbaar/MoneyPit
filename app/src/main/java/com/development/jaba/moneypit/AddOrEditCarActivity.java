@@ -2,12 +2,15 @@ package com.development.jaba.moneypit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.development.jaba.database.MoneyPitDbContext;
@@ -27,6 +30,8 @@ import static com.development.jaba.view.EditTextEx.BaseValidator;
  * entity.
  */
 public class AddOrEditCarActivity extends BaseActivity {
+
+    private final static int REQUEST_GET_PICTURE = 1;
 
     private Spinner mDistanceUnits,
                     mVolumeUnits;
@@ -282,6 +287,37 @@ public class AddOrEditCarActivity extends BaseActivity {
             NavUtils.navigateUpTo(this, intent);        }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch(requestCode) {
+            case REQUEST_GET_PICTURE:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    mCarToEdit.setImage(this, selectedImage);
+
+                    ImageView i = (ImageView)findViewById(R.id.imageView);
+                    i.setImageBitmap(mCarToEdit.getImage());
+                }
+        }
+    }
+
+    public void clearPicture(View view) {
+        mCarToEdit.setImage(this, null);
+    }
+
+    public void getPicture(View view) {
+        getPicture2();
+    }
+
+    private void getPicture2() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_GET_PICTURE);
+    }
+
 
     /**
      * Build year validator. Checks if the value is between 1672 and the current year.

@@ -1,6 +1,7 @@
 package com.development.jaba.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,8 +70,12 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         final Car item = mData.get(position);
 
         // Replace the default picture if one is provided from the database.
-        if (item.getPicture() != null) {
-            vh.getImage().setImageBitmap(item.getImage());
+        Bitmap bm = item.getImage();
+        if (bm != null) {
+            vh.getImage().setImageBitmap(bm);
+        }
+        else {
+            vh.getImage().setImageDrawable(mContext.getResources().getDrawable(R.drawable.nopicture));
         }
 
         // Setup the View with the item data.
@@ -82,6 +87,9 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             vh.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
                     FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
                     FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
+        }
+        else {
+            vh.getAverage().setText(R.string.no_data_to_average);
         }
     }
 

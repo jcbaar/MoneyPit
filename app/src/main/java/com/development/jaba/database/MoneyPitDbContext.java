@@ -361,19 +361,6 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     }
 
     /**
-     * Get a car entity by it's database id.
-     * @param id The database id of the car entity to get.
-     * @return The car entity or null if it was not found.
-     */
-    public Car getCarById(int id) {
-        List<Car> cars = getCars(id);
-        if (cars.size() == 1) {
-            return cars.get(0);
-        }
-        return null;
-    }
-
-    /**
      * Get all car entities from the database.
      * @return A List of Car entities or an empty list if there are no
      * cars in the database or an error occurred.
@@ -468,7 +455,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public CarAverage getCarAverage(int carId) {
         String query;
-        query = "SELECT SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
+        query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
                 "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
                 "WHERE Fillup.FullTank = 1 AND Car._id = ?";
         String[] args = new String[] { String.valueOf(carId) };
@@ -573,41 +560,6 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return false;
         }
         finally {
-            mDbManager.closeDatabase();
-        }
-    }
-
-    /**
-     * Gets the fillup with the given id.
-     * @param id The id of the fillup get.
-     * @return The fillup entity or null if the fillup was not found in the database.
-     */
-    public Fillup getFillupById(int id) {
-        Fillup result = null;
-        String query = "SELECT * FROM " + TABLE_FILLUP + " WHERE _id = ?";
-        String[] args = new String[] { String.valueOf(id) };
-
-        SQLiteDatabase db;
-        Cursor cursor = null;
-        try {
-            db = mDbManager.openDatabase();
-            cursor = db.rawQuery(query, args);
-
-            if (cursor.getCount() == 1) {
-                if (cursor.moveToFirst()) {
-                    result = new Fillup(cursor);
-                }
-            }
-            return result;
-        }
-        catch(SQLiteException ex) {
-            Log.e("getFillupById", ex.getMessage());
-            return null;
-        }
-        finally {
-            if(cursor != null){
-                cursor.close();
-            }
             mDbManager.closeDatabase();
         }
     }

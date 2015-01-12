@@ -84,5 +84,5 @@
     <string name="graph_economy">average fuel economy per month</string>
     <string name="dialog_error_title">Error</string>
     <string name="license_error">There is already a car in the database with this license plate. The license plate of a new car must be unique.</string>
-
+    <string name="no_data_to_average">There is no data to average.</string>
 </resources>
