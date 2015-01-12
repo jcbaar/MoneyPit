@@ -198,9 +198,5 @@ public class Car implements Serializable {
     public String toString() {
         return mMake + " " + mModel;
     }
-
-    public String toPrice(double price) {
-        return String.format("%s %.02f", getCurrency(), price);
-    }
     //endregion
 }

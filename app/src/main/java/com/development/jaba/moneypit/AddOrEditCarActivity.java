@@ -1,21 +1,21 @@
 package com.development.jaba.moneypit;
 
 import android.content.Context;
-import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.view.MenuItem;
 
+import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.DistanceUnit;
-import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.VolumeUnit;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
@@ -23,7 +23,7 @@ import com.development.jaba.view.EditTextEx;
 
 import java.util.Date;
 
-import static com.development.jaba.view.EditTextEx.*;
+import static com.development.jaba.view.EditTextEx.BaseValidator;
 
 /**
  * Activity for creating a new Car entity or editing an existing
@@ -43,6 +43,12 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     private MoneyPitDbContext context;
     private Car mCarToEdit;
     private int mViewPosition = -1;
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        saveState(savedInstanceState);
+    }
 
     /**
      * Called when the Activity is starting.
@@ -114,6 +120,40 @@ public class AddOrEditCarActivity extends ActionBarActivity {
         }
         else {
             setTitle(getString(R.string.title_create_car));
+        }
+
+        restoreState(savedInstanceState);
+    }
+
+    /**
+     * Restores the values from a saved instance state back into the UI.
+     * @param savedInstanceState The {@link android.os.Bundle} containing the saved values.
+     */
+    private void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            mMake.setText(savedInstanceState.getString(Car.KEY_MAKE));
+            mModel.setText(savedInstanceState.getString(Car.KEY_MODEL));
+            mBuildYear.setText(savedInstanceState.getString(Car.KEY_BUILDYEAR));
+            mLicense.setText(savedInstanceState.getString(Car.KEY_LICENSEPLATE));
+            mCurrency.setText(savedInstanceState.getString(Car.KEY_CURRENCY));
+            mDistanceUnits.setSelection(savedInstanceState.getInt(Car.KEY_DISTANCEUNIT));
+            mVolumeUnits.setSelection(savedInstanceState.getInt(Car.KEY_VOLUMEUNIT));
+        }
+    }
+
+    /**
+     * Saves the values from the UI into a {@link android.os.Bundle}.
+     * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
+     */
+    private void saveState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            savedInstanceState.putString(Car.KEY_MAKE, mMake.getText().toString());
+            savedInstanceState.putString(Car.KEY_MODEL, mModel.getText().toString());
+            savedInstanceState.putString(Car.KEY_BUILDYEAR, mBuildYear.getText().toString());
+            savedInstanceState.putString(Car.KEY_LICENSEPLATE, mLicense.getText().toString());
+            savedInstanceState.putString(Car.KEY_CURRENCY, mCurrency.getText().toString());
+            savedInstanceState.putInt(Car.KEY_DISTANCEUNIT, mDistanceUnits.getSelectedItemPosition());
+            savedInstanceState.putInt(Car.KEY_VOLUMEUNIT, mVolumeUnits.getSelectedItemPosition());
         }
     }
 

@@ -2,10 +2,10 @@ package com.development.jaba.moneypit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -18,6 +18,7 @@ import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.EditTextEx;
@@ -38,6 +39,12 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
     private CheckedTextView mFullTank;
     private SurroundingFillups mSurroundingFillups;
     private int mViewPosition = -1;
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        saveState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +119,7 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                 }
             }
         }
+        restoreState(savedInstanceState);
     }
 
     /**
@@ -132,22 +140,13 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
     }
 
     /**
-     * Copies the values from the Fillup entity we are editing to the
-     * UI fields.
+     * Converts the selected date into a {@link java.util.Date}. When the fill-up currently
+     * being edited is one that is already in the database we use it's time. When it is a new
+     * fill-up being edited we use the current system time.
+     *
+     * @return The {@link java.util.Date}.
      */
-    private void toUi() {
-        setupDate(mFillupToEdit.getDate());
-        mOdometer.setText(String.valueOf(Math.round(mFillupToEdit.getOdometer())));
-        mVolume.setText(String.valueOf(mFillupToEdit.getVolume()));
-        mPrice.setText(String.valueOf(mFillupToEdit.getPrice()));
-        mRemarks.setText(mFillupToEdit.getNote());
-        mFullTank.setChecked(mFillupToEdit.getFullTank());
-    }
-
-    /**
-     * Copy the values from the UI to the Car entity we are editing.
-     */
-    private void fromUi() {
+    private Date getDate() {
         Calendar calDate = Calendar.getInstance();
 
         if(mFillupToEdit.getId() == 0) {
@@ -164,8 +163,61 @@ public class AddOrEditFillupActivity extends ActionBarActivity {
                     calDate.get(Calendar.MINUTE),
                     calDate.get(Calendar.SECOND));
         }
+        return calDate.getTime();
+    }
 
-        mFillupToEdit.setDate(calDate.getTime());
+    /**
+     * Restores the values from a saved instance state back into the UI.
+     * @param savedInstanceState The {@link android.os.Bundle} containing the saved values.
+     */
+    private void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            setupDate(DateHelper.getDateFromDateTime(savedInstanceState.getString(Fillup.KEY_DATE)));
+            mOdometer.setText(savedInstanceState.getString(Fillup.KEY_ODOMETER));
+            mVolume.setText(savedInstanceState.getString(Fillup.KEY_VOLUME));
+            mPrice.setText(savedInstanceState.getString(Fillup.KEY_PRICE));
+            mRemarks.setText(savedInstanceState.getString(Fillup.KEY_NOTE));
+            mFullTank.setChecked(savedInstanceState.getBoolean(Fillup.KEY_FULLTANK));
+            mFillupToEdit.setLatitude(savedInstanceState.getDouble(Fillup.KEY_LATITUDE));
+            mFillupToEdit.setLongitude(savedInstanceState.getDouble(Fillup.KEY_LONGITUDE));
+        }
+    }
+
+    /**
+     * Saves the values from the UI into a {@link android.os.Bundle}.
+     * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
+     */
+    private void saveState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            savedInstanceState.putString(Fillup.KEY_DATE, DateHelper.getDateTimeAsString(getDate()));
+            savedInstanceState.putString(Fillup.KEY_ODOMETER, mOdometer.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_VOLUME, mVolume.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_PRICE, mPrice.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_NOTE, mRemarks.getText().toString());
+            savedInstanceState.putBoolean(Fillup.KEY_FULLTANK, mFullTank.isChecked());
+            savedInstanceState.putDouble(Fillup.KEY_LATITUDE, mFillupToEdit.getLatitude());
+            savedInstanceState.putDouble(Fillup.KEY_LONGITUDE, mFillupToEdit.getLongitude());
+        }
+    }
+
+    /**
+     * Copies the values from the Fillup entity we are editing to the
+     * UI fields.
+     */
+    private void toUi() {
+        setupDate(mFillupToEdit.getDate());
+        mOdometer.setText(String.valueOf(Math.round(mFillupToEdit.getOdometer())));
+        mVolume.setText(String.valueOf(mFillupToEdit.getVolume()));
+        mPrice.setText(String.valueOf(mFillupToEdit.getPrice()));
+        mRemarks.setText(mFillupToEdit.getNote());
+        mFullTank.setChecked(mFillupToEdit.getFullTank());
+    }
+
+    /**
+     * Copy the values from the UI to the Car entity we are editing.
+     */
+    private void fromUi() {
+        mFillupToEdit.setDate(getDate());
         mFillupToEdit.setFullTank(mFullTank.isChecked());
         mFillupToEdit.setOdometer(Double.parseDouble(mOdometer.getText().toString()));
         mFillupToEdit.setVolume(Double.parseDouble(mVolume.getText().toString()));
