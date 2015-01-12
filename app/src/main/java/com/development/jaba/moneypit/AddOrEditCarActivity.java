@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +26,7 @@ import static com.development.jaba.view.EditTextEx.BaseValidator;
  * Activity for creating a new Car entity or editing an existing
  * entity.
  */
-public class AddOrEditCarActivity extends ActionBarActivity {
+public class AddOrEditCarActivity extends BaseActivity {
 
     private Spinner mDistanceUnits,
                     mVolumeUnits;
@@ -51,6 +48,15 @@ public class AddOrEditCarActivity extends ActionBarActivity {
     }
 
     /**
+     * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     * @return The resource ID of the layout to inflate.
+     */
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_add_or_edit_car;
+    }
+
+    /**
      * Called when the Activity is starting.
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down
      *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -58,15 +64,6 @@ public class AddOrEditCarActivity extends ActionBarActivity {
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_or_edit_car);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-
-        // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car

@@ -1,18 +1,32 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="AppTheme.Base"></style>
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Non API-level specific customizations go here... -->
+    </style>
 
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColorDark</item>
         <item name="colorAccent">@color/accentColor</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="actionModeStyle">@style/MoneyPitActionMode</item>
+        <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>
+    </style>
+
+    <style name="MoneyPitActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/primaryColorDark</item>
     </style>
 
     <style name="MoneyPitToolBar" parent="Theme.AppCompat">
+        <item name="android:background">@color/primaryColor</item>
         <item name="android:textColorPrimary">#FFF</item>
         <item name="android:textColorSecondary">#FFF</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
 </resources>

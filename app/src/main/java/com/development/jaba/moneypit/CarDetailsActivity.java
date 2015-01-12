@@ -1,16 +1,10 @@
 package com.development.jaba.moneypit;
 
-import java.util.Date;
-import java.util.Locale;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,17 +14,20 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.fragments.BaseFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
 import com.development.jaba.fragments.CarDetailsEconomyFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.SlidingTabLayout;
 import com.development.jaba.view.ViewPagerEx;
 
-public class CarDetailsActivity extends ActionBarActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
+import java.util.Date;
+import java.util.Locale;
+
+public class CarDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
     /**
      * The {@link Car} entity to show the details of.
@@ -70,13 +67,17 @@ public class CarDetailsActivity extends ActionBarActivity implements CarDetailsF
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /**
+     * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     * @return The resource ID of the layout to inflate.
+     */
+    protected int getLayoutResource() {
+        return R.layout.activity_car_details;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_details);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
 
         // By default we show the current year.
         mCurrentYear = DateHelper.getYearFromDate(new Date());
@@ -92,11 +93,6 @@ public class CarDetailsActivity extends ActionBarActivity implements CarDetailsF
                 setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
             }
         }
-
-        // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Check if there is any data available.
         mDbContext = new MoneyPitDbContext(this);

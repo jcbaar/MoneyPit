@@ -1,14 +1,12 @@
 package com.development.jaba.moneypit;
 
-import android.support.v7.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.CarListFragment;
@@ -18,7 +16,7 @@ import com.development.jaba.fragments.SettingsFragment;
 import java.io.IOException;
 
 
-public class MainDrawerActivity extends ActionBarActivity
+public class MainDrawerActivity extends BaseActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -64,24 +62,23 @@ public class MainDrawerActivity extends ActionBarActivity
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    /**
+     * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     * @return The resource ID of the layout to inflate.
+     */
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolBar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolBar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), getToolbar());
     }
 
     @Override
