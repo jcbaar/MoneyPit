@@ -27,11 +27,14 @@ public class DateHelper {
      * Converts a given month number to the month name using the default
      * {@link java.util.Locale}.
      *
-     * @param month The month (1-12).
+     * @param month The month (0-11).
      * @return The month name.
      */
     public static String getMonthName(int month) {
-        return DateFormatSymbols.getInstance(Locale.getDefault()).getMonths()[month - 1];
+        if (month >= 0 && month <= 11) {
+            return DateFormatSymbols.getInstance(Locale.getDefault()).getMonths()[month];
+        }
+        return "???";
     }
 
     /**

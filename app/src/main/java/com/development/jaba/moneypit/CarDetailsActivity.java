@@ -21,6 +21,7 @@ import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.SlidingTabLayout;
 import com.development.jaba.view.ViewPagerEx;
 
@@ -55,6 +56,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
     ViewPagerEx mViewPager;
 
     MoneyPitDbContext mDbContext;
+    SettingsHelper mSettings;
 
     /**
      * The {@link SlidingTabLayout} that will control the {@link ViewPager},
@@ -75,15 +77,41 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         return R.layout.activity_car_details;
     }
 
+    /**
+     * Reads the last selected year for this car from the settings. If none was
+     * saved yet return the current year.
+     *
+     * @return The selected year or the current year.
+     */
+    protected int getCarYearFromPrefs() {
+        String key = mCarToShow.toString() + "_year";
+        return mSettings.getIntegerValue(key, DateHelper.getYearFromDate(new Date()));
+    }
+
+    /**
+     * Saves the currently selected year for the car to the
+     * settings.
+     */
+    protected void saveCarYearToPrefs() {
+        String key = mCarToShow.toString() + "_year";
+        mSettings.setIntegerValue(key, mCurrentYear);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Create settings helper instance.
+        mSettings = new SettingsHelper(this);
 
         // By default we show the current year.
         mCurrentYear = DateHelper.getYearFromDate(new Date());
         if(savedInstanceState != null) {
             mCurrentYear = savedInstanceState.getInt("CurrentYear");
+        } else {
+            mCurrentYear = getCarYearFromPrefs();
         }
+
 
         // Extract the Car instance
         Bundle b = getIntent().getExtras();
@@ -183,6 +211,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
                     mCurrentYear = year;
                     setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
                     checkSlidingAvailability();
+                    saveCarYearToPrefs();
                 }
             }, this);
         }
@@ -201,6 +230,11 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
      */
     @Override
     public void onDataChanged(int year) {
+        // Did the year change? If so save it to the settings.
+        if (mCurrentYear != year) {
+            saveCarYearToPrefs();
+        }
+
         // Skip the first fragment since this is the fill-up list fragment which sent
         // the event in the first place.
         for (int i = 1; i <= mSectionsPagerAdapter.getCount(); i++) {
