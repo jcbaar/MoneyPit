@@ -315,6 +315,8 @@ public class AddOrEditCarActivity extends BaseActivity {
     private void getPicture2() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
+        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(photoPickerIntent, REQUEST_GET_PICTURE);
     }
 

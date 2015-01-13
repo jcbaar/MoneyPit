@@ -8,9 +8,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.BitmapHelper;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 
@@ -47,10 +46,12 @@ public class Car implements Serializable {
     //endregion
 
     //region Construction
+
     /**
      * Constructor. Initializes an instance of the object.
      */
-    public Car() {}
+    public Car() {
+    }
 
     /**
      * Constructor. Initializes an instance of the object with the values
@@ -141,22 +142,21 @@ public class Car implements Serializable {
     }
 
     public Bitmap getImage() {
-        if(mImage != null) {
+        if (mImage != null) {
             return BitmapFactory.decodeByteArray(this.mImage, 0, this.mImage.length);
         }
         return null;
     }
 
     public void setImage(Context context, Uri bitmapUri) {
-        if(bitmapUri != null) {
+        if (bitmapUri != null) {
             try {
-                mImage = decodeUri(context, bitmapUri);
+                mImage = BitmapHelper.decodeUriAsByteArray(context, bitmapUri);
             } catch (FileNotFoundException e) {
                 Log.e("setImage", "Image file not found.");
                 mImage = null;
             }
-        }
-        else {
+        } else {
             mImage = null;
         }
     }
@@ -179,8 +179,10 @@ public class Car implements Serializable {
     //endregion
 
     //region Conversion methods.
+
     /**
      * Converts the object to {@link android.content.ContentValues}.
+     *
      * @return The {@link android.content.ContentValues} object containing the object.
      * This will not include the ID field.
      */
@@ -199,55 +201,12 @@ public class Car implements Serializable {
 
     /**
      * Converts the object to it's string representation.
+     *
      * @return The string representation of the object.
      */
     @Override
     public String toString() {
         return mMake + " " + mModel;
-    }
-    //endregion
-
-
-    //region Helpers
-    /**
-     * Decodes the image at the given Uri and automatically scales it to the proper size.
-     *
-     * @param context The {@link android.content.Context}
-     * @param selectedImage The {@link android.net.Uri} of the picture to decode.
-     *
-     * @return A array of bytes holding the complete image file.
-     * @throws FileNotFoundException
-     */
-    private byte[] decodeUri(Context context, Uri selectedImage) throws FileNotFoundException {
-
-        // Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o);
-
-        // The new size we want to scale to
-        final int maxSize = context.getResources().getInteger(R.dimen.image_scale_max_size);
-
-        // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (true) {
-            if (width_tmp / 2 < maxSize || height_tmp / 2 < maxSize) {
-                break;
-            }
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        // Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        Bitmap bm = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o2);
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, bs);
-        bm.recycle();
-        return bs.toByteArray();
     }
     //endregion
 }
