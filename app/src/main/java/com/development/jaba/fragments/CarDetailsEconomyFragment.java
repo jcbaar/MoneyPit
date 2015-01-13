@@ -6,15 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import java.util.Date;
 
@@ -108,11 +112,25 @@ public class CarDetailsEconomyFragment extends GraphFragment {
         }
 
         if( mDbContext != null && mCar != null) {
-            Resources res = getResources();
+            final Resources res = getResources();
             DataPoint[] data = mDbContext.getDistancePerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mDistancePerMonth, data, res.getString(R.string.graph_distance_legend));
+            setupBarsSeries(mDistancePerMonth, data, res.getString(R.string.graph_distance_legend), new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_distance_per_month), DateHelper.getMonthName((int) dataPoint.getX()), mCurrentYear) +
+                            "\n" +
+                            FormattingHelper.toDistance(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                }
+            });
             data = mDbContext.getEconomyPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mEconomyPerMonth, data, res.getString(R.string.graph_economy_legend));
+            setupBarsSeries(mEconomyPerMonth, data, res.getString(R.string.graph_economy_legend), new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_economy_per_month), DateHelper.getMonthName((int) dataPoint.getX()), mCurrentYear) +
+                            "\n" +
+                            FormattingHelper.toEconomy(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

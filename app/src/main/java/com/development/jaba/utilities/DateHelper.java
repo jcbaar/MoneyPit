@@ -1,5 +1,6 @@
 package com.development.jaba.utilities;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,6 +13,7 @@ import java.util.Locale;
 public class DateHelper {
     /**
      * Converts a Date object into a time string.
+     *
      * @param date The Date object to convert.
      * @return A DateTime string in the form yyyy-MM-dd HH:mm:ss
      */
@@ -22,12 +24,24 @@ public class DateHelper {
     }
 
     /**
+     * Converts a given month number to the month name using the default
+     * {@link java.util.Locale}.
+     *
+     * @param month The month (1-12).
+     * @return The month name.
+     */
+    public static String getMonthName(int month) {
+        return DateFormatSymbols.getInstance(Locale.getDefault()).getMonths()[month - 1];
+    }
+
+    /**
      * Converts a DateTime string in the form yyyy-MM-dd HH:mm:ss to a
      * Date object.
+     *
      * @param dateString The DateTime string in the form yyyy-MM-dd HH:mm:ss to convert to a Date object.
      * @return The Date object or null in case of a parsing error.
      */
-    public static Date getDateFromDateTime(String dateString){
+    public static Date getDateFromDateTime(String dateString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         try {
@@ -40,6 +54,7 @@ public class DateHelper {
 
     /**
      * Gets the year from a given date.
+     *
      * @param date The Date object to get the year from.
      * @return The year from the date of -1 in case of an error (null Date)
      */

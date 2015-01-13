@@ -18,7 +18,7 @@
     </style>
 
     <style name="MoneyPitActionMode" parent="@style/Widget.AppCompat.ActionMode">
-        <item name="background">@color/primaryColorDark</item>
+        <item name="background">@color/primaryColor</item>
     </style>
 
     <style name="MoneyPitToolBar" parent="Theme.AppCompat">

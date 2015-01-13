@@ -14,6 +14,7 @@ import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
 
 /**
  * A {@link BaseFragment} subclass which servers as super class for the
@@ -27,26 +28,26 @@ public class GraphFragment extends BaseFragment {
 
     /**
      * Converts SP a pixel value.
-     * @param context The {@link Context}.
-     * @param dp The SP value to convert to pixels.
      *
+     * @param context The {@link Context}.
+     * @param dp      The SP value to convert to pixels.
      * @return The pixel value.
      */
     public static float spToPixels(Context context, float dp) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return dp*scaledDensity;
+        return dp * scaledDensity;
     }
 
     /**
      * Converts DP a pixel value.
-     * @param context The {@link Context}.
-     * @param dp The DP value to convert to pixels.
      *
+     * @param context The {@link Context}.
+     * @param dp      The DP value to convert to pixels.
      * @return The pixel value.
      */
     public static float dpToPixels(Context context, float dp) {
         float scaledDensity = context.getResources().getDisplayMetrics().density;
-        return dp*scaledDensity;
+        return dp * scaledDensity;
     }
 
     /**
@@ -57,7 +58,7 @@ public class GraphFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             if (mCar == null) {
                 mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
@@ -75,7 +76,7 @@ public class GraphFragment extends BaseFragment {
     /**
      * Setup the renderers of the GraphView.
      *
-     * @param gv The {@link com.jjoe64.graphview.GraphView} to setup.
+     * @param gv        The {@link com.jjoe64.graphview.GraphView} to setup.
      * @param formatter The {@link com.jjoe64.graphview.DefaultLabelFormatter} to use for label formatting.
      */
     public void setupRenderers(GraphView gv, DefaultLabelFormatter formatter) {
@@ -96,7 +97,6 @@ public class GraphFragment extends BaseFragment {
      * data set.
      *
      * @param values The data set to create the average {@link com.jjoe64.graphview.series.LineGraphSeries} for.
-     *
      * @return The {@link com.jjoe64.graphview.series.LineGraphSeries} with the averages.
      */
     private LineGraphSeries<DataPoint> getAverages(DataPoint[] values) {
@@ -112,7 +112,7 @@ public class GraphFragment extends BaseFragment {
         average /= values.length;
 
         // Fill the averages array with the average value.
-        for ( int i = 0; i < 12; i++) {
+        for (int i = 0; i < 12; i++) {
             avg[i] = new DataPoint(i, average);
         }
 
@@ -128,30 +128,30 @@ public class GraphFragment extends BaseFragment {
      * Creates a {@link com.jjoe64.graphview.series.BarGraphSeries} for the given
      * data set.
      *
-     * @param data The data set to create the {@link com.jjoe64.graphview.series.BarGraphSeries} for.
+     * @param data  The data set to create the {@link com.jjoe64.graphview.series.BarGraphSeries} for.
      * @param title The title of the data series.
-     *
      * @return The {@link com.jjoe64.graphview.series.BarGraphSeries} with the data.
      */
-    private BarGraphSeries<DataPoint> getBars(DataPoint[] data, String title) {
+    private BarGraphSeries<DataPoint> getBars(DataPoint[] data, String title, OnDataPointTapListener listener) {
         Resources res = getResources();
         BarGraphSeries<DataPoint> bars = new BarGraphSeries<>(data);
         bars.setSpacing(30);
         bars.setColor(res.getColor(R.color.primaryColor));
         bars.setTitle(title);
+        bars.setOnDataPointTapListener(listener);
         return bars;
     }
 
     /**
      * Setup the series in the {@link com.jjoe64.graphview.GraphView} views.
      *
-     * @param gv The {@link com.jjoe64.graphview.GraphView} to setup.
-     * @param data The data to show in the {@link com.jjoe64.graphview.GraphView}
+     * @param gv    The {@link com.jjoe64.graphview.GraphView} to setup.
+     * @param data  The data to show in the {@link com.jjoe64.graphview.GraphView}
      * @param title The title of the data series.
      */
-    public void setupBarsSeries(GraphView gv, DataPoint[] data, String title) {
+    public void setupBarsSeries(GraphView gv, DataPoint[] data, String title, OnDataPointTapListener listener) {
         gv.removeAllSeries();
-        gv.addSeries(getBars(data, title));
+        gv.addSeries(getBars(data, title, listener));
         gv.addSeries(getAverages(data));
     }
 }

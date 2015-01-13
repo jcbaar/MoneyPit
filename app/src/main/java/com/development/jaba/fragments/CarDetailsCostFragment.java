@@ -6,15 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import java.util.Date;
 
@@ -109,11 +113,25 @@ public class CarDetailsCostFragment extends GraphFragment {
         }
 
         if( mDbContext != null && mCar != null) {
-            Resources res = getResources();
+            final Resources res = getResources();
             DataPoint[] data = mDbContext.getFuelCostPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerMonth, data, res.getString(R.string.graph_cost_legend));
+            setupBarsSeries(mCostPerMonth, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_cost_per_month), DateHelper.getMonthName((int) dataPoint.getX()), mCurrentYear) +
+                            "\n" +
+                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                }
+            });
             data = mDbContext.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerDistanceUnit, data, res.getString(R.string.graph_cost_legend));
+            setupBarsSeries(mCostPerDistanceUnit, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.getMonthName((int) dataPoint.getX()), mCurrentYear) +
+                            "\n" +
+                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
