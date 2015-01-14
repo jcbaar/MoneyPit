@@ -1,10 +1,14 @@
 package com.development.jaba.fragments;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.development.jaba.database.MoneyPitDbContext;
@@ -25,9 +29,9 @@ import java.util.List;
 public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
     private MoneyPitDbContext mContext;
-    private List<Fillup> mFillups;
     private TextView mHeader,
             mData;
+    private ImageView mImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,11 +50,17 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
         mContext = new MoneyPitDbContext(getActivity());
         if (mCar != null) {
-            mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
-
             mHeader = (TextView) view.findViewById(R.id.header);
             mData = (TextView) view.findViewById(R.id.data);
+            mImage = (ImageView) view.findViewById(R.id.image);
 
+            Bitmap picture = mCar.getImage();
+            if (picture != null) {
+                mImage.setVisibility(View.VISIBLE);
+                mImage.setImageBitmap(picture);
+            } else {
+                mImage.setVisibility(View.GONE);
+            }
             summarize();
         }
         return view;
@@ -66,11 +76,17 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     public void onYearSelected(int year) {
         super.onYearSelected(year);
         if (mContext != null && mCar != null) {
-            mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
             summarize();
         }
     }
 
+    /**
+     * Adds a category header to the summary text.
+     *
+     * @param h     The header {@link java.lang.StringBuilder}.
+     * @param resId The resource ID of the header text.
+     * @param d     The data {@link java.lang.StringBuilder}.
+     */
     private void addHeader(StringBuilder h, int resId, StringBuilder d) {
         h.append("<b>");
         h.append(getString(resId));
@@ -79,6 +95,13 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         d.append("<br/>");
     }
 
+    /**
+     * Helper to add a data line to the summary text.
+     * @param h The header {@link java.lang.StringBuilder}.
+     * @param resId The resource ID of the header text.
+     * @param d The data {@link java.lang.StringBuilder}.
+     * @param data The data string.
+     */
     private void addLine(StringBuilder h, int resId, StringBuilder d, String data) {
         h.append(getString(resId));
         h.append("<br/>");
@@ -87,7 +110,15 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         d.append("<br/>");
     }
 
-    private void addLine(StringBuilder h, String hData, StringBuilder d, String data) {
+    /**
+     * Helper to add a data line to the summary text.
+     *
+     * @param h     The header {@link java.lang.StringBuilder}.
+     * @param hData The header string.
+     * @param d     The data {@link java.lang.StringBuilder}.
+     * @param data  The data string.
+     */
+    private static void addLine(StringBuilder h, String hData, StringBuilder d, String data) {
         h.append(hData);
         h.append("<br/>");
 
@@ -95,47 +126,99 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         d.append("<br/>");
     }
 
-    private void addEmptyLine(StringBuilder h, StringBuilder d) {
+    /**
+     * Helper to add an empty line in both the header and the data {@link android.widget.TextView}.
+     *
+     * @param h The header {@link java.lang.StringBuilder}.
+     * @param d The data {@link java.lang.StringBuilder}.
+     */
+    private static void addEmptyLine(StringBuilder h, StringBuilder d) {
         h.append("<br/>");
         d.append("<br/>");
     }
 
     /**
-     * Summarizes the fill-up information and displays it on the screen.
+     * Fires off the {@link com.development.jaba.fragments.CarDetailsSummaryFragment.SummaryTask} to
+     * process the data.
      */
     private void summarize() {
-        CarSummary summary = new CarSummary();
-        summary.setup(mFillups);
+        new SummaryTask().execute();
+    }
 
-        StringBuilder header = new StringBuilder(),
-                data = new StringBuilder();
+    /**
+     * Show the summary texts in the UI.
+     */
+    private void showSummary(Spanned header, Spanned data) {
+        mHeader.setText(header);
+        mData.setText(data);
+    }
 
-        addHeader(header, R.string.summary_totals, data);
-        addLine(header, R.string.summary_distance_total, data, FormattingHelper.toDistance(mCar, summary.TotalDistance));
-        addLine(header, R.string.summary_cost_total, data, FormattingHelper.toPrice(mCar, summary.TotalFuelCost));
-        addLine(header, R.string.summary_volume_total, data, FormattingHelper.toVolumeUnit(mCar, summary.TotalVolume));
-        addEmptyLine(header, data);
+    /**
+     * {@link android.os.AsyncTask} derived class to get the data to summarize and to do the
+     * actual summarizing of that data.
+     */
+    private class SummaryTask extends AsyncTask<Void, Void, Void> {
 
-        addHeader(header, R.string.summary_averages, data);
-        addLine(header, R.string.summary_economy_average, data, FormattingHelper.toEconomy(mCar, summary.AverageFuelEconomy));
-        addLine(header, R.string.summary_cost_average, data, FormattingHelper.toPrice(mCar, summary.AverageCostPerMonth));
-        addLine(header, getString(R.string.summary_cost_per) + " " + mCar.getDistanceUnit().toString().toLowerCase() + ": ", data, FormattingHelper.toPrice(mCar, summary.AverageFuelCostPerDistanceUnit));
-        addLine(header, getString(R.string.summary_cost_per) + " " + mCar.getVolumeUnit().toString().toLowerCase() + ": ", data, FormattingHelper.toPrice(mCar, summary.AverageFuelCostPerVolumeUnit));
-        addEmptyLine(header, data);
+        /**
+         * The {@link com.development.jaba.model.CarSummary} containing the summarized data.
+         */
+        CarSummary mSummary;
 
-        addHeader(header, R.string.summary_summary, data);
-        addLine(header, R.string.summary_most_expensive_month, data, FormattingHelper.toPrice(mCar, summary.MostExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(summary.MostExpensiveMonth.Date) + ")");
-        addLine(header, R.string.summary_least_expensive_month, data, FormattingHelper.toPrice(mCar, summary.LeastExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(summary.LeastExpensiveMonth.Date) + ")");
-        addEmptyLine(header, data);
+        /**
+         * {@link java.lang.StringBuilder} objects containing the header and data information.
+         */
+        StringBuilder mHeaderText = new StringBuilder(),
+                mDataText = new StringBuilder();
 
-        addLine(header, R.string.summary_best_economy_fillup, data, FormattingHelper.toEconomy(mCar, summary.BestEconomyFillup.Value) + " (" + FormattingHelper.toShortDate(summary.BestEconomyFillup.Date) + ")");
-        addLine(header, R.string.summary_worst_economy_fillup, data, FormattingHelper.toEconomy(mCar, summary.WorstEconomyFillup.Value) + " (" + FormattingHelper.toShortDate(summary.WorstEconomyFillup.Date) + ")");
-        addEmptyLine(header, data);
+        /**
+         * Loads and summarizes the data from the database.
+         *
+         * @param params Parameters (not used).
+         * @return Noting.
+         */
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO: This uses the same data set as the CarDetailsFillups fragment. They should really share it...
+            MoneyPitDbContext context = new MoneyPitDbContext(getActivity());
+            List<Fillup> data = context.getFillupsOfCar(mCar.getId(), mCurrentYear);
+            mSummary = new CarSummary();
+            mSummary.setup(data);
 
-        addLine(header, R.string.summary_most_expensive_fillup, data, FormattingHelper.toPrice(mCar, summary.MostExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(summary.MostExpensiveFillup.Date) + ")");
-        addLine(header, R.string.summary_least_expensive_fillup, data, FormattingHelper.toPrice(mCar, summary.LeastExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(summary.LeastExpensiveFillup.Date) + ")");
+            addHeader(mHeaderText, R.string.summary_totals, mDataText);
+            addLine(mHeaderText, R.string.summary_distance_total, mDataText, FormattingHelper.toDistance(mCar, mSummary.TotalDistance));
+            addLine(mHeaderText, R.string.summary_cost_total, mDataText, FormattingHelper.toPrice(mCar, mSummary.TotalFuelCost));
+            addLine(mHeaderText, R.string.summary_volume_total, mDataText, FormattingHelper.toVolumeUnit(mCar, mSummary.TotalVolume));
+            addEmptyLine(mHeaderText, mDataText);
 
-        mHeader.setText(Html.fromHtml(header.toString()));
-        mData.setText(Html.fromHtml(data.toString()));
+            addHeader(mHeaderText, R.string.summary_averages, mDataText);
+            addLine(mHeaderText, R.string.summary_economy_average, mDataText, FormattingHelper.toEconomy(mCar, mSummary.AverageFuelEconomy));
+            addLine(mHeaderText, R.string.summary_cost_average, mDataText, FormattingHelper.toPrice(mCar, mSummary.AverageCostPerMonth));
+            addLine(mHeaderText, getString(R.string.summary_cost_per) + " " + mCar.getDistanceUnit().toString().toLowerCase() + ": ", mDataText, FormattingHelper.toPrice(mCar, mSummary.AverageFuelCostPerDistanceUnit));
+            addLine(mHeaderText, getString(R.string.summary_cost_per) + " " + mCar.getVolumeUnit().toString().toLowerCase() + ": ", mDataText, FormattingHelper.toPrice(mCar, mSummary.AverageFuelCostPerVolumeUnit));
+            addEmptyLine(mHeaderText, mDataText);
+
+            addHeader(mHeaderText, R.string.summary_summary, mDataText);
+            addLine(mHeaderText, R.string.summary_most_expensive_month, mDataText, FormattingHelper.toPrice(mCar, mSummary.MostExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(mSummary.MostExpensiveMonth.Date) + ")");
+            addLine(mHeaderText, R.string.summary_least_expensive_month, mDataText, FormattingHelper.toPrice(mCar, mSummary.LeastExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(mSummary.LeastExpensiveMonth.Date) + ")");
+            addEmptyLine(mHeaderText, mDataText);
+
+            addLine(mHeaderText, R.string.summary_best_economy_fillup, mDataText, FormattingHelper.toEconomy(mCar, mSummary.BestEconomyFillup.Value) + " (" + FormattingHelper.toShortDate(mSummary.BestEconomyFillup.Date) + ")");
+            addLine(mHeaderText, R.string.summary_worst_economy_fillup, mDataText, FormattingHelper.toEconomy(mCar, mSummary.WorstEconomyFillup.Value) + " (" + FormattingHelper.toShortDate(mSummary.WorstEconomyFillup.Date) + ")");
+            addEmptyLine(mHeaderText, mDataText);
+
+            addLine(mHeaderText, R.string.summary_most_expensive_fillup, mDataText, FormattingHelper.toPrice(mCar, mSummary.MostExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(mSummary.MostExpensiveFillup.Date) + ")");
+            addLine(mHeaderText, R.string.summary_least_expensive_fillup, mDataText, FormattingHelper.toPrice(mCar, mSummary.LeastExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(mSummary.LeastExpensiveFillup.Date) + ")");
+            return null;
+        }
+
+        /**
+         * Back in the UI thread. Update the visuals with the summarized data.
+         *
+         * @param result Nothing.
+         */
+        @Override
+        protected void onPostExecute(Void result) {
+            showSummary(Html.fromHtml(mHeaderText.toString()), Html.fromHtml(mDataText.toString()));
+        }
     }
 }
