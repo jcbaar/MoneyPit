@@ -5,7 +5,6 @@ import android.preference.PreferenceFragment;
 
 import com.development.jaba.moneypit.R;
 
-
 /**
  * A simple fragment for editing the application settings.
  */
@@ -13,14 +12,10 @@ public class SettingsFragment extends PreferenceFragment {
 
     /**
      * Static factory method. Creates a new instance of this fragment.
-     * @param sectionNumber The section number of this fragment.
      * @return The created SettingsFragment.
      */
-    public static SettingsFragment newInstance(int sectionNumber) {
+    public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putInt(BaseFragment.ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
     }
 

@@ -64,6 +64,7 @@ public class MainDrawerActivity extends BaseActivity
 
     /**
      * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     *
      * @return The resource ID of the layout to inflate.
      */
     protected int getLayoutResource() {
@@ -74,7 +75,7 @@ public class MainDrawerActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -86,14 +87,13 @@ public class MainDrawerActivity extends BaseActivity
         // update the main content by replacing fragments
         boolean useNative = false;
 
-        switch( position+1)
-        {
+        switch (position + 1) {
             case 1: // Cars fragment.
-                mFragment = CarListFragment.newInstance( position + 1 );
+                mFragment = CarListFragment.newInstance();
                 break;
 
             case 2: // Settings fragment.
-                mNativeFragment = SettingsFragment.newInstance(position + 1);
+                mNativeFragment = SettingsFragment.newInstance();
                 useNative = true;
                 break;
 
@@ -101,16 +101,15 @@ public class MainDrawerActivity extends BaseActivity
                 break;
         }
 
-        if(useNative) {
-            if(mFragment != null) {
+        if (useNative) {
+            if (mFragment != null) {
                 getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
                 mFragment = null;
             }
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, mNativeFragment).commit();
-        }
-        else {
-            if(mNativeFragment != null) {
+        } else {
+            if (mNativeFragment != null) {
                 getFragmentManager().beginTransaction().remove(mNativeFragment).commit();
                 mNativeFragment = null;
             }
@@ -121,7 +120,7 @@ public class MainDrawerActivity extends BaseActivity
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(mTitle);
         }

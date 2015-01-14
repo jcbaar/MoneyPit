@@ -5,19 +5,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.fragments.BaseFragment;
+import com.development.jaba.fragments.BaseDetailsFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
 import com.development.jaba.fragments.CarDetailsEconomyFragment;
 import com.development.jaba.fragments.CarDetailsFillupsFragment;
+import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
@@ -71,6 +70,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
     /**
      * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     *
      * @return The resource ID of the layout to inflate.
      */
     protected int getLayoutResource() {
@@ -104,23 +104,21 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Create settings helper instance.
         mSettings = new SettingsHelper(this);
 
+        // Extract the Car instance
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            mCarToShow = (Car) b.getSerializable("Car");
+        }
+
         // By default we show the current year.
         mCurrentYear = DateHelper.getYearFromDate(new Date());
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mCurrentYear = savedInstanceState.getInt("CurrentYear");
         } else {
             mCurrentYear = getCarYearFromPrefs();
         }
 
-
-        // Extract the Car instance
-        Bundle b = getIntent().getExtras();
-        if( b != null) {
-            mCarToShow = (Car)b.getSerializable("Car");
-            if(mCarToShow != null) {
-                setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
-            }
-        }
+        setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
 
         // Check if there is any data available.
         mDbContext = new MoneyPitDbContext(this);
@@ -147,8 +145,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             public void onPageSelected(int position) {
                 // Get the fragment at the given position and tell it it's been
                 // selected in the ViewPager.
-                BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(position);
-                if(fragment != null) {
+                BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(position);
+                if (fragment != null) {
                     fragment.onFragmentSelectedInViewPager();
                 }
             }
@@ -169,7 +167,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear);
 
         // No data? Go to the first page...
-        if(!hasData) {
+        if (!hasData) {
             mViewPager.setCurrentItem(0);
         }
 
@@ -185,7 +183,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.selectYear) {
+        if (id == R.id.selectYear) {
             // Let the user select the year of data they want to see.
             DialogHelper.showYearSelectionDialog(mCarToShow, mCurrentYear, new MaterialDialog.ButtonCallback() {
                 @Override
@@ -200,8 +198,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
                     // Broadcast the year selection to all fragments. They need to know what year
                     // was selected so they they can update their contents.
-                    for ( int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-                        BaseFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
+                    for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+                        BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
                         if (fragment != null) {
                             fragment.onYearSelected(year);
                         }
@@ -214,8 +212,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
                     saveCarYearToPrefs();
                 }
             }, this);
-        }
-        else if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
             return true;
         }
 
@@ -238,23 +235,22 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Skip the first fragment since this is the fill-up list fragment which sent
         // the event in the first place.
         for (int i = 1; i <= mSectionsPagerAdapter.getCount(); i++) {
-            BaseFragment b = mSectionsPagerAdapter.getFragmentAt(i);
-            if(b != null) {
+            BaseDetailsFragment b = mSectionsPagerAdapter.getFragmentAt(i);
+            if (b != null) {
                 // If the year has changed we set the new year to the
                 // other fragments which will trigger a data refresh
                 // on those fragments. If the year did not change we need
                 // to tell the other fragments the data of the current
                 // year changed.
-                if(year != mCurrentYear) {
+                if (year != mCurrentYear) {
                     b.onYearSelected(year);
-                }
-                else {
+                } else {
                     b.onDataChanged();
                 }
             }
         }
 
-        if(year != mCurrentYear) {
+        if (year != mCurrentYear) {
             mCurrentYear = year;
             setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
         }
@@ -268,14 +264,21 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private final int NUM_PAGES = 4;
-        private final BaseFragment[] mPages = new BaseFragment[NUM_PAGES];
+        private final BaseDetailsFragment[] mPages = new BaseDetailsFragment[NUM_PAGES];
+        private final String[] mTitles = new String[NUM_PAGES];
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+
+            Locale l = Locale.getDefault();
+            mTitles[0] = getString(R.string.tab_fillups).toUpperCase(l);
+            mTitles[1] = getString(R.string.tab_cost).toUpperCase(l);
+            mTitles[2] = getString(R.string.tab_mileage).toUpperCase(l);
+            mTitles[3] = getString(R.string.tab_summary).toUpperCase(l);
         }
 
-        public BaseFragment getFragmentAt(int position) {
-            if(position >= 0 && position < NUM_PAGES) {
+        public BaseDetailsFragment getFragmentAt(int position) {
+            if (position >= 0 && position < NUM_PAGES) {
                 return mPages[position];
             }
             return null;
@@ -284,27 +287,28 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            if(position == 0) {
-                CarDetailsFillupsFragment fragment = (CarDetailsFillupsFragment)CarDetailsFillupsFragment.newInstance(position, mCarToShow);
+            if (position == 0) {
+                CarDetailsFillupsFragment fragment = (CarDetailsFillupsFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsFillupsFragment.class);
                 fragment.onYearSelected(mCurrentYear);
                 mPages[0] = fragment;
                 return fragment;
-            }
-            else if(position == 1) {
-                CarDetailsCostFragment fragment = (CarDetailsCostFragment)CarDetailsCostFragment.newInstance(position, mCarToShow);
+            } else if (position == 1) {
+                CarDetailsCostFragment fragment = (CarDetailsCostFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsCostFragment.class);
                 fragment.onYearSelected(mCurrentYear);
                 mPages[1] = fragment;
                 return fragment;
-            }
-            else if(position == 2) {
-                CarDetailsEconomyFragment fragment = (CarDetailsEconomyFragment)CarDetailsEconomyFragment.newInstance(position, mCarToShow);
+            } else if (position == 2) {
+                CarDetailsEconomyFragment fragment = (CarDetailsEconomyFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsEconomyFragment.class);
                 fragment.onYearSelected(mCurrentYear);
                 mPages[2] = fragment;
                 return fragment;
+            } else if (position == 3) {
+                CarDetailsSummaryFragment fragment = (CarDetailsSummaryFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsSummaryFragment.class);
+                fragment.onYearSelected(mCurrentYear);
+                mPages[3] = fragment;
+                return fragment;
             }
-            PlaceholderFragment fragment = PlaceholderFragment.newInstance(position + 1);
-            mPages[position] = fragment;
-            return fragment;
+            return null;
         }
 
         @Override
@@ -314,51 +318,10 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.tab_fillups).toUpperCase(l);
-                case 1:
-                    return getString(R.string.tab_cost).toUpperCase(l);
-                case 2:
-                    return getString(R.string.tab_mileage).toUpperCase(l);
-                case 3:
-                    return getString(R.string.tab_summary).toUpperCase(l);
+            if (position >= 0 && position < NUM_PAGES) {
+                return mTitles[position];
             }
             return null;
         }
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends BaseFragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return  inflater.inflate(R.layout.fragment_car_details, container, false);
-        }
-    }
-
 }

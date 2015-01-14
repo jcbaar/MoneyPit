@@ -2,14 +2,12 @@ package com.development.jaba.fragments;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.development.jaba.database.MoneyPitDbContext;
-import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
@@ -23,7 +21,7 @@ import com.jjoe64.graphview.series.Series;
 import java.util.Date;
 
 /**
- * A {@link BaseFragment} subclass containing the const-per-month
+ * A {@link BaseDetailsFragment} subclass containing the const-per-month
  * and cost-per-month-per-distance-unit graphs.
  */
 public class CarDetailsCostFragment extends GraphFragment {
@@ -31,21 +29,6 @@ public class CarDetailsCostFragment extends GraphFragment {
     private MoneyPitDbContext mDbContext;
     private GraphView mCostPerMonth,
             mCostPerDistanceUnit;
-
-    /**
-     * Static factory method. Creates a new instance of this fragment.
-     * @param sectionNumber The section number in the Navigation Drawer.
-     * @return The created fragment.
-     */
-    public static Fragment newInstance(int sectionNumber, Car carToShow) {
-        CarDetailsCostFragment fragment = new CarDetailsCostFragment();
-        fragment.mCar = carToShow;
-
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     /**
      * Called to create a new {@link View}.
@@ -144,7 +127,6 @@ public class CarDetailsCostFragment extends GraphFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        mCurrentYear = year;
         setupBarsAndAverages();
     }
 

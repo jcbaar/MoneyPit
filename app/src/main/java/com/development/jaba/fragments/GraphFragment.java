@@ -17,13 +17,11 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 
 /**
- * A {@link BaseFragment} subclass which servers as super class for the
+ * A {@link BaseDetailsFragment} subclass which servers as super class for the
  * graph fragments.
  */
-public class GraphFragment extends BaseFragment {
+public class GraphFragment extends BaseDetailsFragment {
 
-    protected Car mCar;
-    protected int mCurrentYear;
     protected String[] mMonths;
 
     /**
@@ -64,13 +62,6 @@ public class GraphFragment extends BaseFragment {
             }
             mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(Keys.EK_CAR, mCar);
-        outState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
-        super.onSaveInstanceState(outState);
     }
 
     /**

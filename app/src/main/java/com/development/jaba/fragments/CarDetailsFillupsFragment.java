@@ -3,7 +3,6 @@ package com.development.jaba.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,11 +17,11 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.AddOrEditFillupActivity;
 import com.development.jaba.moneypit.Keys;
+import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.view.RecyclerViewEx;
-import com.development.jaba.moneypit.R;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
 /**
  * Fragment for displaying the details of a {@link Car}.
  */
-public class CarDetailsFillupsFragment extends BaseFragment {
+public class CarDetailsFillupsFragment extends BaseDetailsFragment {
 
     private final int REQUEST_ADD_FILLUP = 0,
             REQUEST_EDIT_FILLUP = 1;
@@ -38,25 +37,8 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private FillupRowAdapter mFillupAdapter;         // Adapter for holding the Fill-up list.
     private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
-    private Car mCar;
     private FloatingActionButton mFab;
-    private int mCurrentYear;
     private OnDataChangedListener mCallback;
-
-    /**
-     * Static factory method. Creates a new instance of this fragment.
-     * @param sectionNumber The section number in the Navigation Drawer.
-     * @return The created fragment.
-     */
-    public static Fragment newInstance(int sectionNumber, Car carToShow) {
-        CarDetailsFillupsFragment fragment = new CarDetailsFillupsFragment();
-        fragment.mCar = carToShow;
-
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,13 +49,6 @@ public class CarDetailsFillupsFragment extends BaseFragment {
             }
             mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(Keys.EK_CAR, mCar);
-        outState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -161,7 +136,6 @@ public class CarDetailsFillupsFragment extends BaseFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        mCurrentYear = year;
         if(mContext != null && mCar != null) {
             mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
             mFillupAdapter.setData(mFillups);

@@ -3,6 +3,7 @@ package com.development.jaba.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +32,7 @@ import java.util.List;
  * Lists the Car entities from the database enabling editing of that list and the
  * Car entities within.
  */
-public class CarListFragment extends BaseFragment {
+public class CarListFragment extends Fragment {
 
     private static final int REQUEST_EDIT_CAR = 1,  // Request code for editing a car.
                              REQUEST_ADD_CAR = 2;   // Request code for adding a new car.
@@ -42,14 +43,10 @@ public class CarListFragment extends BaseFragment {
 
     /**
      * Static factory method. Creates a new instance of this fragment.
-     * @param sectionNumber The section number in the Navigation Drawer.
      * @return The created fragment.
      */
-    public static CarListFragment newInstance(int sectionNumber) {
+    public static CarListFragment newInstance() {
         CarListFragment fragment = new CarListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
     }
 
