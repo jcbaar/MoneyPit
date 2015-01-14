@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -267,9 +268,15 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         private final BaseDetailsFragment[] mPages = new BaseDetailsFragment[NUM_PAGES];
         private final String[] mTitles = new String[NUM_PAGES];
 
+        /**
+         * Constructor. Initializes an instance of the object.
+         *
+         * @param fm The {@link android.support.v4.app.FragmentManager}.
+         */
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
 
+            // Setup tab titles.
             Locale l = Locale.getDefault();
             mTitles[0] = getString(R.string.tab_fillups).toUpperCase(l);
             mTitles[1] = getString(R.string.tab_cost).toUpperCase(l);
@@ -277,6 +284,13 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             mTitles[3] = getString(R.string.tab_summary).toUpperCase(l);
         }
 
+        /**
+         * Returns the instance of the {@link com.development.jaba.fragments.BaseDetailsFragment} at the given position.
+         *
+         * @param position The position for which to get the {@link com.development.jaba.fragments.BaseDetailsFragment}.
+         * @return The {@link com.development.jaba.fragments.BaseDetailsFragment} instance or null of it is not valid or
+         * the poisition is out of bounds.
+         */
         public BaseDetailsFragment getFragmentAt(int position) {
             if (position >= 0 && position < NUM_PAGES) {
                 return mPages[position];
@@ -284,38 +298,76 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             return null;
         }
 
+        /**
+         * Called each time the {@link android.support.v4.view.ViewPager} want's to get to a {@link android.support.v4.app.Fragment}
+         * instance. We use this to manage the instances for this {@link com.development.jaba.moneypit.CarDetailsActivity.SectionsPagerAdapter}.
+         *
+         * @param container The {@link android.view.ViewGroup}.
+         * @param position  The position to get the instance for.
+         * @return The {@link com.development.jaba.fragments.BaseDetailsFragment} instance for the given position.
+         */
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            // Let the superclass come up with the instance we need.
+            BaseDetailsFragment fragment = (BaseDetailsFragment) super.instantiateItem(container, position);
+
+            // Save it in our cache and update it's current year.
+            mPages[position] = fragment;
+            fragment.onYearSelected(mCurrentYear);
+            return fragment;
+        }
+
+        /**
+         * A {@link android.support.v4.app.Fragment} is being destroyed. Remove it from out cache.
+         *
+         * @param container The {@link android.view.ViewGroup}.
+         * @param position  The position of the destroyed {@link android.support.v4.app.Fragment}.
+         * @param object    The object to be destroyed.
+         */
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            mPages[position] = null;
+            super.destroyItem(container, position, object);
+        }
+
+        /**
+         * Called to actually instantiate a new {@link com.development.jaba.fragments.BaseDetailsFragment} for the
+         * {@link android.support.v4.view.ViewPager}.
+         *
+         * @param position The position for which an instance hase to be created.
+         * @return The instance of the {@link com.development.jaba.fragments.BaseDetailsFragment} derived class.
+         */
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             if (position == 0) {
-                CarDetailsFillupsFragment fragment = (CarDetailsFillupsFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsFillupsFragment.class);
-                fragment.onYearSelected(mCurrentYear);
-                mPages[0] = fragment;
-                return fragment;
+                return BaseDetailsFragment.newInstance(mCarToShow, CarDetailsFillupsFragment.class);
             } else if (position == 1) {
-                CarDetailsCostFragment fragment = (CarDetailsCostFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsCostFragment.class);
-                fragment.onYearSelected(mCurrentYear);
-                mPages[1] = fragment;
-                return fragment;
+                return BaseDetailsFragment.newInstance(mCarToShow, CarDetailsCostFragment.class);
             } else if (position == 2) {
-                CarDetailsEconomyFragment fragment = (CarDetailsEconomyFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsEconomyFragment.class);
-                fragment.onYearSelected(mCurrentYear);
-                mPages[2] = fragment;
-                return fragment;
+                return BaseDetailsFragment.newInstance(mCarToShow, CarDetailsEconomyFragment.class);
             } else if (position == 3) {
-                CarDetailsSummaryFragment fragment = (CarDetailsSummaryFragment) BaseDetailsFragment.newInstance(mCarToShow, CarDetailsSummaryFragment.class);
-                fragment.onYearSelected(mCurrentYear);
-                mPages[3] = fragment;
-                return fragment;
+                return BaseDetailsFragment.newInstance(mCarToShow, CarDetailsSummaryFragment.class);
             }
             return null;
         }
 
+        /**
+         * Gets the number of pages in this {@link com.development.jaba.moneypit.CarDetailsActivity.SectionsPagerAdapter}.
+         *
+         * @return The page count.
+         */
         @Override
         public int getCount() {
             return NUM_PAGES;
         }
 
+        /**
+         * Gets the title of the page for the given position.
+         *
+         * @param position The position for which to get the title.
+         * @return The title of the page for the given position. null if out of bounds.
+         */
         @Override
         public CharSequence getPageTitle(int position) {
             if (position >= 0 && position < NUM_PAGES) {

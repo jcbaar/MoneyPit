@@ -89,4 +89,19 @@
     <string name="graph_cost_per_distance_per_month">brandstof kosten per %1$s, per maand voor %2$s %3$d</string>
     <string name="graph_distance_per_month">gereden afstand voor %1$s %2$d</string>
     <string name="graph_economy_per_month">gemiddeld brandstof verbruik voor %1$s %2$d</string>
+    <string name="summary_totals">Totalen:</string>
+    <string name="summary_distance_total">afstand:</string>
+    <string name="summary_cost_total">brandstof kosten:</string>
+    <string name="summary_volume_total">hoeveelheid:</string>
+    <string name="summary_averages">Gemiddelden:</string>
+    <string name="summary_economy_average">verbruik:</string>
+    <string name="summary_cost_average">kosten per maand:</string>
+    <string name="summary_cost_per">kosten per</string>
+    <string name="summary_summary">Samenvatting:</string>
+    <string name="summary_most_expensive_month">duurste maand:</string>
+    <string name="summary_least_expensive_month">goedkoopste maand:</string>
+    <string name="summary_best_economy_fillup">beste verbruik:</string>
+    <string name="summary_worst_economy_fillup">slechtste verbruik:</string>
+    <string name="summary_most_expensive_fillup">duurste tankbeurt:</string>
+    <string name="summary_least_expensive_fillup">goedkoopste tankbeurt:</string>
 </resources>

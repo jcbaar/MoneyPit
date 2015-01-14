@@ -89,4 +89,19 @@
     <string name="graph_cost_per_distance_per_month">fuel costs per %1$s, per mont for %2$s %3$d</string>
     <string name="graph_distance_per_month">driven distance for %1$s %2$d</string>
     <string name="graph_economy_per_month">average fuel economy for %1$s %2$d</string>
+    <string name="summary_totals">Totals:</string>
+    <string name="summary_distance_total">distance:</string>
+    <string name="summary_cost_total">fuel cost:</string>
+    <string name="summary_volume_total">amount of fuel:</string>
+    <string name="summary_averages">Averages:</string>
+    <string name="summary_economy_average">fuel economy:</string>
+    <string name="summary_cost_average">cost per month:</string>
+    <string name="summary_cost_per">cost per</string>
+    <string name="summary_summary">Summary:</string>
+    <string name="summary_most_expensive_month">most expensive month:</string>
+    <string name="summary_least_expensive_month">least expensive month:</string>
+    <string name="summary_best_economy_fillup">best fuel economy:</string>
+    <string name="summary_worst_economy_fillup">worst fuel economy:</string>
+    <string name="summary_most_expensive_fillup">most expensive fill-up:</string>
+    <string name="summary_least_expensive_fillup">least expensive fill-up:</string>
 </resources>

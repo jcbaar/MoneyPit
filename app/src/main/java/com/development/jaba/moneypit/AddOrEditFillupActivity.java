@@ -45,6 +45,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
     /**
      * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     *
      * @return The resource ID of the layout to inflate.
      */
     protected int getLayoutResource() {
@@ -62,13 +63,13 @@ public class AddOrEditFillupActivity extends BaseActivity {
         // an existing Car entity. Otherwise we instantiate a new Car
         // entity.
         Bundle b = getIntent().getExtras();
-        if( b != null) {
-            mCar = (Car)b.getSerializable(Keys.EK_CAR);
-            mFillupToEdit = (Fillup)b.getSerializable(Keys.EK_FILLUP);
+        if (b != null) {
+            mCar = (Car) b.getSerializable(Keys.EK_CAR);
+            mFillupToEdit = (Fillup) b.getSerializable(Keys.EK_FILLUP);
             mViewPosition = b.getInt(Keys.EK_VIEWPOSITION);
         }
 
-        if(mFillupToEdit == null) {
+        if (mFillupToEdit == null) {
             mFillupToEdit = new Fillup();
 
             // Link the new fill-up to the car.
@@ -78,7 +79,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
         mSurroundingFillups = mContext.getSurroundingFillups(mFillupToEdit.getDate(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
 
-        mDate = (DatePicker)findViewById(R.id.fillupDate);
+        mDate = (DatePicker) findViewById(R.id.fillupDate);
         mOdometer = (EditTextEx) findViewById(R.id.fillupOdo);
         mVolume = (EditTextEx) findViewById(R.id.fillupVolume);
         mPrice = (EditTextEx) findViewById(R.id.fillupPrice);
@@ -96,20 +97,19 @@ public class AddOrEditFillupActivity extends BaseActivity {
         mVolume.setValidator(new EditTextEx.RequiredValidator(this));
         mPrice.setValidator(new EditTextEx.RequiredValidator(this));
 
-        if(mFillupToEdit.getId() != 0) {
+        if (mFillupToEdit.getId() != 0) {
             toUi();
             setTitle(getString(R.string.title_edit_fillup));
-        }
-        else {
+        } else {
             setupDate(new Date());
             mFullTank.setChecked(true);
             setTitle(getString(R.string.title_create_fillup));
 
             // If settings tell us to, estimate the odometer setting.
             SettingsHelper settings = new SettingsHelper(this);
-            if(settings.getEstimateOdometer()) {
+            if (settings.getEstimateOdometer()) {
                 Fillup before = mSurroundingFillups.getBefore();
-                if(before != null) {
+                if (before != null) {
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
                     mOdometer.setText(String.valueOf(Math.round(before.getOdometer() + mFillupToEdit.getOdometer())));
                 }
@@ -145,14 +145,13 @@ public class AddOrEditFillupActivity extends BaseActivity {
     private Date getDate() {
         Calendar calDate = Calendar.getInstance();
 
-        if(mFillupToEdit.getId() == 0) {
+        if (mFillupToEdit.getId() == 0) {
             calDate.setTime(new Date());
             calDate.set(mDate.getYear(), mDate.getMonth(), mDate.getDayOfMonth(),
                     calDate.get(Calendar.HOUR_OF_DAY),
                     calDate.get(Calendar.MINUTE),
                     calDate.get(Calendar.SECOND));
-        }
-        else {
+        } else {
             calDate.setTime(mFillupToEdit.getDate());
             calDate.set(mDate.getYear(), mDate.getMonth(), mDate.getDayOfMonth(),
                     calDate.get(Calendar.HOUR_OF_DAY),
@@ -164,11 +163,12 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
     /**
      * Restores the values from a saved instance state back into the UI.
+     *
      * @param savedInstanceState The {@link android.os.Bundle} containing the saved values.
      */
     private void restoreState(Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
-            setupDate(DateHelper.getDateFromDateTime(savedInstanceState.getString(Fillup.KEY_DATE)));
+        if (savedInstanceState != null) {
+            setupDate(DateHelper.fromDateTimeString(savedInstanceState.getString(Fillup.KEY_DATE)));
             mOdometer.setText(savedInstanceState.getString(Fillup.KEY_ODOMETER));
             mVolume.setText(savedInstanceState.getString(Fillup.KEY_VOLUME));
             mPrice.setText(savedInstanceState.getString(Fillup.KEY_PRICE));
@@ -181,11 +181,12 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
     /**
      * Saves the values from the UI into a {@link android.os.Bundle}.
+     *
      * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
      */
     private void saveState(Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
-            savedInstanceState.putString(Fillup.KEY_DATE, DateHelper.getDateTimeAsString(getDate()));
+        if (savedInstanceState != null) {
+            savedInstanceState.putString(Fillup.KEY_DATE, DateHelper.toDateTimeString(getDate()));
             savedInstanceState.putString(Fillup.KEY_ODOMETER, mOdometer.getText().toString());
             savedInstanceState.putString(Fillup.KEY_VOLUME, mVolume.getText().toString());
             savedInstanceState.putString(Fillup.KEY_PRICE, mPrice.getText().toString());
@@ -223,6 +224,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
     /**
      * Validate all fields in the UI that require validation.
+     *
      * @return true for a successful validation. false if one or more
      * of the fields failed validation.
      */
@@ -242,7 +244,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
     private boolean addOrUpdateFillup() {
         // Validate the fields before we continue.
         boolean isOk = validateFields();
-        if(isOk) {
+        if (isOk) {
             // Copy the UI contents into the Fill-up entity.
             fromUi();
 
@@ -288,20 +290,17 @@ public class AddOrEditFillupActivity extends BaseActivity {
         if (id == R.id.action_ok) {
             addOrUpdateFillup();
             return true;
-        }
-        else if (id == R.id.action_cancel) {
-            if(getParent() == null) {
+        } else if (id == R.id.action_cancel) {
+            if (getParent() == null) {
                 setResult(RESULT_CANCELED);
-            }
-            else {
+            } else {
                 getParent().setResult(RESULT_CANCELED);
             }
             finish();
             return true;
-        }
-        else if(id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             Intent intent = NavUtils.getParentActivityIntent(this);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             NavUtils.navigateUpTo(this, intent);
         }
         return super.onOptionsItemSelected(item);
@@ -317,7 +316,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
          *
          * @param context The context.
          */
-        public OdoValidator (Context context) {
+        public OdoValidator(Context context) {
             super(context);
         }
 
@@ -331,7 +330,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
         @Override
         public boolean isValid(String value) {
             // We need something to parse...
-            if(TextUtils.isEmpty(value)) {
+            if (TextUtils.isEmpty(value)) {
                 setErrorMessage(R.string.no_text_error);
                 return false;
             }
@@ -347,9 +346,8 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
             // Make sure the odometer value is between the previous and next fill up
             // odometer settings.
-            if ((mSurroundingFillups.getBefore()!= null && odo <= mSurroundingFillups.getBefore().getOdometer()) ||
-                (mSurroundingFillups.getAfter() != null && odo >= mSurroundingFillups.getAfter().getOdometer()))
-            {
+            if ((mSurroundingFillups.getBefore() != null && odo <= mSurroundingFillups.getBefore().getOdometer()) ||
+                    (mSurroundingFillups.getAfter() != null && odo >= mSurroundingFillups.getAfter().getOdometer())) {
                 setErrorMessage(R.string.odo_error);
                 return false;
             }

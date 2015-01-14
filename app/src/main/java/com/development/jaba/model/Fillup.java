@@ -47,10 +47,12 @@ public class Fillup implements Serializable {
     //endregion
 
     //region Construction.
+
     /**
      * Constructor. Initializes an instance of the object.
      */
-    public Fillup() {}
+    public Fillup() {
+    }
 
     /**
      * Constructor. Initializes an instance of the object with the values
@@ -62,7 +64,7 @@ public class Fillup implements Serializable {
         try {
             this.mId = cursor.getInt(0);
             this.mCarId = cursor.getInt(1);
-            this.mDate = DateHelper.getDateFromDateTime(cursor.getString(2));
+            this.mDate = DateHelper.fromDateTimeString(cursor.getString(2));
             this.mOdometer = cursor.getDouble(3);
             this.mVolume = cursor.getDouble(4);
             this.mPrice = cursor.getDouble(5);
@@ -83,15 +85,17 @@ public class Fillup implements Serializable {
     //endregion
 
     //region Conversion methods.
+
     /**
      * Converts the object to {@link android.content.ContentValues}.
+     *
      * @return The {@link android.content.ContentValues} object containing the object. This will not
      * include the ID field. Also the fields that are not persisted to the database will not be included.
      */
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(KEY_CAR, this.mCarId);
-        values.put(KEY_DATE, DateHelper.getDateTimeAsString(this.mDate));
+        values.put(KEY_DATE, DateHelper.toDateTimeString(this.mDate));
         values.put(KEY_ODOMETER, this.mOdometer);
         values.put(KEY_VOLUME, this.mVolume);
         values.put(KEY_PRICE, this.mPrice);
@@ -188,32 +192,16 @@ public class Fillup implements Serializable {
         return mDaysSinceLastFillup;
     }
 
-    public void setDaysSinceLastFillup(int daysSinceLastFillup) {
-        this.mDaysSinceLastFillup = daysSinceLastFillup;
-    }
-
     public double getDistance() {
         return mDistance;
-    }
-
-    public void setDistance(double distance) {
-        this.mDistance = distance;
     }
 
     public double getTotalPrice() {
         return mTotalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
-        this.mTotalPrice = totalPrice;
-    }
-
     public double getFuelConsumption() {
         return mFuelConsumption;
-    }
-
-    public void setFuelConsumption(double fuelConsumption) {
-        this.mFuelConsumption = fuelConsumption;
     }
     //endregion
 }

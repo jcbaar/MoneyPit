@@ -41,8 +41,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     //endregion
 
     //region Construction.
+
     /**
      * Constructor. Initializes an instance of the object.
+     *
      * @param context The context.
      */
     public MoneyPitDbContext(Context context) {
@@ -87,7 +89,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                     "[Stacktrace] NTEXT NOT NULL, " +
                     "[Stamp] DATETIME NOT NULL);");
 
-            if(ConditionalHelper.DebugData) {
+            if (ConditionalHelper.DebugData) {
                 db.execSQL("INSERT INTO Car([Make], [Model], [Picture], [LicensePlate], [BuildYear], [Currency], [VolumeUnit], [DistanceUnit]) VALUES('Peugeot','207',null,'98-TX-NV',2007,'€',1,1);");
                 db.execSQL("INSERT INTO Car([Make], [Model], [Picture], [LicensePlate], [BuildYear], [Currency], [VolumeUnit], [DistanceUnit]) VALUES('Waypoint','Markers',null,'AA-11-BB',2013,'€',1,1);");
 
@@ -180,11 +182,9 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-22 07:35:26',130278,29.41,1.469,1,NULL,NULL,NULL);");
             }
             db.setTransactionSuccessful();
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("onCreate", ex.getMessage());
-        }
-        finally {
+        } finally {
             db.endTransaction();
         }
     }
@@ -221,8 +221,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
             // Close the streams
             output.flush();
-        }
-        finally {
+        } finally {
             if (output != null) {
                 output.close();
             }
@@ -234,9 +233,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     //endregion
 
     //region Car related methods
+
     /**
      * Adds a car to the database. It will return 0 when the car has a
      * license plate which is already present in the database.
+     *
      * @param car The car entity to store in the database.
      * @return The database ID of the added Car entity or 0 when either a car
      * with the same license plate already exists in the database or an error
@@ -251,12 +252,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return db.insertOrThrow(TABLE_CAR,
                     null,
                     values);
-        }
-        catch(SQLiteException ex){
+        } catch (SQLiteException ex) {
             Log.e("addCar", ex.getMessage());
             return 0;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
@@ -265,6 +264,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Updates the given car entity in the database. The id field
      * of the entity needs to contain the id of the car entity to
      * update. The rest of the fields are used as the updated information.
+     *
      * @param car The car entity to update in the database.
      * @return true for success, false for failure.
      */
@@ -276,15 +276,13 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             ContentValues values = car.toContentValues();
 
             return db.update(TABLE_CAR,
-                values,
-                Car.KEY_ID + " = ?",
-                new String[]{String.valueOf(car.getId())}) == 1;
-        }
-        catch(SQLiteException ex) {
+                    values,
+                    Car.KEY_ID + " = ?",
+                    new String[]{String.valueOf(car.getId())}) == 1;
+        } catch (SQLiteException ex) {
             Log.e("updateCar", ex.getMessage());
             return false;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
@@ -292,6 +290,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     /**
      * Deletes the given car entity from the database. Only the
      * id field of the entity needs to be valid.
+     *
      * @param car The car entity to delete from the database.
      * @return true for success, false for failure.
      */
@@ -304,12 +303,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return db.delete(TABLE_CAR,
                     Car.KEY_ID + " = ?",
                     new String[]{String.valueOf(car.getId())}) == 1;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("deleteCar", ex.getMessage());
             return false;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
@@ -317,6 +314,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     /**
      * Helper function to either get all car entities from the database or to
      * get a single car entity from the database.
+     *
      * @param id The id of the car entity to get or 0 to get them all.
      * @return A List of car entities queried from the database.
      */
@@ -325,12 +323,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         String query;
         String[] args = null;
-        if ( id == 0 ) {
+        if (id == 0) {
             query = "SELECT  * FROM " + TABLE_CAR;
-        }
-        else {
+        } else {
             query = "SELECT * FROM " + TABLE_CAR + " WHERE _Id = ?";
-            args = new String[] { String.valueOf(id) };
+            args = new String[]{String.valueOf(id)};
         }
 
         SQLiteDatabase db;
@@ -346,14 +343,12 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
             return cars;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getCars", ex.getMessage());
             cars.clear();
             return cars;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -362,6 +357,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     /**
      * Get all car entities from the database.
+     *
      * @return A List of Car entities or an empty list if there are no
      * cars in the database or an error occurred.
      */
@@ -372,13 +368,14 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     /**
      * Gets a car with the given license plate.
+     *
      * @param licensePlate The license plate to look for.
      * @return The car entity or null if the car was not found in the database.
      */
     public Car getCarByLicensePlate(String licensePlate) {
         Car result = null;
         String query = "SELECT * FROM " + TABLE_CAR + " WHERE LicensePlate = ? COLLATE NOCASE";
-        String[] args = new String[] { String.valueOf(licensePlate) };
+        String[] args = new String[]{String.valueOf(licensePlate)};
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -392,13 +389,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 }
             }
             return result;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getCars", ex.getMessage());
             return null;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -408,6 +403,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     /**
      * Gets the averages for all cars in the database. The averages are computed on
      * full tank fill-ups only. Partial fill-ups are left out of the computation.
+     *
      * @return A {@link @List} of {@link CarAverage} objects. One {@link CarAverage} for each
      * car in the database.
      */
@@ -434,14 +430,12 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
             return avgs;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getCarAverages", ex.getMessage());
             avgs.clear();
             return avgs;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -451,6 +445,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     /**
      * Gets the average for a single {@link Car} from the database. The averages are computed on
      * full tank fill-ups only. Partial fill-ups are left out of the computation.
+     *
      * @return A {@link CarAverage} object.
      */
     public CarAverage getCarAverage(int carId) {
@@ -458,7 +453,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
                 "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
                 "WHERE Fillup.FullTank = 1 AND Car._id = ?";
-        String[] args = new String[] { String.valueOf(carId) };
+        String[] args = new String[]{String.valueOf(carId)};
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -471,13 +466,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 avg = new CarAverage(cursor);
             }
             return avg;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getCarAverage", ex.getMessage());
             return null;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -486,8 +479,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     //endregion
 
     //region Fillup related methods
+
     /**
      * Add a new fillup entity to the database.
+     *
      * @param fillup The fillup entity to add to the database.
      * @return The database id of the added entity or 0 in case of an error.
      */
@@ -500,12 +495,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return db.insertOrThrow(TABLE_FILLUP,
                     null,
                     values);
-        }
-        catch(SQLiteException ex){
+        } catch (SQLiteException ex) {
             Log.e("addFillup", ex.getMessage());
             return 0;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
@@ -514,6 +507,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Update a fillup entity in the database. The id field of the entity
      * should contain the database id of the fillup to update. The other fields
      * are used as the information to update.
+     *
      * @param fillup The fillup entity to update.
      * @return true for success, false for failure.
      */
@@ -528,12 +522,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                     values,
                     Fillup.KEY_ID + " = ?",
                     new String[]{String.valueOf(fillup.getId())}) == 1;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("updateFillup", ex.getMessage());
             return false;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
@@ -542,6 +534,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Delete the given fillup from the database. The id field on the entity
      * should contain the database ID of the fillup to delete. The other fields
      * in the entity are ignored.
+     *
      * @param fillup The fillup entity to delete.
      * @return true for success, false for failure.
      */
@@ -554,40 +547,39 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             return db.delete(TABLE_FILLUP,
                     Fillup.KEY_ID + " = ?",
                     new String[]{String.valueOf(fillup.getId())}) == 1;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("deleteFillup", ex.getMessage());
             return false;
-        }
-        finally {
+        } finally {
             mDbManager.closeDatabase();
         }
     }
 
     /**
      * Gets all the fillups belonging to the given car from the given year.
+     *
      * @param carId The id of the car for which to get the fillups.
-     * @param year The year for which to get the fillups or 0 to get them all.
+     * @param year  The year for which to get the fillups or 0 to get them all.
      * @return A List of Fillup entities.
      */
     public List<Fillup> getFillupsOfCar(int carId, int year) {
         List<Fillup> result = new LinkedList<>();
         String query = "SELECT *, " +
-                       "Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
-                       "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
-                       "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
-                       "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer))) / Volume AS Economy, " +
-                       "Price * Volume AS TotalPrice " +
-                       "FROM Fillup AS T1 " +
-                       "WHERE (CarId = ?) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) " +
-                       "ORDER BY Date DESC";
-        String[] args = new String[] { String.valueOf(carId),
-                                       String.valueOf(carId),
-                                       String.valueOf(carId),
-                                       String.valueOf(carId),
-                                       String.valueOf(carId),
-                                       String.valueOf(year),
-                                       String.valueOf(year) };
+                "Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
+                "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
+                "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
+                "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer))) / Volume AS Economy, " +
+                "Price * Volume AS TotalPrice " +
+                "FROM Fillup AS T1 " +
+                "WHERE (CarId = ?) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) " +
+                "ORDER BY Date DESC";
+        String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(carId),
+                String.valueOf(year),
+                String.valueOf(year)};
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -605,14 +597,12 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor.close();
             cursor = null;
             return result;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getFillupByCar", ex.getMessage());
             result.clear();
             return result;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -625,19 +615,18 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * If after returns null there are no later fill ups. When they both
      * return null there are no fill ups at all.
      *
-     * @param date The date to find the surrounding fill ups of.
-     * @param carId The id of the car the fill ups should belong to.
+     * @param date     The date to find the surrounding fill ups of.
+     * @param carId    The id of the car the fill ups should belong to.
      * @param fillupId The id of the fill up which is being edited. 0 for a new fill up.
      */
-    public SurroundingFillups getSurroundingFillups(Date date, int carId, int fillupId)
-    {
+    public SurroundingFillups getSurroundingFillups(Date date, int carId, int fillupId) {
         SurroundingFillups result = new SurroundingFillups();
 
         String query1 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date < ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date DESC LIMIT 1";
         String query2 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date > ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date ASC LIMIT 1";
-        String[] args = new String[] { DateHelper.getDateTimeAsString(date),
+        String[] args = new String[]{DateHelper.toDateTimeString(date),
                 String.valueOf(carId),
-                String.valueOf(fillupId) };
+                String.valueOf(fillupId)};
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -662,13 +651,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor.close();
             cursor = null;
             return result;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("GetSurroundingFillups", ex.getMessage());
             return null;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -681,12 +668,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param carId The id of the {@link Car} to get the oldest year of.
      * @return The oldest year of the {@link Car}
      */
-    public int getOldestDataYear(int carId)
-    {
+    public int getOldestDataYear(int carId) {
         int year = DateHelper.getYearFromDate(new Date());
 
         String query = "SELECT Date FROM " + TABLE_FILLUP + " WHERE (CarId = ?) ORDER BY Date ASC LIMIT 1";
-        String[] args = new String[] { String.valueOf(carId) };
+        String[] args = new String[]{String.valueOf(carId)};
 
         SQLiteDatabase db;
         Cursor cursor = null;
@@ -695,19 +681,17 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, args);
 
             if (cursor.moveToFirst()) {
-                year = DateHelper.getYearFromDate(DateHelper.getDateFromDateTime(cursor.getString(0)));
+                year = DateHelper.getYearFromDate(DateHelper.fromDateTimeString(cursor.getString(0)));
             }
 
             cursor.close();
             cursor = null;
             return year;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getOldestDataYear", ex.getMessage());
             return year;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -718,13 +702,12 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the average fuel cost of the given car per month in the given year.
      *
      * @param carId The id of the car the information is read for.
-     * @param year The year the data should belong to.
+     * @param year  The year the data should belong to.
      */
-    public DataPoint[] getFuelCostPerMonth(int carId, int year)
-    {
+    public DataPoint[] getFuelCostPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
-        String[] args = new String[] { String.valueOf(carId),
-                String.valueOf(year) };
+        String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(year)};
 
         return getGraphDataPoints(query, args);
     }
@@ -733,17 +716,16 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the average fuel cost of the given car per month, per kilometer in the given year.
      *
      * @param carId The id of the car the information is read for.
-     * @param year The year the data should belong to.
+     * @param year  The year the data should belong to.
      */
-    public DataPoint[] getFuelCostPerKilometerPerMonth(int carId, int year)
-    {
+    public DataPoint[] getFuelCostPerKilometerPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price*Volume) / " +
                 "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
-        String[] args = new String[] { String.valueOf(carId),
+        String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
-                String.valueOf(year) };
+                String.valueOf(year)};
 
         return getGraphDataPoints(query, args);
     }
@@ -752,17 +734,16 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the average driven distance of the given car per month in the given year.
      *
      * @param carId The id of the car the information is read for.
-     * @param year The year the data should belong to.
+     * @param year  The year the data should belong to.
      */
-    public DataPoint[] getDistancePerMonth(int carId, int year)
-    {
+    public DataPoint[] getDistancePerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
                 "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
-        String[] args = new String[] { String.valueOf(carId),
+        String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
-                String.valueOf(year) };
+                String.valueOf(year)};
 
         return getGraphDataPoints(query, args);
     }
@@ -771,17 +752,16 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the average fuel economy of the given car per month in the given year.
      *
      * @param carId The id of the car the information is read for.
-     * @param year The year the data should belong to.
+     * @param year  The year the data should belong to.
      */
-    public DataPoint[] getEconomyPerMonth(int carId, int year)
-    {
+    public DataPoint[] getEconomyPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
                 "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
                 "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
-        String[] args = new String[] { String.valueOf(carId),
+        String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
-                String.valueOf(year) };
+                String.valueOf(year)};
 
         return getGraphDataPoints(query, args);
     }
@@ -790,15 +770,13 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the statistical information for the graphs.
      *
      * @param query The query to run.
-     * @param args The query arguments.
-     *
+     * @param args  The query arguments.
      * @return An array of 12 {@link DataPoint} objects containing the information.
      */
-    public DataPoint[] getGraphDataPoints(String query, String[] args)
-    {
+    public DataPoint[] getGraphDataPoints(String query, String[] args) {
         DataPoint[] result = new DataPoint[12];
-        for ( int m = 0; m < 12; m++) {
-            result[ m ] = new DataPoint(m, 0);
+        for (int m = 0; m < 12; m++) {
+            result[m] = new DataPoint(m, 0);
         }
 
         SQLiteDatabase db;
@@ -810,7 +788,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     int m = cursor.getInt(0) - 1;
-                    if(m >= 0) {
+                    if (m >= 0) {
                         result[m] = new DataPoint(m, cursor.getDouble(1));
                     }
                 } while (cursor.moveToNext());
@@ -819,13 +797,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor.close();
             cursor = null;
             return result;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getGraphDataPoints", ex.getMessage());
             return result;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -836,11 +812,9 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Get the estimated odometer setting for the next fill-up.
      *
      * @param carId The ID of the {@link Car} for which to return the estimated odometer setting.
-     *
      * @return The estimated odometer for the given car.
      */
-    public double getEstimatedOdometer(int carId)
-    {
+    public double getEstimatedOdometer(int carId) {
         SQLiteDatabase db;
         Cursor cursor = null;
 
@@ -848,8 +822,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 "FullTank " +
                 "FROM Fillup AS T1 WHERE CarId= ?" +
                 "ORDER BY DATE DESC";
-        String[] args = new String[] { String.valueOf(carId),
-                String.valueOf(carId) };
+        String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(carId)};
 
         try {
             db = mDbManager.openDatabase();
@@ -861,7 +835,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 do {
                     double dist = cursor.getDouble(0);
                     boolean isFull = cursor.getInt(1) == 1;
-                    if( isFull && dist > 0) {
+                    if (isFull && dist > 0) {
                         fullDist += dist;
                         count++;
                     }
@@ -871,13 +845,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor.close();
             cursor = null;
             return fullDist / count;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("getEstimatedOdometer", ex.getMessage());
             return 0.0f;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
@@ -888,18 +860,16 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * Check to see if the given car has any data for the given year.
      *
      * @param carId The ID of the {@link Car} for which check.
-     * @param year The year for which to check if there is data.
-     *
+     * @param year  The year for which to check if there is data.
      * @return true if data was found, false if not.
      */
-    public boolean hasData(int carId, int year)
-    {
+    public boolean hasData(int carId, int year) {
         SQLiteDatabase db;
         Cursor cursor = null;
 
         String query = "SELECT COUNT(1) FROM Fillup WHERE CarId= ? AND CAST(strftime('%Y', Date) AS INT) = ?";
-        String[] args = new String[] { String.valueOf(carId),
-                String.valueOf(year) };
+        String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(year)};
 
         try {
             db = mDbManager.openDatabase();
@@ -913,13 +883,11 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             cursor.close();
             cursor = null;
             return hasData;
-        }
-        catch(SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.e("hasData", ex.getMessage());
             return false;
-        }
-        finally {
-            if(cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
             mDbManager.closeDatabase();
