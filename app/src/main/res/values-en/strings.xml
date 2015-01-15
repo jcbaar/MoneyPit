@@ -105,4 +105,7 @@
     <string name="summary_most_expensive_fillup">most expensive fill-up:</string>
     <string name="summary_least_expensive_fillup">least expensive fill-up:</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_about">About MoneyPit</string>
+    <string name="version">version</string>
+    <string name="about_body">Link to &lt;a href="http://www.codeproject.com"&gt;TheCodeProject&lt;/a&gt;</string>
 </resources>

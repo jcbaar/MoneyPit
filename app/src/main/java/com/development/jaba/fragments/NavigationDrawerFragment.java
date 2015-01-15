@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import com.development.jaba.adapters.NavigationDrawerAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.model.NavigationDrawerItem;
+import com.development.jaba.moneypit.AboutActivity;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.moneypit.SettingsActivity;
 import com.development.jaba.utilities.SettingsHelper;
@@ -146,6 +147,8 @@ public class NavigationDrawerFragment extends Fragment {
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent a = new Intent(getActivity(), AboutActivity.class);
+                startActivity(a);
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }

@@ -21,8 +21,8 @@
         <activity
             android:name=".MainDrawerActivity"
             android:label="@string/title_activity_main_drawer">
-        <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -30,14 +30,14 @@
         <activity
             android:name=".AddOrEditCarActivity"
             android:label="@string/title_activity_add_or_edit_car">
-        <meta-data
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.development.jaba.moneypit.MainDrawerActivity" />
         </activity>
         <activity
             android:name=".CarDetailsActivity"
             android:label="@string/title_activity_car_details">
-        <meta-data
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.development.jaba.moneypit.AddOrEditCarActivity" />
         </activity>
@@ -45,13 +45,21 @@
             android:name=".AddOrEditFillupActivity"
             android:label="@string/title_activity_add_or_edit_fillup"
             android:parentActivityName=".MainDrawerActivity">
-        <meta-data
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.development.jaba.moneypit.MainDrawerActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainDrawerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.development.jaba.moneypit.MainDrawerActivity" />
+        </activity>
     </application>
 
 </manifest>

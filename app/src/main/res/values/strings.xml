@@ -105,5 +105,9 @@
     <string name="summary_most_expensive_fillup">duurste tankbeurt:</string>
     <string name="summary_least_expensive_fillup">goedkoopste tankbeurt:</string>
     <string name="title_activity_settings">Instellingen</string>
+    <string name="title_activity_about">Over MoneyPit</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="version">versie</string>
+    <string name="about_body">Link naar &lt;a href="http://www.codeproject.com"&gt;TheCodeProject&lt;/a&gt;</string>
 
 </resources>
