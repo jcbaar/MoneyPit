@@ -36,7 +36,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="-10dp">
 
                     <ImageButton
                         android:layout_gravity="right"
@@ -46,24 +47,21 @@
                         android:background="#0000"
                         android:src="@drawable/card_menu_button_overflow_material"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="-10dp" />
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/carMakeModel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|left"
-                        android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="Peugeot 207"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
                         android:layout_alignParentStart="false"
                         android:layout_alignParentLeft="true"
                         android:layout_toStartOf="@id/headerMenu"
-                        android:layout_marginTop="2dp" />
+
+                        style="@style/ListPrimaryText"
+                        android:layout_centerVertical="true" />
                 </RelativeLayout>
 
                 <TextView
@@ -71,17 +69,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="98-TX-NV (2007)"
-                    android:textSize="15sp"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    android:layout_marginTop="-6dp" />
+                    android:layout_marginTop="-6dp"
+
+                    style="@style/ListTertiaryText" />
 
                 <TextView
                     android:id="@+id/carAverages"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Avg. 15L (EUR 32.36) per fill up"
-                    android:textSize="15sp"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+                    style="@style/ListTertiaryText" />
             </LinearLayout>
         </TableRow>
     </TableLayout>
@@ -89,5 +87,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/listDividerLight" />
+        android:background="@color/divider" />
 </LinearLayout>

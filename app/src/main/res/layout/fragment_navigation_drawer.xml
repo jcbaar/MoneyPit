@@ -38,11 +38,9 @@
                 android:layout_height="48dp"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:textSize="16sp"
                 android:text="@string/nav_settings"
-                android:textColor="@android:color/tertiary_text_light"
-                android:focusable="false"
-                android:gravity="center_vertical" />
+
+                style="@style/NavigationItemText" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,11 +60,9 @@
                 android:layout_height="48dp"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:textSize="16sp"
                 android:text="@string/nav_about"
-                android:textColor="@android:color/tertiary_text_light"
-                android:focusable="false"
-                android:gravity="center_vertical" />
+
+                style="@style/NavigationItemText" />
         </LinearLayout>
     </LinearLayout>
 
@@ -74,6 +70,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignTop="@+id/fixedItems"
-        android:background="@color/listCardBorder" />
+        android:background="@color/divider" />
 
 </RelativeLayout>
