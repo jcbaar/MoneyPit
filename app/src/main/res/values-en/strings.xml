@@ -104,4 +104,5 @@
     <string name="summary_worst_economy_fillup">worst fuel economy:</string>
     <string name="summary_most_expensive_fillup">most expensive fill-up:</string>
     <string name="summary_least_expensive_fillup">least expensive fill-up:</string>
+    <string name="title_activity_settings">Settings</string>
 </resources>

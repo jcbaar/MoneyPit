@@ -6,6 +6,7 @@ package com.development.jaba.model;
 public class NavigationDrawerItem {
 
     private String mTitle;
+    private int mIconId;
 
 
     /**
@@ -22,5 +23,23 @@ public class NavigationDrawerItem {
      */
     public void setTitle(String title) {
         this.mTitle = title;
+    }
+
+    /**
+     * Gets the icon resource ID for the item.
+     *
+     * @return The item icon resource ID.
+     */
+    public int getIconId() {
+        return mIconId;
+    }
+
+    /**
+     * Sets the icon resource ID for the item.
+     *
+     * @param iconId The icon resource ID for the item.
+     */
+    public void setIconId(int iconId) {
+        this.mIconId = iconId;
     }
 }

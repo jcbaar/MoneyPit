@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/navigation_states">
+
+    <ImageView
+        android:id="@+id/navigationIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_directions_car_grey600_24dp"
+        android:scaleType="centerInside" />
 
     <TextView
         android:id="@+id/navigationLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_height="48dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
         android:text="Placeholder text"
-        android:textColor="@android:color/primary_text_light"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="15dp"
-        android:background="@drawable/navigation_states"
+        android:textColor="@android:color/tertiary_text_light"
         android:focusable="false"
-        android:paddingBottom="15dp"/>
+        android:gravity="center_vertical" />
 </LinearLayout>

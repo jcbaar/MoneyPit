@@ -1,8 +1,11 @@
 package com.development.jaba.moneypit;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 /**
  * A simple {@link android.support.v7.app.ActionBarActivity} derived class that serves as a base
@@ -47,4 +50,27 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected Toolbar getToolbar() {
         return mToolbar;
     }
+
+    /**
+     * Callback the is called when the user has selected an item from the options
+     * menu.
+     *
+     * @param item The item the user selected.
+     * @return true when the item selection was handled, false when not.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            Intent intent = NavUtils.getParentActivityIntent(this);
+            if (intent != null) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                NavUtils.navigateUpTo(this, intent);
+            } else {
+                finish();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -3,7 +3,6 @@ package com.development.jaba.moneypit;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -298,10 +297,6 @@ public class AddOrEditFillupActivity extends BaseActivity {
             }
             finish();
             return true;
-        } else if (id == android.R.id.home) {
-            Intent intent = NavUtils.getParentActivityIntent(this);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            NavUtils.navigateUpTo(this, intent);
         }
         return super.onOptionsItemSelected(item);
     }

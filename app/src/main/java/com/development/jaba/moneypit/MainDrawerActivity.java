@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.NavigationDrawerFragment;
-import com.development.jaba.fragments.SettingsFragment;
 
 import java.io.IOException;
 
@@ -90,11 +89,6 @@ public class MainDrawerActivity extends BaseActivity
         switch (position + 1) {
             case 1: // Cars fragment.
                 mFragment = CarListFragment.newInstance();
-                break;
-
-            case 2: // Settings fragment.
-                mNativeFragment = SettingsFragment.newInstance();
-                useNative = true;
                 break;
 
             default:

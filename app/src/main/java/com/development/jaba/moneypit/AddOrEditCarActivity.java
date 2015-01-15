@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +33,7 @@ public class AddOrEditCarActivity extends BaseActivity {
     private final static int REQUEST_GET_PICTURE = 1;
 
     private Spinner mDistanceUnits,
-                    mVolumeUnits;
+            mVolumeUnits;
 
     private EditTextEx mMake,
             mModel,
@@ -54,6 +53,7 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
+     *
      * @return The resource ID of the layout to inflate.
      */
     @Override
@@ -63,6 +63,7 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Called when the Activity is starting.
+     *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down
      *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
      *                           Note: Otherwise it is null.
@@ -74,11 +75,10 @@ public class AddOrEditCarActivity extends BaseActivity {
         // an existing Car entity. Otherwise we instantiate a new Car
         // entity.
         Bundle b = getIntent().getExtras();
-        if( b != null) {
-            mCarToEdit = (Car)b.getSerializable(Keys.EK_CAR);
+        if (b != null) {
+            mCarToEdit = (Car) b.getSerializable(Keys.EK_CAR);
             mViewPosition = b.getInt(Keys.EK_VIEWPOSITION);
-        }
-        else {
+        } else {
             mCarToEdit = new Car();
         }
 
@@ -115,12 +115,10 @@ public class AddOrEditCarActivity extends BaseActivity {
 
         // Setup the activity title depending on whether we are editing and
         // existing Car entity or a new one.
-        if(mCarToEdit.getId() != 0)
-        {
+        if (mCarToEdit.getId() != 0) {
             toUi();
             setTitle(getString(R.string.title_edit_car));
-        }
-        else {
+        } else {
             setTitle(getString(R.string.title_create_car));
         }
 
@@ -129,10 +127,11 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Restores the values from a saved instance state back into the UI.
+     *
      * @param savedInstanceState The {@link android.os.Bundle} containing the saved values.
      */
     private void restoreState(Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mMake.setText(savedInstanceState.getString(Car.KEY_MAKE));
             mModel.setText(savedInstanceState.getString(Car.KEY_MODEL));
             mBuildYear.setText(savedInstanceState.getString(Car.KEY_BUILDYEAR));
@@ -145,10 +144,11 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Saves the values from the UI into a {@link android.os.Bundle}.
+     *
      * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
      */
     private void saveState(Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             savedInstanceState.putString(Car.KEY_MAKE, mMake.getText().toString());
             savedInstanceState.putString(Car.KEY_MODEL, mModel.getText().toString());
             savedInstanceState.putString(Car.KEY_BUILDYEAR, mBuildYear.getText().toString());
@@ -188,6 +188,7 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Validate all fields in the UI that require validation.
+     *
      * @return true for a successful validation. false if one or more
      * of the fields failed validation.
      */
@@ -201,6 +202,7 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     /**
      * Called to create the Activity menu.
+     *
      * @param menu The menu.
      * @return true to show the menu.
      */
@@ -218,7 +220,7 @@ public class AddOrEditCarActivity extends BaseActivity {
     private boolean addOrUpdateCar() {
         // Validate the fields before we continue.
         boolean isOk = validateFields();
-        if(isOk) {
+        if (isOk) {
             // Copy the UI contents into the Car entity.
             fromUi();
 
@@ -244,10 +246,9 @@ public class AddOrEditCarActivity extends BaseActivity {
                 Intent result = new Intent();
                 result.putExtra(Keys.EK_CAR, mCarToEdit);
                 result.putExtra(Keys.EK_VIEWPOSITION, mViewPosition);
-                if(getParent() == null) {
+                if (getParent() == null) {
                     setResult(RESULT_OK, result);
-                }
-                else {
+                } else {
                     getParent().setResult(RESULT_OK, result);
                 }
                 finish();
@@ -261,6 +262,7 @@ public class AddOrEditCarActivity extends BaseActivity {
     /**
      * Callback the is called when the user has selected an item from the options
      * menu.
+     *
      * @param item The item the user selected.
      * @return true when the item selection was handled, false when not.
      */
@@ -270,21 +272,15 @@ public class AddOrEditCarActivity extends BaseActivity {
         if (id == R.id.action_ok) {
             addOrUpdateCar();
             return true;
-        }
-        else if (id == R.id.action_cancel) {
-            if(getParent() == null) {
+        } else if (id == R.id.action_cancel) {
+            if (getParent() == null) {
                 setResult(RESULT_CANCELED);
-            }
-            else {
+            } else {
                 getParent().setResult(RESULT_CANCELED);
             }
             finish();
             return true;
         }
-        else if(id == android.R.id.home) {
-            Intent intent = NavUtils.getParentActivityIntent(this);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            NavUtils.navigateUpTo(this, intent);        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -292,13 +288,13 @@ public class AddOrEditCarActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_GET_PICTURE:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
                     mCarToEdit.setImage(this, selectedImage);
 
-                    ImageView i = (ImageView)findViewById(R.id.imageView);
+                    ImageView i = (ImageView) findViewById(R.id.imageView);
                     i.setImageBitmap(mCarToEdit.getImage());
                 }
         }
@@ -330,7 +326,7 @@ public class AddOrEditCarActivity extends BaseActivity {
          *
          * @param context The context.
          */
-        public BuildYearValidator (Context context) {
+        public BuildYearValidator(Context context) {
             super(context);
         }
 
@@ -351,8 +347,7 @@ public class AddOrEditCarActivity extends BaseActivity {
                     setErrorMessage(R.string.buildyear_to_high);
                     return false;
                 }
-            }
-            catch(NumberFormatException ex) {
+            } catch (NumberFormatException ex) {
                 setErrorMessage(R.string.buildyear_error);
                 return false;
             }
@@ -385,12 +380,12 @@ public class AddOrEditCarActivity extends BaseActivity {
         @Override
         public boolean isValid(String value) {
             // We need a value...
-            if(TextUtils.isEmpty(value)) {
+            if (TextUtils.isEmpty(value)) {
                 setErrorMessage(R.string.no_text_error);
                 return false;
             }
 
-            if(mCarToEdit.getId() == 0 && context.getCarByLicensePlate(value) != null) {
+            if (mCarToEdit.getId() == 0 && context.getCarByLicensePlate(value) != null) {
                 setErrorMessage(getString(R.string.license_error));
                 return false;
             }

@@ -1,12 +1,12 @@
 package com.development.jaba.fragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +22,7 @@ import com.development.jaba.adapters.NavigationDrawerAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
 import com.development.jaba.model.NavigationDrawerItem;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.moneypit.SettingsActivity;
 import com.development.jaba.utilities.SettingsHelper;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
     private SettingsHelper mSettings;
     private DrawerLayout mDrawerLayout;
     private View mFragmentContainerView;
+    private NavigationDrawerAdapter mAdapter;
 
     private int mCurrentSelectedPosition = -1;
     private boolean mFromSavedInstanceState;
@@ -78,9 +80,6 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition < 0 ? 0 : mCurrentSelectedPosition);
     }
 
     @Override
@@ -90,14 +89,17 @@ public class NavigationDrawerFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Setup the {@link java.util.List} of {@link com.development.jaba.model.NavigationDrawerItem} items for the navigation drawer.
+     *
+     * @return The {@link java.util.List} of {@link com.development.jaba.model.NavigationDrawerItem} objects.
+     */
     private List<NavigationDrawerItem> getData() {
         List<NavigationDrawerItem> data = new ArrayList<>();
         NavigationDrawerItem item = new NavigationDrawerItem();
 
         item.setTitle(getResources().getString(R.string.nav_cars));
-        data.add(item);
-        item = new NavigationDrawerItem();
-        item.setTitle(getResources().getString(R.string.nav_settings));
+        item.setIconId(R.drawable.ic_directions_car_grey600_24dp);
         data.add(item);
         return data;
     }
@@ -106,9 +108,9 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerList = (RecyclerView) layout.findViewById(R.id.navigationList);
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getActivity(), getData());
+        mAdapter = new NavigationDrawerAdapter(getActivity(), getData());
 
-        adapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
+        mAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
             @Override
             public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
                 if (!isLongClick) {
@@ -123,8 +125,33 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-        mDrawerList.setAdapter(adapter);
+        mDrawerList.setAdapter(mAdapter);
         mDrawerList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        selectItem(mCurrentSelectedPosition < 0 ? 0 : mCurrentSelectedPosition);
+
+        // Setup the click listeners for the settings and the about activities.
+        View settings = layout.findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent s = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(s);
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
+            }
+        });
+
+        View about = layout.findViewById(R.id.about);
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
+            }
+        });
+
         return layout;
     }
 
@@ -201,20 +228,22 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    /**
+     * Selectes the specified item in the navigation drawer.
+     *
+     * @param position The position of the item to select.
+     */
     private void selectItem(int position) {
-        if(position != mCurrentSelectedPosition) {
+        mAdapter.selectItem(position);
+
+        if (position != mCurrentSelectedPosition) {
             mCurrentSelectedPosition = position;
 
-            if (mDrawerList != null) {
-                View child = mDrawerList.getChildAt(position);
-                if (child != null) {
-                    child.setSelected(true);
-                }
-            }
             if (mCallbacks != null) {
                 mCallbacks.onNavigationDrawerItemSelected(position);
             }
         }
+
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
@@ -255,7 +284,7 @@ public class NavigationDrawerFragment extends Fragment {
             menu.clear();
         }
     }
-    
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // If the drawer is open, show the global app actions in the action bar. See also

@@ -104,4 +104,6 @@
     <string name="summary_worst_economy_fillup">slechtste verbruik:</string>
     <string name="summary_most_expensive_fillup">duurste tankbeurt:</string>
     <string name="summary_least_expensive_fillup">goedkoopste tankbeurt:</string>
+    <string name="title_activity_settings">Instellingen</string>
+
 </resources>
