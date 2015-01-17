@@ -31,7 +31,6 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     private MoneyPitDbContext mContext;
     private TextView mHeader,
             mData;
-    private ImageView mImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,14 +51,14 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         if (mCar != null) {
             mHeader = (TextView) view.findViewById(R.id.header);
             mData = (TextView) view.findViewById(R.id.data);
-            mImage = (ImageView) view.findViewById(R.id.image);
+            ImageView image = (ImageView) view.findViewById(R.id.image);
 
             Bitmap picture = mCar.getImage();
             if (picture != null) {
-                mImage.setVisibility(View.VISIBLE);
-                mImage.setImageBitmap(picture);
+                image.setVisibility(View.VISIBLE);
+                image.setImageBitmap(picture);
             } else {
-                mImage.setVisibility(View.GONE);
+                image.setVisibility(View.GONE);
             }
             summarize();
         }

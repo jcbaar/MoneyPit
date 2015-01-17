@@ -22,7 +22,7 @@
             android:name=".MainDrawerActivity"
             android:label="@string/title_activity_main_drawer">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

@@ -21,7 +21,7 @@ import com.jjoe64.graphview.series.Series;
 import java.util.Date;
 
 /**
- * A {@link BaseDetailsFragment} subclass containing the distance-per-month
+ * A {@link GraphFragment} subclass containing the distance-per-month
  * and economy-per-month graphs.
  */
 public class CarDetailsEconomyFragment extends GraphFragment {

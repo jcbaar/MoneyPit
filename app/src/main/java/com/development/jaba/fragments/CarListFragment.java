@@ -35,7 +35,7 @@ import java.util.List;
 public class CarListFragment extends Fragment {
 
     private static final int REQUEST_EDIT_CAR = 1,  // Request code for editing a car.
-                             REQUEST_ADD_CAR = 2;   // Request code for adding a new car.
+            REQUEST_ADD_CAR = 2;   // Request code for adding a new car.
 
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
@@ -43,15 +43,16 @@ public class CarListFragment extends Fragment {
 
     /**
      * Static factory method. Creates a new instance of this fragment.
+     *
      * @return The created fragment.
      */
     public static CarListFragment newInstance() {
-        CarListFragment fragment = new CarListFragment();
-        return fragment;
+        return new CarListFragment();
     }
 
     /**
      * Called when the {@link android.app.Activity} is created.
+     *
      * @param savedInstanceState The saved instance state.
      */
     @Override
@@ -62,8 +63,9 @@ public class CarListFragment extends Fragment {
 
     /**
      * Called when the {@link View} is created.
-     * @param inflater The {@link android.view.LayoutInflater}.
-     * @param container The {@link android.view.ViewGroup}.
+     *
+     * @param inflater           The {@link android.view.LayoutInflater}.
+     * @param container          The {@link android.view.ViewGroup}.
      * @param savedInstanceState The saved instance state/
      * @return The created {@link View}.
      */
@@ -75,9 +77,9 @@ public class CarListFragment extends Fragment {
         mCars = mContext.getAllCars();
 
         List<CarAverage> avgs = mContext.getCarAverages();
-        for(CarAverage avg : avgs) {
-            for(Car car : mCars) {
-                if(car.getId() == avg.getCarId()) {
+        for (CarAverage avg : avgs) {
+            for (Car car : mCars) {
+                if (car.getId() == avg.getCarId()) {
                     car.setAverages(avg);
                 }
             }
@@ -97,9 +99,8 @@ public class CarListFragment extends Fragment {
             @Override
             public boolean onRecyclerItemMenuSelected(final int position, MenuItem item) {
                 int menuItemIndex = item.getItemId();
-                switch(menuItemIndex) {
-                    case 0:
-                    {
+                switch (menuItemIndex) {
+                    case 0: {
                         Car selectedCar = mCarAdapter.getItem(position);
                         editCar(selectedCar, position);
                         return true;
@@ -145,11 +146,12 @@ public class CarListFragment extends Fragment {
 
     /**
      * Open up the {@link Car} details activity for the given car.
+     *
      * @param car The {@link Car} which to show in the details page.
      */
     private void showCarDetails(Car car) {
         Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
-        if(car != null) {
+        if (car != null) {
             carDetails.putExtra(Keys.EK_CAR, car);
         }
         startActivity(carDetails);
@@ -157,12 +159,13 @@ public class CarListFragment extends Fragment {
 
     /**
      * Open up the {@link Car} edit activity for the given car.
-     * @param car The {@link Car} which to edit or null to create a new car.
+     *
+     * @param car      The {@link Car} which to edit or null to create a new car.
      * @param position The position in the {@link android.support.v7.widget.RecyclerView} the item has or -1 in case of a new item.
      */
     private void editCar(Car car, int position) {
         Intent editCar = new Intent(getActivity(), AddOrEditCarActivity.class);
-        if(car != null) {
+        if (car != null) {
             editCar.putExtra(Keys.EK_CAR, car);
             editCar.putExtra(Keys.EK_VIEWPOSITION, position);
         }
@@ -171,9 +174,10 @@ public class CarListFragment extends Fragment {
 
     /**
      * Evaluates the result for the {@link android.app.Activity}.
+     *
      * @param requestCode The request code that is giving the result.
-     * @param resultCode The result code.
-     * @param data The data of the result.
+     * @param resultCode  The result code.
+     * @param data        The data of the result.
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -196,8 +200,8 @@ public class CarListFragment extends Fragment {
 
                         // If all was ok we did get a RecyclerView position with the
                         // Intent data.
-                        int position = (int)data.getExtras().get(Keys.EK_VIEWPOSITION);
-                        if(position >= 0) {
+                        int position = (int) data.getExtras().get(Keys.EK_VIEWPOSITION);
+                        if (position >= 0) {
                             // Notify the item change.
                             mCarAdapter.notifyItemChanged(position);
                         }
@@ -218,7 +222,8 @@ public class CarListFragment extends Fragment {
 
     /**
      * Creates the fragment menu items.
-     * @param menu The menu to create the fragment menu items in.
+     *
+     * @param menu     The menu to create the fragment menu items in.
      * @param inflater The @{link MenuItemInflater}
      */
     @Override
@@ -229,6 +234,7 @@ public class CarListFragment extends Fragment {
 
     /**
      * Handler for selection of a option menu item.
+     *
      * @param item The item that was selected.
      * @return true if the item was handled, false if it was not.
      */

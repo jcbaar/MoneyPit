@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_body">
+        &lt;br/&gt;
+        MoneyPit is an app which allows you to track and oversee the fuel cost and fuel economy of
+        your car. The app supports among other things multiple cars, different currency’s,
+        different units for distance and volume.
+        &lt;br/&gt;&lt;br/&gt;
+        If you have questions, suggestions, comments or a bug to report please send us an
+        &lt;a href="mailto:jabadevelopment@gmail.com"&gt;email&lt;/a&gt;.
+        &lt;br/&gt;&lt;br/&gt;
+        MoneyPit has been build with the help of the following components:&lt;br/&gt;&lt;br/&gt;
+        &lt;a href="https://github.com/afollestad/material-dialogs"&gt;Material Design Dialogs&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="https://github.com/makovkastar/FloatingActionButton"&gt;Floating Action Button&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="http://www.android-graphview.org/"&gt;Bar Graphs&lt;/a&gt;&lt;br/&gt;
+    </string>
+
+</resources>

@@ -67,7 +67,7 @@
     <string name="title_activity_add_or_edit_fillup">AddOrEditFillup</string>
     <string name="nan">This is not a number.</string>
     <string name="odo_error">The odometer setting must be higher than the previous fill up and lower than the next fill up.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_select_year_title">Select year</string>
     <string name="dialog_select_year_body">Please select the year from which you wish to see the information.</string>
@@ -107,5 +107,4 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_about">About MoneyPit</string>
     <string name="version">version</string>
-    <string name="about_body">Link to &lt;a href="http://www.codeproject.com"&gt;TheCodeProject&lt;/a&gt;</string>
 </resources>

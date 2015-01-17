@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/list_card_states">
+    android:background="@drawable/list_card_states"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/rowHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/rowHeader">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/fillupDate"
-            android:text="21-12-2014"
+            style="@style/ListPrimaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_horizontal_margin"
 
-            style="@style/ListPrimaryText" />
+            android:text="21-12-2014" />
 
         <TextView
             android:id="@+id/fillupSpan"
-            android:layout_gravity="center_vertical"
-            android:text="(6 days)"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
+            style="@style/ListTertiaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
 
-            style="@style/ListTertiaryText" />
+            android:text="(6 days)" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/headerMenu"
@@ -47,80 +48,129 @@
         android:id="@+id/fillupContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="-8dp"
         android:columnCount="3"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:rowCount="3"
-        android:stretchColumns="1"
-        android:layout_below="@+id/rowHeader"
-        android:layout_marginTop="-8dp">
+        android:stretchColumns="1">
 
-        <TableRow android:layout_width="match_parent"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/fillupOdometer"
-                android:layout_gravity="left"
-                android:text="130278km"
+                style="@style/ListSecondaryText"
                 android:layout_column="0"
+                android:layout_gravity="left"
 
-                style="@style/ListSecondaryText" />
+                android:text="130278km" />
 
             <TextView
                 android:id="@+id/fillupVolume"
-                android:gravity="right"
-                android:text="29.14L"
-                android:layout_gravity="center|right"
+                style="@style/ListSecondaryText"
                 android:layout_column="2"
+                android:layout_gravity="center|right"
+                android:gravity="right"
 
-                style="@style/ListSecondaryText" />
+                android:text="29.14L" />
         </TableRow>
 
-        <TableRow android:layout_width="match_parent"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/fillupDistance"
-                android:text="412km"
+                style="@style/ListSecondaryText"
                 android:layout_column="0"
 
-                style="@style/ListSecondaryText" />
+                android:text="412km" />
 
             <TextView
                 android:id="@+id/fillupCost"
+                style="@style/ListSecondaryText"
+                android:layout_column="2"
                 android:layout_gravity="right"
                 android:layout_weight="1"
-                android:text="EUR 1.47/L"
-                android:layout_column="2"
 
-                style="@style/ListSecondaryText" />
+                android:text="EUR 1.47/L" />
         </TableRow>
 
-        <TableRow android:layout_width="match_parent"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/fillupTotalCost"
+                style="@style/ListSecondaryText"
+                android:layout_column="0"
                 android:text="EUR 43.20"
                 android:textColor="@color/primaryColor"
-                android:textStyle="bold"
-                android:layout_column="0"
 
-                style="@style/ListSecondaryText" />
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/full"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_local_gas_station_grey600_24dp" />
+
+                <ImageView
+                    android:id="@+id/location"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_location_on_grey600_24dp" />
+
+                <ImageView
+                    android:id="@+id/note"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_event_note_grey600_24dp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/fillupEconomy"
+                style="@style/ListSecondaryText"
+                android:layout_column="2"
                 android:layout_gravity="right"
                 android:gravity="right"
-                android:text="14.01km/L"
-                android:layout_column="2"
 
-                style="@style/ListSecondaryText" />
+                android:text="14.01km/L" />
         </TableRow>
     </TableLayout>
+
+    <com.development.jaba.view.LinearLayoutEx
+        app:lleAnimationDuration="150"
+        android:id="@+id/animateView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/noteContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            style="@style/ListSecondaryText" />
+
+    </com.development.jaba.view.LinearLayoutEx>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divider" />
-</RelativeLayout>
+
+</LinearLayout>

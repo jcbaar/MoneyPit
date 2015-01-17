@@ -67,7 +67,7 @@
     <string name="title_activity_add_or_edit_fillup">AddOrEditFillup</string>
     <string name="nan">Dit is geen nummer.</string>
     <string name="odo_error">De kilometerteller moet hoger zijn dan de voorgaande en lager dan de opvolgende tankbeurt.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Annuleer</string>
     <string name="dialog_select_year_title">Selecteer jaar</string>
     <string name="dialog_select_year_body">Selecteer A.U.B. het jaar waarvan U de informatie wenst te zien.</string>
@@ -106,8 +106,6 @@
     <string name="summary_least_expensive_fillup">goedkoopste tankbeurt:</string>
     <string name="title_activity_settings">Instellingen</string>
     <string name="title_activity_about">Over MoneyPit</string>
-    <string name="hello_world">Hello world!</string>
     <string name="version">versie</string>
-    <string name="about_body">Link naar &lt;a href="http://www.codeproject.com"&gt;TheCodeProject&lt;/a&gt;</string>
 
 </resources>
