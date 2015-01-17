@@ -152,6 +152,7 @@
     </TableLayout>
 
     <com.development.jaba.view.LinearLayoutEx
+        android:orientation="vertical"
         app:lleAnimationDuration="150"
         android:id="@+id/animateView"
         android:layout_width="match_parent"
@@ -165,6 +166,15 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             style="@style/ListSecondaryText" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="192dp"
+            android:id="@+id/map"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:scaleType="fitCenter" />
 
     </com.development.jaba.view.LinearLayoutEx>
 
