@@ -2,12 +2,9 @@ package com.development.jaba.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Environment;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +16,10 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
+import com.development.jaba.utilities.ImageDownloadHelperTask;
 import com.development.jaba.view.LinearLayoutEx;
 import com.google.android.gms.maps.MapsInitializer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -91,7 +84,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
     }
 
     /**
-     * Starts a {@link com.development.jaba.adapters.FillupRowAdapter.DownloadStaticMapTask} task to either download
+     * Starts a {@link com.development.jaba.utilities.ImageDownloadHelperTask} derived task to either download
      * and cache the static map or load the static map from a previously cached copy. The task is also responsible
      * for setting the static map image in the {@link android.widget.ImageView}.
      *
@@ -101,10 +94,23 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      */
     private void showMap(ImageView map, double lat, double lon) {
         map.setVisibility(View.VISIBLE);
-        String url = String.format("http://maps.google.com/maps/api/staticmap?center=%f,%f&zoom=16&size=400x200&markers=color:blue%%7Clabel:H%%7C%f,%f",
-                lat, lon,
-                lat, lon);
-        new DownloadStaticMapTask(map).execute(url, String.valueOf(lat), String.valueOf(lon));
+
+        String slat = String.valueOf(lat),
+                slon = String.valueOf(lon);
+
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("maps.googleapis.com")
+                .appendPath("maps")
+                .appendPath("api")
+                .appendPath("staticmap")
+                .appendQueryParameter("center", slat + "," + slon)
+                .appendQueryParameter("zoom", "16")
+                .appendQueryParameter("size", "400x200")
+                .appendQueryParameter("markers", "color:blue|label:H|C" + slat + "," + slon);
+
+        String cacheFilename = slat + "_" + slon;
+        new GetStaticMap(map, "/MoneyPit/mapcache/").execute(builder.toString(), cacheFilename);
     }
 
     /**
@@ -346,152 +352,37 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
     }
 
     /**
-     * An {@link android.os.AsyncTask} derived class responsible for downloading
-     * static map images and caching them if necessary.
+     * {@link com.development.jaba.utilities.ImageDownloadHelperTask} derived class to download static
+     * map images from either the google API website or the local file cache.
      */
-    private class DownloadStaticMapTask extends AsyncTask<String, Void, Bitmap> {
-        private final ImageView bmImage;
-        private String mLat, mLon;
+    private class GetStaticMap extends ImageDownloadHelperTask {
+
+        private final ImageView mImageView;
 
         /**
-         * Constructor. Initializes with the ImageView instance to set the
-         * static map image on.
-         *
-         * @param bmImage The {@link android.widget.ImageView} the static map image is loaded into.
+         * Constructor. Initializes an instance of the object.
+         * @param imageView The {@link android.widget.ImageView} in which the downloaded image is displayed.
+         * @param cacheName The filename for the cached image. This is used to check if it already exists
+         *                  in the local file cache or to save the downloaded image to the file cache. You need
+         *                  to make sure this is unique.
          */
-        public DownloadStaticMapTask(ImageView bmImage) {
-            this.bmImage = bmImage;
+        public GetStaticMap(ImageView imageView, String cacheName) {
+            super(cacheName);
+            mImageView = imageView;
         }
 
         /**
-         * This method will check to see if we have a static map image of the given position
-         * already in our cache. If we do we do not bother downloading it from the internet
-         * but instead load it directly from our local cache instead.
-         *
-         * @param urls Parameters for the method. Index 0 equals the download URL, index 1 the
-         *             latitude and index 3 the longitude.
-         * @return The (down)loaded static map image.
-         */
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            mLat = urls[1];
-            mLon = urls[2];
-
-            // Only download when we do not have a local copy
-            // cached.
-            if (cachedFileExists()) {
-                return loadFileFromCache();
-            }
-
-            // We do not have it cached. Download it from the given
-            // URL.
-            Bitmap mapImage = null;
-            InputStream in = null;
-            try {
-                in = new java.net.URL(urldisplay).openStream();
-                mapImage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        Log.e("Error", e.getMessage());
-                    }
-                }
-            }
-
-            // Save the downloaded image into our local file cache.
-            if (mapImage != null) {
-                try {
-                    cacheFile(mapImage);
-                } catch (IOException e) {
-                    Log.e("Error", e.getMessage());
-                }
-            }
-            return mapImage;
-        }
-
-        /**
-         * Called after the task has completed.
-         *
+         * The image has been downloaded. Here we set it to the {@link android.widget.ImageView}.
          * @param result The (down)loaded {@link android.graphics.Bitmap}.
          */
+        @Override
         protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+            super.onPostExecute(result);
 
-        /**
-         * Checks to see whether or not the cache folder exists on the
-         * external storage. If not it creates it.
-         */
-        private void checkFolders() {
-            File f = new File(Environment.getExternalStorageDirectory() + "/MoneyPit");
-            if (!f.exists() || (f.exists() && !f.isDirectory())) {
-                f.mkdir();
-            }
-            f = new File(Environment.getExternalStorageDirectory() + "/MoneyPit/mapcache");
-            if (!f.exists() || (f.exists() && !f.isDirectory())) {
-                f.mkdir();
-            }
-        }
-
-        /**
-         * Constructs the cache file name from the input data.
-         *
-         * @return The cache file name.
-         */
-        private String getCacheFilename() {
-            return Environment.getExternalStorageDirectory() + "/MoneyPit/mapcache/" + mLat + "_" + mLon;
-        }
-
-        /**
-         * Checks to see if a cached static map image for the given
-         * data already exists.
-         *
-         * @return true if the cached static image exists, false if it does not.
-         */
-        private boolean cachedFileExists() {
-            File file = new File(getCacheFilename());
-            return file.exists();
-        }
-
-        /**
-         * Decodes the cached static map image.
-         *
-         * @return The static map image as a {@link android.graphics.Bitmap}
-         */
-        private Bitmap loadFileFromCache() {
-            return BitmapFactory.decodeFile(getCacheFilename());
-        }
-
-        /**
-         * Saves the given {@link android.graphics.Bitmap} into the local static
-         * map image cache.
-         *
-         * @param bitmap The static map {@link android.graphics.Bitmap} to store.
-         * @throws IOException This is thrown in case of an IO error.
-         */
-        private void cacheFile(Bitmap bitmap) throws IOException {
-            if (cachedFileExists()) {
-                return;
-            }
-
-            // Make sure the cache folder exists.
-            checkFolders();
-
-            // Save the image to the cache.
-            OutputStream output = null;
-            try {
-                String outFileName = getCacheFilename();
-                output = new FileOutputStream(outFileName);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
-                output.flush();
-            } finally {
-                if (output != null) {
-                    output.close();
-                }
+            if (result != null) {
+                mImageView.setImageBitmap(result);
+            } else {
+                mImageView.setVisibility(View.GONE);
             }
         }
     }
