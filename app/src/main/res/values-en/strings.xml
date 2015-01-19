@@ -108,4 +108,8 @@
     <string name="title_activity_about">About MoneyPit</string>
     <string name="version">version</string>
     <string name="error_map_image">Failed to download the map image.\nCheck you internet connection.</string>
+    <string name="location_settings">Location and maps</string>
+    <string name="allow_location">Allow recording of location</string>
+    <string name="allow_location_summary">With this option turned on the location of every fill-up is recorded into the database.</string>
+
 </resources>

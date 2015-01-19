@@ -12,4 +12,11 @@
             android:title="@string/export_import_pictures"
             android:summary="@string/export_import_pictures_summary"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/location_settings">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="allow_location"
+            android:title="@string/allow_location"
+            android:summary="@string/allow_location_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>

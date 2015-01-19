@@ -13,6 +13,7 @@ public class SettingsHelper {
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
             PREF_IMPORT_EXPORT_PICTURES = "export_import_pictures",
+            PREF_ALLOW_LOCATION = "allow_location",
             PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     /**
@@ -63,6 +64,15 @@ public class SettingsHelper {
      */
     public void setUserLearnedDrawer(boolean value) {
         mPreferences.edit().putBoolean(PREF_USER_LEARNED_DRAWER, value).apply();
+    }
+
+    /**
+     * Gets the PREF_ALLOW_LOCATION settings.
+     *
+     * @return The value of the PREF_ALLOW_LOCATION setting.
+     */
+    public boolean getAllowLocation() {
+        return mPreferences.getBoolean(PREF_ALLOW_LOCATION, false);
     }
 
     /**

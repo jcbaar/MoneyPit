@@ -2,6 +2,7 @@ package com.development.jaba.moneypit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.LocationHelper;
 import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.EditTextEx;
 
@@ -35,6 +37,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
     private CheckedTextView mFullTank;
     private SurroundingFillups mSurroundingFillups;
     private int mViewPosition = -1;
+    private LocationTracker mLocHelp;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -49,6 +52,15 @@ public class AddOrEditFillupActivity extends BaseActivity {
      */
     protected int getLayoutResource() {
         return R.layout.activity_add_or_edit_fillup;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mLocHelp != null) {
+            mLocHelp.stopLocationTracking();
+            mLocHelp = null;
+        }
     }
 
     @Override
@@ -112,6 +124,13 @@ public class AddOrEditFillupActivity extends BaseActivity {
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
                     mOdometer.setText(String.valueOf(Math.round(before.getOdometer() + mFillupToEdit.getOdometer())));
                 }
+            }
+
+            // When allowed to do so we try to also record the
+            // location of the fill-up.
+            if (settings.getAllowLocation()) {
+                mLocHelp = new LocationTracker(this);
+                mLocHelp.startLocationTracking();
             }
         }
         restoreState(savedInstanceState);
@@ -347,6 +366,24 @@ public class AddOrEditFillupActivity extends BaseActivity {
                 return false;
             }
             return true;
+        }
+    }
+
+    /**
+     * A {@link com.development.jaba.utilities.LocationHelper} derived class to record the fill-up
+     * location.
+     */
+    private class LocationTracker extends LocationHelper {
+
+        public LocationTracker(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            super.onLocationChanged(location);
+            mFillupToEdit.setLatitude(location.getLatitude());
+            mFillupToEdit.setLongitude(location.getLongitude());
         }
     }
 }
