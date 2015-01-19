@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
@@ -107,7 +108,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                 .appendQueryParameter("center", slat + "," + slon)
                 .appendQueryParameter("zoom", "16")
                 .appendQueryParameter("size", "400x200")
-                .appendQueryParameter("markers", "color:blue|label:H|C" + slat + "," + slon);
+                .appendQueryParameter("markers", "color:blue|label:*|" + slat + "," + slon);
 
         String cacheFilename = slat + "_" + slon;
         new GetStaticMap(map, "/MoneyPit/mapcache/").execute(builder.toString(), cacheFilename);
@@ -136,6 +137,13 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         vh.getNote().setVisibility(TextUtils.isEmpty(item.getNote()) ? View.INVISIBLE : View.VISIBLE);
         vh.getFull().setVisibility(!item.getFullTank() ? View.INVISIBLE : View.VISIBLE);
         vh.getNoteContent().setText(item.getNote());
+
+        // No note? No need to show the view then.
+        if (TextUtils.isEmpty(item.getNote())) {
+            vh.getNoteContent().setVisibility(View.GONE);
+        } else {
+            vh.getNoteContent().setVisibility(View.VISIBLE);
+        }
 
         // When the item to show has a lat/lon position we make the ImageView for the
         // map visible. Otherwise we make it gone.
@@ -238,7 +246,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
                         // Load the map position only when we are expanding.
                         ImageView map = (ImageView) lle.findViewById(R.id.map);
-                        if (map != null && map.getVisibility() == View.VISIBLE) {
+                        if (map != null) {
                             showMap(map, item.getLatitude(), item.getLongitude());
                         }
                     } else {
@@ -381,8 +389,10 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
             if (result != null) {
                 mImageView.setImageBitmap(result);
+                mImageView.setVisibility(View.VISIBLE);
             } else {
                 mImageView.setVisibility(View.GONE);
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.error_map_image), Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -107,4 +107,5 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_about">About MoneyPit</string>
     <string name="version">version</string>
+    <string name="error_map_image">Failed to download the map image.\nCheck you internet connection.</string>
 </resources>
