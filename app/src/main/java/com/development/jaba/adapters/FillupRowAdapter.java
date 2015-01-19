@@ -2,6 +2,8 @@ package com.development.jaba.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -135,8 +137,16 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         vh.getEconomy().setText(FormattingHelper.toEconomy(mCar, item.getFuelConsumption()));
         vh.getLocation().setVisibility(item.getLongitude() == 0 && item.getLatitude() == 0 ? View.INVISIBLE : View.VISIBLE);
         vh.getNote().setVisibility(TextUtils.isEmpty(item.getNote()) ? View.INVISIBLE : View.VISIBLE);
-        vh.getFull().setVisibility(!item.getFullTank() ? View.INVISIBLE : View.VISIBLE);
         vh.getNoteContent().setText(item.getNote());
+
+        // When the fill-up is a partial fill-up we mark this by giving the fill-up
+        // icon the accent color.
+        if (!item.getFullTank()) {
+            Drawable d = mContext.getResources().getDrawable(R.drawable.ic_local_gas_station_grey600_24dp);
+            PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
+            d.mutate().setColorFilter(mContext.getResources().getColor(R.color.accentColor), mode);
+            vh.getFull().setImageDrawable(d);
+        }
 
         // No note? No need to show the view then.
         if (TextUtils.isEmpty(item.getNote())) {
