@@ -21,10 +21,10 @@
             <ImageView
                 android:id="@+id/carPicture"
                 android:layout_width="96dp"
-                android:layout_height="72dp"
+                android:layout_height="54dp"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
-                android:scaleType="centerInside"
+                android:scaleType="fitStart"
                 android:src="@drawable/nopicture" />
 
             <LinearLayout
@@ -75,10 +75,10 @@
 
                 <TextView
                     android:id="@+id/carAverages"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Avg. 15L (EUR 32.36) per fill up"
-
+                    android:maxLines="1"
                     style="@style/ListTertiaryText" />
             </LinearLayout>
         </TableRow>

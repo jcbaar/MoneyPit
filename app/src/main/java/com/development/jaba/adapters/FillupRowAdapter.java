@@ -108,7 +108,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                 .appendQueryParameter("center", slat + "," + slon)
                 .appendQueryParameter("zoom", "16")
                 .appendQueryParameter("size", "400x225")
-                .appendQueryParameter("markers", "color:blue|label:*|" + slat + "," + slon);
+                .appendQueryParameter("markers", "color:" + String.format("0x%06X", 0xFFFFFF & mContext.getResources().getColor(R.color.accentColor)) + "|label:*|" + slat + "," + slon);
 
         String cacheFilename = slat + "_" + slon;
         new GetStaticMap(map, "/MoneyPit/mapcache/").execute(builder.toString(), cacheFilename);
