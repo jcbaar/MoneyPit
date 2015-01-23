@@ -111,5 +111,6 @@
     <string name="location_settings">Location and maps</string>
     <string name="allow_location">Allow recording of location</string>
     <string name="allow_location_summary">With this option turned on the location of every fill-up is recorded into the database.</string>
+    <string name="no_location_provider">There is no location provider available. The location will not be recorded.</string>
 
 </resources>

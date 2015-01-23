@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.development.jaba.moneypit.R;
+
 /**
  * Helper class to start location tracking.
  */
@@ -46,8 +48,8 @@ public class LocationHelper implements LocationListener {
     public void startLocationTracking() {
         try {
             if (!mGpsEnabled && !mNetworkEnabled) {
-                // There is no location provider available...
-                Toast.makeText(mContext, "No location provider available", Toast.LENGTH_SHORT).show();
+                // There is no location provider available. No-op for now...
+                Toast.makeText(mContext, mContext.getString(R.string.no_location_provider), Toast.LENGTH_SHORT).show();
             } else {
                 if (mNetworkEnabled) {
                     mLocationManager.requestLocationUpdates(
@@ -72,7 +74,7 @@ public class LocationHelper implements LocationListener {
      * Derived classes should at least override this method to get updated
      * about location changes.
      *
-     * @param location The newly recorder {@link android.location.Location}.
+     * @param location The newly recorded {@link android.location.Location}.
      */
     @Override
     public void onLocationChanged(Location location) {

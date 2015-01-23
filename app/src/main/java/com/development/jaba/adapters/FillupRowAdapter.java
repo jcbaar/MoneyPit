@@ -21,7 +21,6 @@ import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.ImageDownloadHelperTask;
 import com.development.jaba.view.LinearLayoutEx;
-import com.google.android.gms.maps.MapsInitializer;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +52,6 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         mCar = car;
         mData = values;
         mContext = context;
-        MapsInitializer.initialize(mContext);
     }
     //endregion
 
@@ -197,7 +195,10 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      */
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mData != null) {
+            return mData.size();
+        }
+        return 0;
     }
 
     /**

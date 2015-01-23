@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -62,9 +63,9 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
 
         mContext = new MoneyPitDbContext(getActivity());
         if(mCar != null) {
-            mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
+//            mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
 
-            mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, mFillups);
+            mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null);
             mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
                 @Override
@@ -123,6 +124,8 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                     editFillup(mCar, null, -1);
                 }
             });
+
+            new LoadDataTask().execute();
         }
         return view;
     }
@@ -137,8 +140,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     public void onYearSelected(int year) {
         super.onYearSelected(year);
         if(mContext != null && mCar != null) {
-            mFillups = mContext.getFillupsOfCar(mCar.getId(), year);
-            mFillupAdapter.setData(mFillups);
+            new LoadDataTask().execute();
         }
     }
 
@@ -176,8 +178,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 else {
                     // At this point the easiest thing to do is to re-load the
                     // information from the database so that data reflects the changes.
-                    mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
-                    mFillupAdapter.setData(mFillups);
+                    new LoadDataTask().execute();
                 }
             }
         }
@@ -203,5 +204,34 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
      */
     public interface OnDataChangedListener {
         public void onDataChanged(int year);
+    }
+
+    /**
+     * {@link android.os.AsyncTask} derived class to get the data to show in the {@link com.development.jaba.view.RecyclerViewEx}.
+     */
+    private class LoadDataTask extends AsyncTask<Void, Void, List<Fillup>> {
+
+        /**
+         * Loads the data from the database.
+         *
+         * @param params Parameters (not used).
+         * @return The data loaded from the database.
+         */
+        @Override
+        protected List<Fillup> doInBackground(Void... params) {
+            // TODO: This uses the same data set as the CarDetailsSummary fragment. They should really share it...
+            return mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
+        }
+
+        /**
+         * Back in the UI thread. Update the visuals with the data.
+         *
+         * @param result Nothing.
+         */
+        @Override
+        protected void onPostExecute(List<Fillup> result) {
+            mFillups = result;
+            mFillupAdapter.setData(mFillups);
+        }
     }
 }

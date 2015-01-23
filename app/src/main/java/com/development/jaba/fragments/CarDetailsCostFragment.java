@@ -111,7 +111,7 @@ public class CarDetailsCostFragment extends GraphFragment {
                 public void onTap(Series series, DataPointInterface dataPoint) {
                     Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
                             "\n" +
-                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                            FormattingHelper.toPricePerDistanceUnit(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
                 }
             });
         }

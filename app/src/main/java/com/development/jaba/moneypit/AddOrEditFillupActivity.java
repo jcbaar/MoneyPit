@@ -54,6 +54,11 @@ public class AddOrEditFillupActivity extends BaseActivity {
         return R.layout.activity_add_or_edit_fillup;
     }
 
+    /**
+     * The activity is paused. We need to turn off
+     * location tracking here since there is no point in
+     * keeping it active.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -216,7 +221,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
     }
 
     /**
-     * Copies the values from the Fillup entity we are editing to the
+     * Copies the values from the {@link Fillup} entity we are editing to the
      * UI fields.
      */
     private void toUi() {
