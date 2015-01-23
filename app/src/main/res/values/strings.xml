@@ -112,4 +112,10 @@
     <string name="allow_location">Lokatie mag worden vastgelegd</string>
     <string name="allow_location_summary">Wanneer aangevinkt zal de lokatie van elke tankbeurt in de database worden opgeslagen.</string>
     <string name="no_location_provider">Er is geen lokatie beschikbaar. De lokatie zal niet worden opgeslagen.</string>
+    <string name="misc_settings">Overige</string>
+    <string name="clear_map_cache">Het lokale kaartgeheugen wissen</string>
+    <string name="warning">Waarschuwing</string>
+    <string name="empty_cache">Het leeg maken van het lokale kaartgeheugen betekend dat er bij de eerst volgende keer dat een kaart moet worden getoond deze opnieuw vanaf het internet moet worden gehaald.\n\nDoorgaan?</string>
+    <string name="cache_purged">Het lokale kaartgeheugen is gewist.</string>
+    <string name="cache_purge_failed">Het is niet gelukt alle informatie uit het lokale kaartgeheugen te wissen.</string>
 </resources>

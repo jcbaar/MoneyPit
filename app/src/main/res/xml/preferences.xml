@@ -19,4 +19,9 @@
             android:title="@string/allow_location"
             android:summary="@string/allow_location_summary" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/misc_settings">
+        <Preference
+            android:title="@string/clear_map_cache"
+            android:key="emptyMapCache" />
+    </PreferenceCategory>
 </PreferenceScreen>
