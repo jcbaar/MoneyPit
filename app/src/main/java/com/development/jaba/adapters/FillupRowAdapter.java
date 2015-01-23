@@ -35,7 +35,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
     private final Car mCar; // Car instance the fill-ups are bound to.
     private List<Fillup> mData = Collections.emptyList();
     private final Context mContext;
-    private final Vector<Integer> mExpandedItems;
+    private final Vector<String> mExpandedItems;
 
     //region Construction
 
@@ -107,7 +107,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                 .appendPath("staticmap")
                 .appendQueryParameter("center", slat + "," + slon)
                 .appendQueryParameter("zoom", "16")
-                .appendQueryParameter("size", "400x200")
+                .appendQueryParameter("size", "400x225")
                 .appendQueryParameter("markers", "color:blue|label:*|" + slat + "," + slon);
 
         String cacheFilename = slat + "_" + slon;
@@ -155,19 +155,22 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         // When the item to show has a lat/lon position we make the ImageView for the
         // map visible. Otherwise we make it gone.
-        boolean hasMap = false;
-        if (item.getLatitude() != 0 || item.getLongitude() != 0) {
+        boolean hasMap = item.getLatitude() != 0 || item.getLongitude() != 0;
+        if (hasMap) {
             vh.getMap().setVisibility(View.VISIBLE);
-            hasMap = true;
         } else {
             vh.getMap().setVisibility(View.GONE);
         }
 
+        // Forces the LinearLayoutEx to re-compute it's height necessary
+        // to display all available information.
+        vh.getExpandable().recomputeHeight();
+
         // See if this is an "expanded" position. If it is we
         // need to expand it without animation.
         boolean wasExpanded = false;
-        for (Integer i : mExpandedItems) {
-            if (i == position) {
+        for (String i : mExpandedItems) {
+            if (i.equals(String.valueOf(position))) {
                 vh.getExpandable().expandNoAnim();
                 wasExpanded = true;
 
@@ -253,7 +256,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                     // the toggle will expand it. Otherwise we simply remove the item from
                     // the expanded list.
                     if (!lle.isExpanded()) {
-                        mExpandedItems.add((Integer) position);
+                        mExpandedItems.add(String.valueOf(position));
 
                         // Load the map position only when we are expanding.
                         ImageView map = (ImageView) lle.findViewById(R.id.map);
@@ -261,7 +264,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                             showMap(map, item.getLatitude(), item.getLongitude());
                         }
                     } else {
-                        mExpandedItems.remove((Integer) position);
+                        mExpandedItems.remove(String.valueOf(position));
                     }
                     lle.requestLayout();
                     lle.toggle();

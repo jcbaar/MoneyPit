@@ -26,8 +26,6 @@ public class LinearLayoutEx extends LinearLayout {
     private int mDuration;
     private int mMeasuredHeight = 0;
 
-    private boolean mStartAsExpanded = false;
-
     public LinearLayoutEx(Context context) {
         this(context, null, 0);
     }
@@ -86,17 +84,24 @@ public class LinearLayoutEx extends LinearLayout {
      * this event occurs we can correctly setup the {@link android.animation.ValueAnimator} since at
      * this point we know the correct layout height.
      */
-    private void attachPreDrawListener() {
+    public void attachPreDrawListener() {
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                // Make sure we detach since this only needs to run once.
                 getViewTreeObserver().removeOnPreDrawListener(this);
                 setVisibility(View.GONE);
                 setupAnimator();
                 return true;
             }
         });
+    }
+
+    /**
+     * Recomputes the total height necessary to show all information.
+     */
+    public void recomputeHeight() {
+        setVisibility(View.GONE);
+        setupAnimator();
     }
 
     /**
