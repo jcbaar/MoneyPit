@@ -2,17 +2,13 @@ package com.development.jaba.moneypit;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 
-import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.NavigationDrawerFragment;
-
-import java.io.IOException;
 
 
 public class MainDrawerActivity extends BaseActivity
@@ -51,7 +47,7 @@ public class MainDrawerActivity extends BaseActivity
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
             mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
         }
@@ -124,30 +120,9 @@ public class MainDrawerActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            getMenuInflater().inflate(R.menu.menu_main, menu);
             restoreActionBar();
             return true;
         }
         return super.onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_backup) {
-            MoneyPitDbContext dbc = new MoneyPitDbContext(this);
-            try {
-                dbc.backup();
-            } catch (IOException e) {
-                Log.e("Database backup", "Backing up the database failed");
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

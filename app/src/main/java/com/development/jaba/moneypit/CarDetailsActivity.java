@@ -30,48 +30,22 @@ import java.util.Locale;
 
 public class CarDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
-    /**
-     * The {@link Car} entity to show the details of.
-     */
-    private Car mCarToShow;
-
-    /**
-     * The currently selected year.
-     */
-    private int mCurrentYear;
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPagerEx mViewPager;
-
-    MoneyPitDbContext mDbContext;
-    SettingsHelper mSettings;
-
-    /**
-     * The {@link SlidingTabLayout} that will control the {@link ViewPager},
-     */
-    SlidingTabLayout mSlidingTabLayout;
+    private Car mCarToShow;                     // The car we are currently showing the details for.
+    private int mCurrentYear;                   // The year we are currently showing the details for.
+    SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
+    ViewPagerEx mViewPager;                     // ViewPager that serves as a host for the fragments.
+    MoneyPitDbContext mDbContext;               // Database context.
+    SettingsHelper mSettings;                   // Settings context.
+    SlidingTabLayout mSlidingTabLayout;         // Sliding tab that controls the ViewPager.
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("CurrentYear", mCurrentYear);
+        savedInstanceState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     /**
      * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
-     *
      * @return The resource ID of the layout to inflate.
      */
     protected int getLayoutResource() {
@@ -81,7 +55,6 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
     /**
      * Reads the last selected year for this car from the settings. If none was
      * saved yet return the current year.
-     *
      * @return The selected year or the current year.
      */
     protected int getCarYearFromPrefs() {
@@ -111,10 +84,10 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             mCarToShow = (Car) b.getSerializable("Car");
         }
 
-        // By default we show the current year.
-        mCurrentYear = DateHelper.getYearFromDate(new Date());
+        // By default we show the current year. If a year was selected previously
+        // for this car we use that.
         if (savedInstanceState != null) {
-            mCurrentYear = savedInstanceState.getInt("CurrentYear");
+            mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         } else {
             mCurrentYear = getCarYearFromPrefs();
         }
@@ -123,9 +96,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         // Check if there is any data available.
         mDbContext = new MoneyPitDbContext(this);
-        boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear);
 
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the four
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -134,8 +106,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
-        mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
 
+        // Setup the page sliding functionality.
         checkSlidingAvailability();
 
         // When swiping between different sections, select the corresponding
@@ -213,10 +185,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
                     saveCarYearToPrefs();
                 }
             }, this);
-        } else if (id == R.id.action_settings) {
-            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -235,7 +204,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         // Skip the first fragment since this is the fill-up list fragment which sent
         // the event in the first place.
-        for (int i = 1; i <= mSectionsPagerAdapter.getCount(); i++) {
+        for (int i = 1; i < mSectionsPagerAdapter.getCount(); i++) {
             BaseDetailsFragment b = mSectionsPagerAdapter.getFragmentAt(i);
             if (b != null) {
                 // If the year has changed we set the new year to the
@@ -326,8 +295,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
          */
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            mPages[position] = null;
             super.destroyItem(container, position, object);
+            mPages[position] = null;
         }
 
         /**

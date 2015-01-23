@@ -35,16 +35,16 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     private final int REQUEST_ADD_FILLUP = 0,
             REQUEST_EDIT_FILLUP = 1;
 
-    private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
-    private FillupRowAdapter mFillupAdapter;         // Adapter for holding the Fill-up list.
-    private List<Fillup> mFillups;                   // The list of Fillup entities from the database.
-    private FloatingActionButton mFab;
-    private OnDataChangedListener mCallback;
+    private MoneyPitDbContext mContext;         // The MoneyPit database mContext.
+    private FillupRowAdapter mFillupAdapter;    // Adapter for holding the Fill-up list.
+    private List<Fillup> mFillups;              // The list of Fillup entities from the database.
+    private FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+    private OnDataChangedListener mCallback;    // Listener for data changes.
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             if (mCar == null) {
                 mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
@@ -62,9 +62,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
         View view = inflater.inflate(R.layout.fragment_car_details_fillups, container, false);
 
         mContext = new MoneyPitDbContext(getActivity());
-        if(mCar != null) {
-//            mFillups = mContext.getFillupsOfCar(mCar.getId(), mCurrentYear);
-
+        if (mCar != null) {
             mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null);
             mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
@@ -76,9 +74,8 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 @Override
                 public boolean onRecyclerItemMenuSelected(final int position, MenuItem item) {
                     int menuItemIndex = item.getItemId();
-                    switch(menuItemIndex) {
-                        case 0:
-                        {
+                    switch (menuItemIndex) {
+                        case 0: {
                             Fillup selectedFillup = mFillupAdapter.getItem(position);
                             editFillup(mCar, selectedFillup, position);
                             return true;
@@ -97,7 +94,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                                             mFillupAdapter.notifyItemRemoved(position);
 
                                             // Notify the activity the data has changed.
-                                            if(mCallback != null) {
+                                            if (mCallback != null) {
                                                 mCallback.onDataChanged(mCurrentYear);
                                             }
                                         }
@@ -125,6 +122,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 }
             });
 
+            // Loadup the data from the database.
             new LoadDataTask().execute();
         }
         return view;
@@ -139,7 +137,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        if(mContext != null && mCar != null) {
+        if (mContext != null && mCar != null) {
             new LoadDataTask().execute();
         }
     }
@@ -147,7 +145,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     private void editFillup(Car car, Fillup fillup, int position) {
         Intent editFillup = new Intent(getActivity(), AddOrEditFillupActivity.class);
         editFillup.putExtra(Keys.EK_CAR, car);
-        if(fillup != null) {
+        if (fillup != null) {
             editFillup.putExtra(Keys.EK_FILLUP, fillup);
             editFillup.putExtra(Keys.EK_VIEWPOSITION, position);
         }
@@ -159,23 +157,22 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().containsKey(Keys.EK_FILLUP)) {
                 int newYear = mCurrentYear;
-                if(requestCode == REQUEST_ADD_FILLUP) {
-                    Fillup fu = (Fillup)data.getExtras().getSerializable(Keys.EK_FILLUP);
-                    if(fu != null) {
+                if (requestCode == REQUEST_ADD_FILLUP) {
+                    Fillup fu = (Fillup) data.getExtras().getSerializable(Keys.EK_FILLUP);
+                    if (fu != null) {
                         newYear = DateHelper.getYearFromDate(fu.getDate());
                     }
                 }
 
                 // Notify the activity the data has changed.
-                if(mCallback != null) {
+                if (mCallback != null) {
                     mCallback.onDataChanged(newYear);
                 }
 
                 // Setup the new year if it changed.
-                if(newYear != mCurrentYear) {
+                if (newYear != mCurrentYear) {
                     onYearSelected(newYear);
-                }
-                else {
+                } else {
                     // At this point the easiest thing to do is to re-load the
                     // information from the database so that data reflects the changes.
                     new LoadDataTask().execute();
@@ -191,7 +188,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mCallback = (OnDataChangedListener)activity;
+            mCallback = (OnDataChangedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnDataChangedListener");

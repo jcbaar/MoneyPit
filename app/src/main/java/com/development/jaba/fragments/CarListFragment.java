@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -217,33 +215,4 @@ public class CarListFragment extends Fragment {
             }
         }
     }
-
-    //region Options menu
-
-    /**
-     * Creates the fragment menu items.
-     *
-     * @param menu     The menu to create the fragment menu items in.
-     * @param inflater The @{link MenuItemInflater}
-     */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.menu_carlist, menu);
-    }
-
-    /**
-     * Handler for selection of a option menu item.
-     *
-     * @param item The item that was selected.
-     * @return true if the item was handled, false if it was not.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-
-        // All other items are not our's...
-        return false;
-    }
-    //endregion
 }
