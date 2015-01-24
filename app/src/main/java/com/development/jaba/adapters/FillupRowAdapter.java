@@ -99,6 +99,9 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         String slat = String.valueOf(lat),
                 slon = String.valueOf(lon);
 
+        // Default to not loaded image.
+        map.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_loadfail));
+
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("maps.googleapis.com")
@@ -139,12 +142,12 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         // When the fill-up is a partial fill-up we mark this by giving the fill-up
         // icon the accent color.
+        Drawable d = mContext.getResources().getDrawable(R.drawable.ic_local_gas_station_grey600_24dp);
         if (!item.getFullTank()) {
-            Drawable d = mContext.getResources().getDrawable(R.drawable.ic_local_gas_station_grey600_24dp);
             PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
             d.mutate().setColorFilter(mContext.getResources().getColor(R.color.accentColor), mode);
-            vh.getFull().setImageDrawable(d);
         }
+        vh.getFull().setImageDrawable(d);
 
         // No note? No need to show the view then.
         if (TextUtils.isEmpty(item.getNote())) {
@@ -403,9 +406,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
             if (result != null) {
                 mImageView.setImageBitmap(result);
-                mImageView.setVisibility(View.VISIBLE);
             } else {
-                mImageView.setVisibility(View.GONE);
                 Toast.makeText(mContext, mContext.getResources().getString(R.string.error_map_image), Toast.LENGTH_SHORT).show();
             }
         }
