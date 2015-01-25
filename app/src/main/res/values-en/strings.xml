@@ -118,5 +118,18 @@
     <string name="empty_cache">Purging the local map cache means that the next time a map is shown it needs to be downloaded from the internet again.\n\nContinue?</string>
     <string name="cache_purged">The local map cache has been purged.</string>
     <string name="cache_purge_failed">Failed to purge all information from the local map cache.</string>
+    <string name="backup_error">Backing up the database failed!</string>
+    <string name="restore_error">Restoring the database backup failed!</string>
+    <string name="backup_ok">Successfully created a database backup!</string>
+    <string name="restore_ok">Successfully restored the database backup!</string>
+
+    <string name="drive_error_query_folders">Failed to query folders on Google Drive.</string>
+    <string name="drive_error_root_folder">Failed to get the root folder from Google Drive.</string>
+    <string name="drive_error_create_folder">Failed to create the backup folder om Google Drive.</string>
+    <string name="drive_error_create_file">Failed to create the backup file of Google Drive.</string>
+    <string name="drive_error_io_error">An error has occured writing the backup file on Google Drive.</string>
+    <string name="drive_error_backup_folder">Unable to find or create the backup folder on Google Drive.</string>
+    <string name="drive_backup_success">The backup was created successfully on Google Drive.</string>
+
 
 </resources>

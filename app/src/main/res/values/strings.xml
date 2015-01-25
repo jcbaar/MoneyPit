@@ -118,4 +118,17 @@
     <string name="empty_cache">Het leeg maken van het lokale kaartgeheugen betekend dat er bij de eerst volgende keer dat een kaart moet worden getoond deze opnieuw vanaf het internet moet worden gehaald.\n\nDoorgaan?</string>
     <string name="cache_purged">Het lokale kaartgeheugen is gewist.</string>
     <string name="cache_purge_failed">Het is niet gelukt alle informatie uit het lokale kaartgeheugen te wissen.</string>
+    <string name="backup_error">Het is niet gelukt een reserve kopie van de database te maken!</string>
+    <string name="restore_error">Het is niet gelukt de reserve kopie van de database terug te zetten!</string>
+    <string name="backup_ok">Er is met succes een reserve kopie van de database gemaakt!</string>
+    <string name="restore_ok">De reserve kopie van de database is met succes hersteld!</string>
+    <string name="title_activity_drive_backup">DriveBackupActivity</string>
+
+    <string name="drive_error_query_folders">Het is niet gelukt de mappen uit Google Drive op te halen.</string>
+    <string name="drive_error_root_folder">Het is niet gelukt de basis map uit Google Drive op te halen.</string>
+    <string name="drive_error_create_folder">Het is niet gelukt de backup map op Google Drive aan te maken.</string>
+    <string name="drive_error_create_file">Het is niet gelukt het backup bestand op Google Drive aan te maken.</string>
+    <string name="drive_error_io_error">Er is een fout opgetreden bij het schrijven van het backup bestand op Google Drive.</string>
+    <string name="drive_error_backup_folder">Het is niet gelukt de backup map te vinden of te maken op Google Drive.</string>
+    <string name="drive_backup_success">De backup is met success op Google Drive aangemaakt.</string>
 </resources>

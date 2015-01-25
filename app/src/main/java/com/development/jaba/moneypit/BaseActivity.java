@@ -6,6 +6,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * A simple {@link android.support.v7.app.ActionBarActivity} derived class that serves as a base
@@ -19,7 +20,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     /**
      * Sets up the {@link android.support.v7.widget.Toolbar} with the ID R.id.app_bar
      * as the AppBar.
-     *
+     * <p/>
      * It uses {@see com.development.jaba.moneypit.BaseActivity#getLayoutResource} to know which
      * layout to use as content view.
      *
@@ -39,12 +40,14 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     /**
      * Sub-classes must aoverride this to supply the correct layout ID.
+     *
      * @return The layout ID to inflate as content view.
      */
     protected abstract int getLayoutResource();
 
     /**
      * Gets a reference to the {@link android.support.v7.widget.Toolbar} used as AppBar.
+     *
      * @return The {@link android.support.v7.widget.Toolbar}.
      */
     protected Toolbar getToolbar() {
@@ -73,4 +76,21 @@ public abstract class BaseActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Shows a simple short {@link android.widget.Toast} message.
+     *
+     * @param message The message to show.
+     */
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Shows a simple short {@link android.widget.Toast} message.
+     *
+     * @param resId The resource Id of the message to show.
+     */
+    public void showToast(int resId) {
+        Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT).show();
+    }
 }

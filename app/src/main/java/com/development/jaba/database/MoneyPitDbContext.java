@@ -8,11 +8,13 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.ConditionalHelper;
 import com.development.jaba.utilities.DateHelper;
 import com.jjoe64.graphview.series.DataPoint;
@@ -21,7 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     //region Private fields
     private static final int DATABASE_VERSION = 1;              // Database version.
-    private static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
+    public static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
     private final MoneyPitDbManager mDbManager;                 // Database manager instance handling singleton SQLiteDatabase.
@@ -198,35 +200,70 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     //endregion
 
     //region Backup/restore
-    public void backup() throws IOException {
-        final String inFileName = mContext.getDatabasePath(DATABASE_NAME).getPath();
-        File dbFile = new File(inFileName);
-        FileInputStream fis = null;
-        OutputStream output = null;
 
-        try {
-            fis = new FileInputStream(dbFile);
+    /**
+     * Helper to log backup/restore errors and to signal the user that
+     * the backup or restore action failed.
+     */
+    private void backupRestoreError(IOException ex, String message) {
+        Log.e("backup_restore", ex.getMessage());
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+    }
 
-            String outFileName = Environment.getExternalStorageDirectory() + "/" + DATABASE_NAME;
+    public void restoreDatabase() {
+        File sd = Environment.getExternalStorageDirectory();
 
-            // Open the empty db as the output stream
-            output = new FileOutputStream(outFileName);
+        if (sd.canWrite()) {
+            final String currentDBPath = mContext.getDatabasePath(DATABASE_NAME).getPath();
+            final String backupDBPath = "MoneyPit.bak.sqlite"; // From SD directory.
 
-            // Transfer bytes from the inputfile to the outputfile
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
+            final File backupDB = new File(currentDBPath);
+            final File currentDB = new File(sd, backupDBPath);
+
+            FileChannel src = null, dst = null;
+            try {
+                src = new FileInputStream(currentDB).getChannel();
+                dst = new FileOutputStream(backupDB).getChannel();
+
+                dst.transferFrom(src, 0, src.size());
+                Toast.makeText(mContext, mContext.getString(R.string.restore_ok), Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                backupRestoreError(e, mContext.getString(R.string.restore_error));
+            } finally {
+                try {
+                    if (src != null) src.close();
+                    if (dst != null) dst.close();
+                } catch (IOException e) {
+                    backupRestoreError(e, mContext.getString(R.string.restore_error));
+                }
             }
+        }
+    }
 
-            // Close the streams
-            output.flush();
-        } finally {
-            if (output != null) {
-                output.close();
-            }
-            if (fis != null) {
-                fis.close();
+    public void backupDatabase() {
+        File sd = Environment.getExternalStorageDirectory();
+
+        if (sd.canWrite()) {
+            final String currentDBPath = mContext.getDatabasePath(DATABASE_NAME).getPath();
+            String backupDBPath = "MoneyPit.bak.sqlite";
+            File currentDB = new File(currentDBPath);
+            File backupDB = new File(sd, backupDBPath);
+
+            FileChannel src = null, dst = null;
+            try {
+                src = new FileInputStream(currentDB).getChannel();
+                dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                Toast.makeText(mContext, mContext.getString(R.string.backup_ok), Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                backupRestoreError(e, mContext.getString(R.string.backup_error));
+            } finally {
+                try {
+                    if (src != null) src.close();
+                    if (dst != null) dst.close();
+                } catch (IOException e) {
+                    backupRestoreError(e, mContext.getString(R.string.backup_error));
+                }
             }
         }
     }

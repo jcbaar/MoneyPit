@@ -1,5 +1,6 @@
 package com.development.jaba.moneypit;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -87,6 +88,11 @@ public class MainDrawerActivity extends BaseActivity
                 mFragment = CarListFragment.newInstance();
                 break;
 
+            case 2:
+                Intent backup = new Intent(this, DriveBackupActivity.class);
+                startActivity(backup);
+                return;
+
             default:
                 break;
         }
@@ -111,7 +117,6 @@ public class MainDrawerActivity extends BaseActivity
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(mTitle);
         }
     }

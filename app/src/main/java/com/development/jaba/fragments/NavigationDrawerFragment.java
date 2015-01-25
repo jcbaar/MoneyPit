@@ -102,6 +102,11 @@ public class NavigationDrawerFragment extends Fragment {
         item.setTitle(getResources().getString(R.string.nav_cars));
         item.setIconId(R.drawable.ic_directions_car_grey600_24dp);
         data.add(item);
+
+        item = new NavigationDrawerItem();
+        item.setTitle("Backup and Restore");
+        item.setIconId(R.drawable.ic_event_note_grey600_24dp);
+        data.add(item);
         return data;
     }
 
