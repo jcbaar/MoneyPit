@@ -104,8 +104,8 @@ public class NavigationDrawerFragment extends Fragment {
         data.add(item);
 
         item = new NavigationDrawerItem();
-        item.setTitle("Backup and Restore");
-        item.setIconId(R.drawable.ic_event_note_grey600_24dp);
+        item.setTitle(getResources().getString(R.string.backup_restore));
+        item.setIconId(R.drawable.ic_backup_grey600_24dp);
         data.add(item);
         return data;
     }

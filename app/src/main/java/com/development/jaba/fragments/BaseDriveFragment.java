@@ -1,4 +1,4 @@
-package com.development.jaba.moneypit;
+package com.development.jaba.fragments;
 
 /**
  * Copyright 2013 Google Inc. All Rights Reserved.
@@ -14,10 +14,17 @@ package com.development.jaba.moneypit;
  * limitations under the License.
  */
 
+/**
+ * Basically this code is the base activity code from the Google samples.
+ */
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -25,14 +32,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
 /**
- * An abstract activity that handles authorization and connection to the Drive
- * services.
+ * {@link android.support.v4.app.Fragment} derived class that serves as a base class for
+ * Google Drive related fragments.
  */
-public abstract class BaseDriveActivity extends BaseActivity implements
+public class BaseDriveFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "BaseDriveActivity";
+    private static final String TAG = "BaseDriveFragment";
 
     /**
      * Request code for auto Google Play Services error resolution.
@@ -51,10 +58,10 @@ public abstract class BaseDriveActivity extends BaseActivity implements
      * activities itself.
      */
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                     .addApi(Drive.API)
                     .addScope(Drive.SCOPE_FILE)
                     .addConnectionCallbacks(this)
@@ -68,10 +75,10 @@ public abstract class BaseDriveActivity extends BaseActivity implements
      * Handles resolution callbacks.
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == Activity.RESULT_OK) {
             mGoogleApiClient.connect();
         }
     }
@@ -81,7 +88,7 @@ public abstract class BaseDriveActivity extends BaseActivity implements
      * be disconnected as soon as an activity is invisible.
      */
     @Override
-    protected void onPause() {
+    public void onPause() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
@@ -113,11 +120,11 @@ public abstract class BaseDriveActivity extends BaseActivity implements
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
+            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), getActivity(), 0).show();
             return;
         }
         try {
-            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+            result.startResolutionForResult(getActivity(), REQUEST_CODE_RESOLUTION);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Exception while starting resolution activity", e);
         }
@@ -128,5 +135,23 @@ public abstract class BaseDriveActivity extends BaseActivity implements
      */
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
+    }
+
+    /**
+     * Shows a simple short {@link android.widget.Toast} message.
+     *
+     * @param message The message to show.
+     */
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Shows a simple short {@link android.widget.Toast} message.
+     *
+     * @param resId The resource Id of the message to show.
+     */
+    public void showToast(int resId) {
+        Toast.makeText(getActivity(), getActivity().getText(resId), Toast.LENGTH_SHORT).show();
     }
 }

@@ -127,9 +127,10 @@
     <string name="drive_error_root_folder">Failed to get the root folder from Google Drive.</string>
     <string name="drive_error_create_folder">Failed to create the backup folder om Google Drive.</string>
     <string name="drive_error_create_file">Failed to create the backup file of Google Drive.</string>
-    <string name="drive_error_io_error">An error has occured writing the backup file on Google Drive.</string>
+    <string name="drive_error_io_error">An error has occurred writing the backup file on Google Drive.</string>
     <string name="drive_error_backup_folder">Unable to find or create the backup folder on Google Drive.</string>
     <string name="drive_backup_success">The backup was created successfully on Google Drive.</string>
+    <string name="backup_restore">Backup and restore</string>
 
 
 </resources>

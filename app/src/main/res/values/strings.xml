@@ -131,4 +131,5 @@
     <string name="drive_error_io_error">Er is een fout opgetreden bij het schrijven van het backup bestand op Google Drive.</string>
     <string name="drive_error_backup_folder">Het is niet gelukt de backup map te vinden of te maken op Google Drive.</string>
     <string name="drive_backup_success">De backup is met success op Google Drive aangemaakt.</string>
+    <string name="backup_restore">Backup en herstel</string>
 </resources>

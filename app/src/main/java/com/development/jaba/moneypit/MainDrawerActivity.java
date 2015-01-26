@@ -1,14 +1,15 @@
 package com.development.jaba.moneypit;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 
 import com.development.jaba.fragments.CarListFragment;
+import com.development.jaba.fragments.DriveBackupFragment;
 import com.development.jaba.fragments.NavigationDrawerFragment;
 
 
@@ -21,7 +22,6 @@ public class MainDrawerActivity extends BaseActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private android.support.v4.app.Fragment mFragment = null;
-    private android.app.Fragment mNativeFragment = null;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -81,37 +81,21 @@ public class MainDrawerActivity extends BaseActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        boolean useNative = false;
-
         switch (position + 1) {
             case 1: // Cars fragment.
                 mFragment = CarListFragment.newInstance();
                 break;
 
             case 2:
-                Intent backup = new Intent(this, DriveBackupActivity.class);
-                startActivity(backup);
-                return;
+                mFragment = DriveBackupFragment.newInstance();
+                break;
 
             default:
                 break;
         }
 
-        if (useNative) {
-            if (mFragment != null) {
-                getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
-                mFragment = null;
-            }
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, mNativeFragment).commit();
-        } else {
-            if (mNativeFragment != null) {
-                getFragmentManager().beginTransaction().remove(mNativeFragment).commit();
-                mNativeFragment = null;
-            }
-            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
-        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
     }
 
     public void restoreActionBar() {

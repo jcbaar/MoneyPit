@@ -1,16 +1,19 @@
-package com.development.jaba.moneypit;
+package com.development.jaba.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.development.jaba.database.MoneyPitDbContext;
+import com.development.jaba.moneypit.MoneyPitApp;
+import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi.DriveContentsResult;
-import com.google.android.gms.drive.DriveApi.MetadataBufferResult;
+import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.Metadata;
@@ -25,11 +28,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
-public class DriveBackupActivity extends BaseDriveActivity {
-
-    private static final String TAG = "DriveBackupActivity";
+/**
+ * Fragment class for handling database backup and restore to Google Drive.
+ */
+public class DriveBackupFragment extends BaseDriveFragment {
+    private static final String TAG = "DriveBackupFragment";
 
     private Button mBackup;
+
+    /**
+     * Static factory method. Creates a new instance of a {@link com.development.jaba.fragments.DriveBackupFragment} class.
+     *
+     * @return The created fragment.
+     */
+    public static DriveBackupFragment newInstance() {
+
+        return new DriveBackupFragment();
+    }
 
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -44,10 +59,12 @@ public class DriveBackupActivity extends BaseDriveActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        mBackup = (Button) findViewById(R.id.backup);
+        View view = inflater.inflate(R.layout.fragment_backup_restore, container, false);
+
+        mBackup = (Button) view.findViewById(R.id.backup);
         if (mBackup != null) {
             mBackup.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,14 +73,10 @@ public class DriveBackupActivity extends BaseDriveActivity {
                 }
             });
         }
+        return view;
     }
 
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_drive_backup;
-    }
-
-    private void backup() {
+    private synchronized void backup() {
         new DriveBackupAsyncTask().execute();
     }
 
@@ -78,7 +91,7 @@ public class DriveBackupActivity extends BaseDriveActivity {
         private final static String MIME_TYPE_FILE = "application/octet-stream";
 
         /**
-         * The business end of the {@link com.development.jaba.moneypit.DriveBackupActivity.DriveBackupAsyncTask}. This will perform
+         * The business end of the {@link com.development.jaba.fragments.DriveBackupFragment.DriveBackupAsyncTask}. This will perform
          * the following actions:
          * </p>
          * <li>
@@ -101,7 +114,7 @@ public class DriveBackupActivity extends BaseDriveActivity {
             Query query = new Query.Builder()
                     .addFilter(Filters.and(a, b, c))
                     .build();
-            MetadataBufferResult queryResult = Drive.DriveApi.query(getGoogleApiClient(), query).await();
+            DriveApi.MetadataBufferResult queryResult = Drive.DriveApi.query(getGoogleApiClient(), query).await();
             if (!queryResult.getStatus().isSuccess()) {
                 return getString(R.string.drive_error_query_folders);
             }
@@ -146,7 +159,7 @@ public class DriveBackupActivity extends BaseDriveActivity {
 
                 // Create a new file in the backup folder to which we write the backup of
                 // the database.
-                DriveContentsResult backupFileResult = Drive.DriveApi.newDriveContents(getGoogleApiClient()).await();
+                DriveApi.DriveContentsResult backupFileResult = Drive.DriveApi.newDriveContents(getGoogleApiClient()).await();
                 if (!backupFileResult.getStatus().isSuccess()) {
                     return getString(R.string.drive_error_create_file);
                 }
@@ -202,4 +215,3 @@ public class DriveBackupActivity extends BaseDriveActivity {
         }
     }
 }
-
