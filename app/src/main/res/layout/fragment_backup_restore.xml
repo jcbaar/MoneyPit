@@ -16,11 +16,17 @@
         android:enabled="false"
         style="@style/ActionButton" />
 
+    <Spinner
+        android:id="@+id/restore_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:text="Restore database!"
         android:id="@+id/restore"
-        style="@style/FlatActionButton" />
+        android:enabled="false"
+        style="@style/ActionButton" />
 
 </LinearLayout>
