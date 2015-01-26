@@ -22,6 +22,7 @@
     <PreferenceCategory android:title="@string/misc_settings">
         <Preference
             android:title="@string/clear_map_cache"
+            android:summary="@string/clear_map_cache_summary"
             android:key="emptyMapCache" />
     </PreferenceCategory>
 </PreferenceScreen>

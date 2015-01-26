@@ -113,11 +113,12 @@
     <string name="allow_location_summary">Wanneer aangevinkt zal de lokatie van elke tankbeurt in de database worden opgeslagen.</string>
     <string name="no_location_provider">Er is geen lokatie beschikbaar. De lokatie zal niet worden opgeslagen.</string>
     <string name="misc_settings">Overige</string>
-    <string name="clear_map_cache">Het lokale kaartgeheugen wissen</string>
+    <string name="clear_map_cache">Het lokale kaart geheugen legen</string>
+    <string name="clear_map_cache_summary">Alle kaarten opgeslagen in het kaart geheugen verwijderen.</string>
     <string name="warning">Waarschuwing</string>
-    <string name="empty_cache">Het leeg maken van het lokale kaartgeheugen betekend dat er bij de eerst volgende keer dat een kaart moet worden getoond deze opnieuw vanaf het internet moet worden gehaald.\n\nDoorgaan?</string>
-    <string name="cache_purged">Het lokale kaartgeheugen is gewist.</string>
-    <string name="cache_purge_failed">Het is niet gelukt alle informatie uit het lokale kaartgeheugen te wissen.</string>
+    <string name="empty_cache">Het leeg maken van het lokale kaart geheugen betekend dat er bij de eerst volgende keer dat een kaart moet worden getoond deze opnieuw vanaf het internet moet worden gehaald.\n\nDoorgaan?</string>
+    <string name="cache_purged">Het lokale kaart geheugen is gewist.</string>
+    <string name="cache_purge_failed">Het is niet gelukt alle informatie uit het lokale kaart geheugen te wissen.</string>
     <string name="backup_error">Het is niet gelukt een reserve kopie van de database te maken!</string>
     <string name="restore_error">Het is niet gelukt de reserve kopie van de database terug te zetten!</string>
     <string name="backup_ok">Er is met succes een reserve kopie van de database gemaakt!</string>

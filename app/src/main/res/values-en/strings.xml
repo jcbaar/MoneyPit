@@ -113,11 +113,12 @@
     <string name="allow_location_summary">With this option turned on the location of every fill-up is recorded into the database.</string>
     <string name="no_location_provider">There is no location provider available. The location will not be recorded.</string>
     <string name="misc_settings">Miscellaneous</string>
-    <string name="clear_map_cache">Purge the local map cache</string>
+    <string name="clear_map_cache">Erase the local map cache</string>
+    <string name="clear_map_cache_summary">Remove all maps from the local map cache.</string>
     <string name="warning">Warning</string>
-    <string name="empty_cache">Purging the local map cache means that the next time a map is shown it needs to be downloaded from the internet again.\n\nContinue?</string>
-    <string name="cache_purged">The local map cache has been purged.</string>
-    <string name="cache_purge_failed">Failed to purge all information from the local map cache.</string>
+    <string name="empty_cache">Erasing the local map cache means that the next time a map is shown it needs to be downloaded from the internet again.\n\nContinue?</string>
+    <string name="cache_purged">The local map cache has been erased.</string>
+    <string name="cache_purge_failed">Failed to erase all information from the local map cache.</string>
     <string name="backup_error">Backing up the database failed!</string>
     <string name="restore_error">Restoring the database backup failed!</string>
     <string name="backup_ok">Successfully created a database backup!</string>
