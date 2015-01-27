@@ -27,7 +27,7 @@
 
     <color name="slidingTabTitleColor">#78FFFFFF</color>
     <color name="slidingTabSelectedTitleColor">#FFFFFF</color>
-    <color name="slidingTabIndicatorColor">#FFFFFF</color>
+    <color name="slidingTabIndicatorColor">@color/accentColor</color>
     <color name="slidingTabDividerColor">#00000000</color>
 
     <color name="drawer_background">#FFFFFF</color>

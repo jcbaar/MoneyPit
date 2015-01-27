@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string-array name="edit_delete">
-        <item>Bewerken</item>
-        <item>Verwijderen</item>
+        <item>Edit</item>
+        <item>Delete</item>
     </string-array>
 </resources>

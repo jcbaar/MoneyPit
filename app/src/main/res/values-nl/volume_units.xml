@@ -2,6 +2,6 @@
 <resources>
     <string-array name="distance_units">
         <item>Kilometer</item>
-        <item>Mile</item>
+        <item>Mijl</item>
     </string-array>
 </resources>
