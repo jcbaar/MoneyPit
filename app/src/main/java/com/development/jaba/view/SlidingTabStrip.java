@@ -63,6 +63,7 @@ class SlidingTabStrip extends LinearLayout {
     private final Paint mDividerPaint;
     private final float mDividerHeight;
 
+    private int mPreviousPosition;
     private int mSelectedPosition;
     private float mSelectionOffset;
 
@@ -158,11 +159,18 @@ class SlidingTabStrip extends LinearLayout {
     }
 
     void onViewPagerPageChanged(int position, float positionOffset) {
-        setTextViewColor(mSelectedPosition, false);
+        if (mSelectedPosition != position) {
+            mPreviousPosition = mSelectedPosition;
+        }
+        if (positionOffset == 0) {
+            setTextViewColor(mPreviousPosition, false);
+        }
         mSelectedPosition = position;
         mSelectionOffset = positionOffset;
         invalidate();
-        setTextViewColor(mSelectedPosition, true);
+        if (positionOffset == 0) {
+            setTextViewColor(mSelectedPosition, true);
+        }
     }
 
     @Override
