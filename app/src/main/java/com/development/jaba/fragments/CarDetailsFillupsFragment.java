@@ -40,6 +40,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     private List<Fillup> mFillups;              // The list of Fillup entities from the database.
     private FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
     private OnDataChangedListener mCallback;    // Listener for data changes.
+    private RecyclerViewEx mFillupList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,14 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
             mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null);
             mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
+
+                @Override
+                public void onExpansionStateChanged(int position, boolean isExpanded) {
+                    if (isExpanded) {
+                        mFillupList.scrollToPosition(position);
+                    }
+                }
+
                 @Override
                 public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
                     return false;
@@ -90,8 +99,13 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                                             super.onPositive(dialog);
                                             Fillup selectedFillup = mFillupAdapter.getItem(position);
                                             mContext.deleteFillup(selectedFillup);
-                                            mFillups.remove(selectedFillup);
-                                            mFillupAdapter.notifyItemRemoved(position);
+
+                                            // Ideally this should be enough but this will not re-compute the
+                                            // follow up fill-ups.
+                                            //mFillupAdapter.notifyItemRemoved(position);
+                                            //mFillups.remove(selectedFillup);
+
+                                            new LoadDataTask().execute();
 
                                             // Notify the activity the data has changed.
                                             if (mCallback != null) {
@@ -109,12 +123,12 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 }
             });
 
-            RecyclerViewEx fillupList = (RecyclerViewEx) view.findViewById(R.id.fillupList);
-            fillupList.setAdapter(mFillupAdapter);
-            fillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mFillupList = (RecyclerViewEx) view.findViewById(R.id.fillupList);
+            mFillupList.setAdapter(mFillupAdapter);
+            mFillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
-            mFab.attachToRecyclerView(fillupList);
+            mFab.attachToRecyclerView(mFillupList);
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

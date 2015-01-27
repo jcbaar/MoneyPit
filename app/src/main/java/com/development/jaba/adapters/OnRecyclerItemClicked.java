@@ -27,4 +27,13 @@ public interface OnRecyclerItemClicked {
      * @return Must return true when the listener has processed the {@link android.view.MenuItem} click.
      */
     public boolean onRecyclerItemMenuSelected(int position, MenuItem item);
+
+    /**
+     * The method called when the expanded state of one of the {@link android.support.v7.widget.RecyclerView} items
+     * changed.
+     *
+     * @param position   The position of the item that changed.
+     * @param isExpanded true if the items has expanded, false if it has collapsed.
+     */
+    public void onExpansionStateChanged(int position, boolean isExpanded);
 }

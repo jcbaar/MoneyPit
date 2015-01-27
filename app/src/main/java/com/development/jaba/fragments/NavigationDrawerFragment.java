@@ -129,6 +129,11 @@ public class NavigationDrawerFragment extends Fragment {
             public boolean onRecyclerItemMenuSelected(int position, MenuItem item) {
                 return false;
             }
+
+            @Override
+            public void onExpansionStateChanged(int position, boolean isExpanded) {
+
+            }
         });
 
         mDrawerList.setAdapter(mAdapter);

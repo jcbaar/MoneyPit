@@ -6,9 +6,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.development.jaba.moneypit.R;
 
 /**
  * Helper class to start location tracking.
@@ -48,8 +45,9 @@ public class LocationHelper implements LocationListener {
     public void startLocationTracking() {
         try {
             if (!mGpsEnabled && !mNetworkEnabled) {
-                // There is no location provider available. No-op for now...
-                Toast.makeText(mContext, mContext.getString(R.string.no_location_provider), Toast.LENGTH_SHORT).show();
+                // There is no location provider available. No-op for now.
+                // Let it fail silently...
+                //Toast.makeText(mContext, mContext.getString(R.string.no_location_provider), Toast.LENGTH_SHORT).show();
             } else {
                 if (mNetworkEnabled) {
                     mLocationManager.requestLocationUpdates(

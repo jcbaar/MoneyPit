@@ -124,7 +124,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      * @param position The position to setup the data for.
      */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final FillupRowViewHolder vh = (FillupRowViewHolder) holder;
         final Fillup item = mData.get(position);
 
@@ -150,7 +150,8 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         vh.getFull().setImageDrawable(d);
 
         // No note? No need to show the view then.
-        if (TextUtils.isEmpty(item.getNote())) {
+        boolean hasNote = !TextUtils.isEmpty(item.getNote());
+        if (!hasNote) {
             vh.getNoteContent().setVisibility(View.GONE);
         } else {
             vh.getNoteContent().setVisibility(View.VISIBLE);
@@ -163,6 +164,17 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             vh.getMap().setVisibility(View.VISIBLE);
         } else {
             vh.getMap().setVisibility(View.GONE);
+        }
+
+        if (hasNote || hasMap) {
+            vh.getExpandable().setExpansionStateListener(new LinearLayoutEx.ExpansionStateListener() {
+                @Override
+                public void OnExpansionStateChanged(boolean isExpanded) {
+                    onExpansionStateChanged(position, isExpanded);
+                }
+            });
+        } else {
+            vh.getExpandable().setExpansionStateListener(null);
         }
 
         // Forces the LinearLayoutEx to re-compute it's height necessary
@@ -386,6 +398,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         /**
          * Constructor. Initializes an instance of the object.
+         *
          * @param imageView The {@link android.widget.ImageView} in which the downloaded image is displayed.
          * @param cacheName The filename for the cached image. This is used to check if it already exists
          *                  in the local file cache or to save the downloaded image to the file cache. You need
@@ -398,6 +411,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         /**
          * The image has been downloaded. Here we set it to the {@link android.widget.ImageView}.
+         *
          * @param result The (down)loaded {@link android.graphics.Bitmap}.
          */
         @Override

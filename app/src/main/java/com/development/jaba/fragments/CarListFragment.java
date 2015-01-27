@@ -125,6 +125,11 @@ public class CarListFragment extends Fragment {
                 }
                 return false;
             }
+
+            @Override
+            public void onExpansionStateChanged(int position, boolean isExpanded) {
+
+            }
         });
 
         RecyclerView carList = (RecyclerView) view.findViewById(R.id.carList);

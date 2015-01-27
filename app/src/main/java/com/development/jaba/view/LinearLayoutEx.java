@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.development.jaba.moneypit.R;
@@ -25,6 +26,7 @@ public class LinearLayoutEx extends LinearLayout {
     private ValueAnimator mAnimator;
     private int mDuration;
     private int mMeasuredHeight = 0;
+    private ExpansionStateListener mEsListener;
 
     public LinearLayoutEx(Context context) {
         this(context, null, 0);
@@ -55,6 +57,14 @@ public class LinearLayoutEx extends LinearLayout {
         }
     }
 
+    /**
+     * Sets the {@link com.development.jaba.view.LinearLayoutEx.ExpansionStateListener}.
+     *
+     * @param listener The {@link com.development.jaba.view.LinearLayoutEx.ExpansionStateListener} or null to clear it.
+     */
+    public void setExpansionStateListener(ExpansionStateListener listener) {
+        mEsListener = listener;
+    }
 
     /**
      * Sets up the {@link android.animation.ValueAnimator} for expanding the layout
@@ -77,6 +87,29 @@ public class LinearLayoutEx extends LinearLayout {
         // Setup the animator.
         mMeasuredHeight = getMeasuredHeight();
         mAnimator = ViewHeightAnimator(0, mMeasuredHeight);
+        mAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mEsListener != null) {
+                    mEsListener.OnExpansionStateChanged(true);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     /**
@@ -148,6 +181,9 @@ public class LinearLayoutEx extends LinearLayout {
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
         layoutParams.height = mMeasuredHeight;
         setLayoutParams(layoutParams);
+        if (mEsListener != null) {
+            mEsListener.OnExpansionStateChanged(true);
+        }
     }
 
     /**
@@ -165,6 +201,9 @@ public class LinearLayoutEx extends LinearLayout {
             public void onAnimationEnd(Animator animator) {
                 // At the end of the collapse animation we set out visibility to GONE.
                 setVisibility(View.GONE);
+                if (mEsListener != null) {
+                    mEsListener.OnExpansionStateChanged(false);
+                }
             }
 
             @Override
@@ -195,6 +234,9 @@ public class LinearLayoutEx extends LinearLayout {
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
         layoutParams.height = 0;
         setLayoutParams(layoutParams);
+        if (mEsListener != null) {
+            mEsListener.OnExpansionStateChanged(false);
+        }
     }
 
     /**
@@ -208,6 +250,7 @@ public class LinearLayoutEx extends LinearLayout {
     private ValueAnimator ViewHeightAnimator(int start, int end) {
         ValueAnimator animator = ValueAnimator.ofInt(start, end);
         animator.setDuration(mDuration);
+        animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -218,5 +261,13 @@ public class LinearLayoutEx extends LinearLayout {
             }
         });
         return animator;
+    }
+
+    /**
+     * Interface for a listener which is called whenever the expansion
+     * state has changed.
+     */
+    public interface ExpansionStateListener {
+        public void OnExpansionStateChanged(boolean isExpanded);
     }
 }
