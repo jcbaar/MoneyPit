@@ -237,7 +237,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     /**
-     * Selectes the specified item in the navigation drawer.
+     * Selects the specified item in the navigation drawer.
      *
      * @param position The position of the item to select.
      */

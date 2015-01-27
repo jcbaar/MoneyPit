@@ -84,10 +84,12 @@ public class MainDrawerActivity extends BaseActivity
         switch (position + 1) {
             case 1: // Cars fragment.
                 mFragment = CarListFragment.newInstance();
+                setTitle(getString(R.string.nav_cars));
                 break;
 
             case 2:
                 mFragment = DriveBackupFragment.newInstance();
+                setTitle(getString(R.string.backup_restore));
                 break;
 
             default:
@@ -96,6 +98,13 @@ public class MainDrawerActivity extends BaseActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
+    }
+
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        super.setTitle(title);
     }
 
     public void restoreActionBar() {
