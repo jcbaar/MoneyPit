@@ -93,6 +93,8 @@ public abstract class DriveListRestoreFileAsyncTask extends BaseDriveAsyncTask {
 
             // See if we need to load more.
             token = buffer.getNextPageToken();
+            buffer.release();
+
             if (token != null) {
                 query = new Query.Builder()
                         .setPageToken(token)

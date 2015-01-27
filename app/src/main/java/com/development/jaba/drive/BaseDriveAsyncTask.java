@@ -10,6 +10,7 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.Metadata;
+import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.query.Filter;
 import com.google.android.gms.drive.query.Filters;
@@ -69,7 +70,8 @@ public abstract class BaseDriveAsyncTask extends AsyncTask<Void, Void, String> {
         // See if the folder was found. Note that this will select the first
         // folder that meets the criteria. It is assumed there can be only one.
         DriveFolder backupFolder = null;
-        for (Metadata md : queryResult.getMetadataBuffer()) {
+        MetadataBuffer buffer = queryResult.getMetadataBuffer();
+        for (Metadata md : buffer) {
             // For some reason unclear to me the query defined above does not
             // filter out the trashed folders like I would want it to...
             if (!md.isTrashed()) {
@@ -77,6 +79,7 @@ public abstract class BaseDriveAsyncTask extends AsyncTask<Void, Void, String> {
                 break;
             }
         }
+        buffer.release();
         return backupFolder;
     }
 

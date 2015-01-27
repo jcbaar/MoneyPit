@@ -100,7 +100,10 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
      */
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mData != null) {
+            return mData.size();
+        }
+        return 0;
     }
 
     /**
