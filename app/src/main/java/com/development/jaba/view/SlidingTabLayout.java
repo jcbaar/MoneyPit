@@ -389,7 +389,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
             for (int i = 0; i < mTabStrip.getChildCount(); i++) {
                 if (v == mTabStrip.getChildAt(i)) {
                     mViewPager.setCurrentItem(i);
-                    return;
+                } else {
+                    mTabStrip.setTextViewColor(i, false);
                 }
             }
         }

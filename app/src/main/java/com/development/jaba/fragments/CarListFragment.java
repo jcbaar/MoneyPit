@@ -135,6 +135,7 @@ public class CarListFragment extends Fragment {
         RecyclerView carList = (RecyclerView) view.findViewById(R.id.carList);
         carList.setAdapter(mCarAdapter);
         carList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        carList.setHasFixedSize(true);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
         fab.attachToRecyclerView(carList);

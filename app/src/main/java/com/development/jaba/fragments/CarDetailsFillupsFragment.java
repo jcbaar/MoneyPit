@@ -71,7 +71,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 @Override
                 public void onExpansionStateChanged(int position, boolean isExpanded) {
                     if (isExpanded) {
-                        mFillupList.scrollToPosition(position);
+                        mFillupList.smoothScrollToPosition(position);
                     }
                 }
 
@@ -126,6 +126,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
             mFillupList = (RecyclerViewEx) view.findViewById(R.id.fillupList);
             mFillupList.setAdapter(mFillupAdapter);
             mFillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mFillupList.setHasFixedSize(false);
 
             mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
             mFab.attachToRecyclerView(mFillupList);
