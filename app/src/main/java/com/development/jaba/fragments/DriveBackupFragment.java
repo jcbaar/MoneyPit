@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.drive.DriveCheckBackupFolderAsyncTask;
 import com.development.jaba.drive.DriveCreateBackupAsyncTask;
 import com.development.jaba.drive.DriveListRestoreFileAsyncTask;
 import com.development.jaba.drive.RestoreFile;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.CircularProgressView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
@@ -27,6 +30,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     private Button mBackup, mRestore;
     private Spinner mRestoreList;
     private CircularProgressView mProgress;
+    private LinearLayout mContainer;
 
     /**
      * Static factory method. Creates a new instance of a {@link com.development.jaba.fragments.DriveBackupFragment} class.
@@ -42,6 +46,8 @@ public class DriveBackupFragment extends BaseDriveFragment {
     public void onConnected(Bundle connectionHint) {
         super.onConnected(connectionHint);
         mProgress.stop();
+        mContainer.setVisibility(View.VISIBLE);
+
         // Check for the existence of the backup folder.
         new CheckBackupFolderAsyncTask(getActivity(), getGoogleApiClient()).execute();
     }
@@ -50,12 +56,14 @@ public class DriveBackupFragment extends BaseDriveFragment {
     public void onConnectionSuspended(int cause) {
         super.onConnectionSuspended(cause);
         mBackup.setEnabled(false);
+        mContainer.setVisibility(View.GONE);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mProgress.stop();
+        mContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -69,6 +77,9 @@ public class DriveBackupFragment extends BaseDriveFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_backup_restore, container, false);
+
+        mContainer = (LinearLayout) view.findViewById(R.id.layoutContainer);
+        mContainer.setVisibility(View.GONE);
 
         mProgress = (CircularProgressView) view.findViewById(R.id.progress);
         mProgress.start();
@@ -88,7 +99,15 @@ public class DriveBackupFragment extends BaseDriveFragment {
             mRestore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //restore();
+                    DialogHelper.showYesNoDialog(getString(R.string.warning),
+                            getString(R.string.restore_warning),
+                            new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    super.onPositive(dialog);
+                                    //restore();
+                                }
+                            }, getActivity());
                 }
             });
         }
@@ -153,7 +172,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
                 // Loads the available files into the UI for selection.
                 RestoreFile[] files = new RestoreFile[getResults().size()];
                 getResults().toArray(files);
-                ArrayAdapter<RestoreFile> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_template, files);
+                ArrayAdapter<RestoreFile> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_template_smalll, files);
                 mRestoreList.setAdapter(adapter);
                 mRestore.setEnabled(getResults().size() > 0);
             }

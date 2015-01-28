@@ -134,5 +134,10 @@
     <string name="drive_backup_success">The backup was created successfully on Google Drive.</string>
     <string name="backup_restore">Backup and restore</string>
 
+    <string name="backup">BACKUP</string>
+    <string name="backup_summary">When you click on the BACKUP button a copy of the current database is created on your Google Drive. It is possible you need to select the account first and logon.</string>
+    <string name="restore">RESTORE</string>
+    <string name="restore_summary">When you select an available backup from the list below and click on the RESTORE button the selected backup will be restored. Note that this will overwrite your current database.</string>
+    <string name="restore_warning">Restoring a backup will overwrite the current database. All information will be lost.\n\n<b><i>This can not be undone!</i></b>\n\nAre you sure you want to continue?</string>
 
 </resources>

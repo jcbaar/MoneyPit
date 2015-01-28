@@ -134,4 +134,9 @@
     <string name="drive_error_file_list">Het is niet gelukt de backup bestanden in te lezen.</string>
     <string name="drive_backup_success">De backup is met success op Google Drive aangemaakt.</string>
     <string name="backup_restore">Backup en herstel</string>
+    <string name="backup">BACKUP</string>
+    <string name="backup_summary">Wanneer u op de BACKUP knop klikt wordt er een kopie van de huidige database gemaakt op uw Google Drive. Het is mogelijk dat u eerst het account moet kiezen en moet inloggen voordat de kopie wordt gemaakt.</string>
+    <string name="restore">HERSTEL</string>
+    <string name="restore_summary">Wanneer u een backup uit de onderstaande lijst selecteerd en op de knop HERSTEL klikt wordt de geselecteerde backup hersteld. Let op dat de huidige database hiermee wordt overschreven.</string>
+    <string name="restore_warning">Het herstellen van een backup overschrijft de huidige database. Alle informatie gaat verloren.\n\n<b><i>Dit kan niet ongedaan worden gemaakt!</i></b>\n\nWeet U zeker dat U door wilt gaan?</string>
 </resources>

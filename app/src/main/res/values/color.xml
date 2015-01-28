@@ -14,7 +14,7 @@
 
     <color name="legendBackgroundColor">#96bbdefb</color>
 
-    <color name="flatButtonClicked">#90dddddd</color>
+    <color name="flatButtonClicked">#90b7b7b7</color>
 
     <color name="listCardBackground">#FFFFFF</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
