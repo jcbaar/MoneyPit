@@ -139,4 +139,6 @@
     <string name="restore">HERSTEL</string>
     <string name="restore_summary">Wanneer u een backup uit de onderstaande lijst selecteerd en op de knop HERSTEL klikt wordt de geselecteerde backup hersteld. Let op dat de huidige database hiermee wordt overschreven.</string>
     <string name="restore_warning">Het herstellen van een backup overschrijft de huidige database. Alle informatie gaat verloren.\n\n<b><i>Dit kan niet ongedaan worden gemaakt!</i></b>\n\nWeet U zeker dat U door wilt gaan?</string>
+    <string name="restore_error_get_file">Het is niet gelukt het backup bestand te openen.</string>
+    <string name="drive_restore_success">Het geselecteerde backup bestand is met succes hersteld.</string>
 </resources>

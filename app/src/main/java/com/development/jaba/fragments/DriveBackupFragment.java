@@ -15,12 +15,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.drive.DriveCheckBackupFolderAsyncTask;
 import com.development.jaba.drive.DriveCreateBackupAsyncTask;
 import com.development.jaba.drive.DriveListRestoreFileAsyncTask;
+import com.development.jaba.drive.DriveRestoreBackupAsyncTask;
 import com.development.jaba.drive.RestoreFile;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.CircularProgressView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
 
 /**
  * Fragment class for handling database backup and restore to Google Drive.
@@ -31,6 +33,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     private Spinner mRestoreList;
     private CircularProgressView mProgress;
     private LinearLayout mContainer;
+    private ArrayAdapter<RestoreFile> mAdapter;
 
     /**
      * Static factory method. Creates a new instance of a {@link com.development.jaba.fragments.DriveBackupFragment} class.
@@ -105,7 +108,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     super.onPositive(dialog);
-                                    //restore();
+                                    restore();
                                 }
                             }, getActivity());
                 }
@@ -121,6 +124,16 @@ public class DriveBackupFragment extends BaseDriveFragment {
         new DriveBackupAsyncTask(getActivity(), getGoogleApiClient(), mBackupFolder).execute();
     }
 
+    private synchronized void restore() {
+        if (mAdapter != null) {
+            mBackup.setEnabled(false);
+            mRestore.setEnabled(false);
+            mRestoreList.setEnabled(false);
+            mProgress.start();
+            new DriveRestoreAsyncTask(getActivity(), getGoogleApiClient(), mAdapter.getItem(mRestoreList.getSelectedItemPosition()).Id).execute();
+        }
+    }
+
     /**
      * Checks for the presence of the backup folder and creates it if it does not
      * yet exists.
@@ -134,15 +147,17 @@ public class DriveBackupFragment extends BaseDriveFragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (!TextUtils.isEmpty(s)) {
-                // Something failed.
-                showToast(s);
-            } else {
-                // Folder exists. Enable UI and start loading the
-                // backup files available for restoring.
-                mBackupFolder = getBackupFolder();
-                mBackup.setEnabled(true);
-                new DriveLoadBackupsAsyncTask(getContext(), getGoogleApiClient(), getBackupFolder()).execute();
+            if (getActivity() != null) {
+                if (!TextUtils.isEmpty(s)) {
+                    // Something failed.
+                    showToast(s);
+                } else {
+                    // Folder exists. Enable UI and start loading the
+                    // backup files available for restoring.
+                    mBackupFolder = getBackupFolder();
+                    mBackup.setEnabled(true);
+                    new DriveLoadBackupsAsyncTask(getContext(), getGoogleApiClient(), getBackupFolder()).execute();
+                }
             }
         }
     }
@@ -165,16 +180,18 @@ public class DriveBackupFragment extends BaseDriveFragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (result != null) {
-                // Something failed.
-                showToast(result);
-            } else {
-                // Loads the available files into the UI for selection.
-                RestoreFile[] files = new RestoreFile[getResults().size()];
-                getResults().toArray(files);
-                ArrayAdapter<RestoreFile> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_template_smalll, files);
-                mRestoreList.setAdapter(adapter);
-                mRestore.setEnabled(getResults().size() > 0);
+            if (getActivity() != null) {
+                if (result != null) {
+                    // Something failed.
+                    showToast(result);
+                } else {
+                    // Loads the available files into the UI for selection.
+                    RestoreFile[] files = new RestoreFile[getResults().size()];
+                    getResults().toArray(files);
+                    mAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_template_smalll, files);
+                    mRestoreList.setAdapter(mAdapter);
+                    mRestore.setEnabled(getResults().size() > 0);
+                }
             }
         }
     }
@@ -197,7 +214,37 @@ public class DriveBackupFragment extends BaseDriveFragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            showToast(result);
+            if (getActivity() != null) {
+                showToast(result);
+            }
+        }
+    }
+
+    /**
+     * Internal {@link android.os.AsyncTask} derived class handling the database restore
+     * from the users Google Dive.
+     */
+    private class DriveRestoreAsyncTask extends DriveRestoreBackupAsyncTask {
+
+        public DriveRestoreAsyncTask(Context context, GoogleApiClient client, DriveId backupFile) {
+            super(context, client, backupFile);
+        }
+
+        /**
+         * Show the result of the restore procedure.
+         *
+         * @param result The error or success message.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (getActivity() != null) {
+                showToast(result);
+                mProgress.stop();
+                mBackup.setEnabled(true);
+                mRestore.setEnabled(mAdapter.getCount() > 0);
+                mRestoreList.setEnabled(mAdapter.getCount() > 0);
+            }
         }
     }
 }
