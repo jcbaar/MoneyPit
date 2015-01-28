@@ -347,6 +347,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
 
             mTabStrip.onViewPagerPageChanged(position, positionOffset);
+            if (positionOffset == 0.0) {
+                for (int i = 0; i < tabStripChildCount; i++) {
+                    mTabStrip.setTextViewColor(i, i == position);
+                }
+            }
 
             View selectedTitle = mTabStrip.getChildAt(position);
             int extraOffset = (selectedTitle != null)

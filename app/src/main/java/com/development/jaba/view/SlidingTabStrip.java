@@ -63,7 +63,6 @@ class SlidingTabStrip extends LinearLayout {
     private final Paint mDividerPaint;
     private final float mDividerHeight;
 
-    private int mPreviousPosition;
     private int mSelectedPosition;
     private float mSelectionOffset;
 
@@ -82,7 +81,7 @@ class SlidingTabStrip extends LinearLayout {
 
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.colorForeground, outValue, true);
-        final int themeForegroundColor =  outValue.data;
+        final int themeForegroundColor = outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
                 DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
@@ -141,16 +140,15 @@ class SlidingTabStrip extends LinearLayout {
     }
 
     void setTextViewColor(int position, boolean selected) {
-        if(position < getChildCount()) {
+        if (position < getChildCount()) {
             View v = getChildAt(position);
-            if( v instanceof TextView) {
-                TextView tv = (TextView)v;
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
 
-                if(mCustomTabColorizer != null) {
+                if (mCustomTabColorizer != null) {
                     tv.setTextColor(!selected ? mCustomTabColorizer.getTitleColor(position) :
                             mCustomTabColorizer.getTitleSelectedColor(position));
-                }
-                else {
+                } else {
                     tv.setTextColor(!selected ? mDefaultTabColorizer.getTitleColor(position) :
                             mDefaultTabColorizer.getTitleSelectedColor(position));
                 }
@@ -159,18 +157,9 @@ class SlidingTabStrip extends LinearLayout {
     }
 
     void onViewPagerPageChanged(int position, float positionOffset) {
-        if (mSelectedPosition != position) {
-            mPreviousPosition = mSelectedPosition;
-        }
-        if (positionOffset == 0) {
-            setTextViewColor(mPreviousPosition, false);
-        }
         mSelectedPosition = position;
         mSelectionOffset = positionOffset;
         invalidate();
-        if (positionOffset == 0) {
-            setTextViewColor(mSelectedPosition, true);
-        }
     }
 
     @Override
