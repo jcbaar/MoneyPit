@@ -88,4 +88,9 @@
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
     </style>
+
+    <style name="DatePicker" parent="@android:style/Widget.DatePicker">
+        <item name="android:calendarViewShown">false</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>

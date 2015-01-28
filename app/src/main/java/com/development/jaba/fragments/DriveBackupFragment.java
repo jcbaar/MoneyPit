@@ -15,6 +15,7 @@ import com.development.jaba.drive.DriveCreateBackupAsyncTask;
 import com.development.jaba.drive.DriveListRestoreFileAsyncTask;
 import com.development.jaba.drive.RestoreFile;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.view.CircularProgressView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
 
@@ -25,6 +26,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     private DriveFolder mBackupFolder;
     private Button mBackup, mRestore;
     private Spinner mRestoreList;
+    private CircularProgressView mProgress;
 
     /**
      * Static factory method. Creates a new instance of a {@link com.development.jaba.fragments.DriveBackupFragment} class.
@@ -39,7 +41,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     @Override
     public void onConnected(Bundle connectionHint) {
         super.onConnected(connectionHint);
-
+        mProgress.stop();
         // Check for the existence of the backup folder.
         new CheckBackupFolderAsyncTask(getActivity(), getGoogleApiClient()).execute();
     }
@@ -51,10 +53,25 @@ public class DriveBackupFragment extends BaseDriveFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mProgress.stop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mProgress.start();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_backup_restore, container, false);
+
+        mProgress = (CircularProgressView) view.findViewById(R.id.progress);
+        mProgress.start();
 
         mRestoreList = (Spinner) view.findViewById(R.id.restore_list);
         mBackup = (Button) view.findViewById(R.id.backup);

@@ -22,4 +22,9 @@
     <declare-styleable name="LinearLayoutEx">
         <attr name="lleAnimationDuration" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="CircularProgressView">
+        <attr name="cpvColor" format="color" />
+        <attr name="cpvStartDelay" format="integer" />
+    </declare-styleable>
 </resources>
