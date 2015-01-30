@@ -176,7 +176,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             setData(R.id.cheapFillup, R.string.summary_least_expensive_fillup, FormattingHelper.toPrice(mCar, result.LeastExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(result.LeastExpensiveFillup.Date) + ")");
 
             TextView label = (TextView) mLayout.findViewById(R.id.carLabel);
-            label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " upto " + FormattingHelper.toShortDate(mNewest));
+            label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
         }
     }
 }

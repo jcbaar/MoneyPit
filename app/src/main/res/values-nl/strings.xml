@@ -141,4 +141,5 @@
     <string name="restore_warning">Het herstellen van een backup overschrijft de huidige database. Alle informatie gaat verloren.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;&lt;i&gt;Dit kan niet ongedaan worden gemaakt!&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Weet U zeker dat U door wilt gaan?</string>
     <string name="restore_error_get_file">Het is niet gelukt het backup bestand te openen.</string>
     <string name="drive_restore_success">Het geselecteerde backup bestand is met succes hersteld.</string>
+    <string name="upto">t/m</string>
 </resources>
