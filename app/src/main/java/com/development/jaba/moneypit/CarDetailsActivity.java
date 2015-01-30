@@ -5,13 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.BaseDetailsFragment;
 import com.development.jaba.fragments.CarDetailsCostFragment;
@@ -20,7 +22,6 @@ import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
-import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.SlidingTabLayout;
 import com.development.jaba.view.ViewPagerEx;
@@ -37,6 +38,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
     MoneyPitDbContext mDbContext;               // Database context.
     SettingsHelper mSettings;                   // Settings context.
     SlidingTabLayout mSlidingTabLayout;         // Sliding tab that controls the ViewPager.
+    Spinner mYearSpinner;                       // Year selection spinner.
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -92,10 +94,45 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             mCurrentYear = getCarYearFromPrefs();
         }
 
-        setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
+        setTitle(mCarToShow.toString());
 
         // Check if there is any data available.
         mDbContext = new MoneyPitDbContext(this);
+
+        // Setup the spinner.
+        LayoutInflater inflater = LayoutInflater.from(getToolbar().getContext());
+        View layout = inflater.inflate(R.layout.year_spinner, null);
+        mYearSpinner = (Spinner) layout.findViewById(R.id.yearSpinner);
+        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.RIGHT;
+        getToolbar().addView(layout, 0, layoutParams);
+        setupYears();
+
+        mYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int year = Integer.parseInt(mYearSpinner.getSelectedItem().toString());
+
+                // Broadcast the year selection to all fragments. They need to know what year
+                // was selected so they they can update their contents.
+                for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+                    BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
+                    if (fragment != null) {
+                        fragment.onYearSelected(year);
+                    }
+                }
+
+                // Save the selected year.
+                mCurrentYear = year;
+                checkSlidingAvailability();
+                saveCarYearToPrefs();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         // Create the adapter that will return a fragment for each of the four
         // primary sections of the activity.
@@ -126,11 +163,30 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_car_details, menu);
-        return true;
+    /**
+     * Setup the items in the year spinner. The range will be from the "oldest" entry
+     * in the car it's fill-up list until the current year.
+     */
+    private void setupYears() {
+        Integer start = mDbContext.getOldestDataYear(mCarToShow.getId()),
+                end = DateHelper.getYearFromDate(new Date());
+        Integer[] years = new Integer[end - start + 1];
+
+        int toSelect = 0;
+        for (int i = 0; i < years.length; i++) {
+            years[i] = start + i;
+
+            // Mark the current item so we know which one
+            // to pre-select.
+            if (years[i] == mCurrentYear) {
+                toSelect = i;
+            }
+        }
+
+        ArrayAdapter<Integer> ad = new ArrayAdapter<>(this, R.layout.year_spinner_item, years);
+        ad.setDropDownViewResource(R.layout.year_spinner_item_dropdown);
+        mYearSpinner.setAdapter(ad);
+        mYearSpinner.setSelection(toSelect);
     }
 
     /**
@@ -148,47 +204,6 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.selectYear) {
-            // Let the user select the year of data they want to see.
-            DialogHelper.showYearSelectionDialog(mCarToShow, mCurrentYear, new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    super.onPositive(dialog);
-
-                    // Get the currently selected item from the view. This
-                    // will contain the selected year.
-                    View view = dialog.getCustomView();
-                    Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-                    int year = Integer.parseInt(spinner.getSelectedItem().toString());
-
-                    // Broadcast the year selection to all fragments. They need to know what year
-                    // was selected so they they can update their contents.
-                    for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-                        BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
-                        if (fragment != null) {
-                            fragment.onYearSelected(year);
-                        }
-                    }
-
-                    // Save the selected year.
-                    mCurrentYear = year;
-                    setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
-                    checkSlidingAvailability();
-                    saveCarYearToPrefs();
-                }
-            }, this);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * Called whenever the fill-up list fragment reported a data change. From here
      * we also need to pass this event on to the other fragments.
@@ -200,6 +215,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Did the year change? If so save it to the settings.
         if (mCurrentYear != year) {
             saveCarYearToPrefs();
+            setupYears();
         }
 
         // Skip the first fragment since this is the fill-up list fragment which sent
@@ -222,7 +238,6 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         if (year != mCurrentYear) {
             mCurrentYear = year;
-            setTitle(mCarToShow.toString() + " - " + String.valueOf(mCurrentYear));
         }
         checkSlidingAvailability();
     }

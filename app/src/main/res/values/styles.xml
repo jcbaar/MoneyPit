@@ -97,4 +97,23 @@
         <item name="android:calendarViewShown">false</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
+
+    <style name="YearSpinnerText" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/primary_text_default_material_dark</item>
+        <item name="android:paddingLeft">@dimen/abc_dropdownitem_text_padding_left</item>
+        <item name="android:paddingRight">@dimen/abc_dropdownitem_text_padding_right</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAppearance">
+            @style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse
+        </item>
+    </style>
+
+    <style name="YearSpinnerDropDownText" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
+        <item name="android:paddingLeft">@dimen/abc_dropdownitem_text_padding_left</item>
+        <item name="android:paddingRight">@dimen/abc_dropdownitem_text_padding_right</item>
+        <item name="android:paddingTop">@dimen/abc_dropdownitem_text_padding_left</item>
+        <item name="android:paddingBottom">@dimen/abc_dropdownitem_text_padding_right</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

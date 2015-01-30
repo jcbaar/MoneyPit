@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <Spinner
+        android:id="@+id/yearSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:popupBackground="@color/background_floating_material_light">
+
+    </Spinner>
+
+    <Space
+        android:layout_width="@dimen/activity_horizontal_margin"
+        android:layout_height="wrap_content" />
+</LinearLayout>
