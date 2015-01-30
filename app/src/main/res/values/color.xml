@@ -13,6 +13,7 @@
     <color name="divider">#B6B6B6</color>
 
     <color name="legendBackgroundColor">#96bbdefb</color>
+    <color name="carLabelBackgroundColor">#d0bbdefb</color>
 
     <color name="flatButtonClicked">#90b7b7b7</color>
 

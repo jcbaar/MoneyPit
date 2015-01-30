@@ -3,8 +3,8 @@
 
     <string name="app_name">MoneyPit</string>
     <string name="action_settings">Instellingen</string>
-    <string name="no_cars">Het is erg eenzaam hier. Gebruik A.U.B. het menu om een nieuw voertuig toe te voegen.</string>
-    <string name="no_fillups">Het is erg eenzaam hier. Gebruik A.U.B. het menu om een nieuwe tankbeurt toe te voegen of selecteer een ander jaar via het menu.</string>
+    <string name="no_cars">Het is erg eenzaam hier. Gebruik A.U.B. de \'+\' knop hieronder om een nieuw voertuig toe te voegen.</string>
+    <string name="no_fillups">Het is erg eenzaam hier. Gebruik A.U.B. de \'+\' knop hieronder om een nieuwe tankbeurt toe te voegen of selecteer een ander jaar via het menu hierboven.</string>
     <string name="title_activity_add_or_edit_car">AddOrEditCarActivity</string>
     <string name="car_brand">Merk</string>
     <string name="carModel">Model</string>

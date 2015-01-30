@@ -3,8 +3,8 @@
 
     <string name="app_name">MoneyPit</string>
     <string name="action_settings">Settings</string>
-    <string name="no_cars">It is very lonely in here. Please use the menu to add a new vehicle.</string>
-    <string name="no_fillups">It is very lonely in here. Please use the menu to add a new fill-up or select another year using the menu.</string>
+    <string name="no_cars">It is very lonely in here. Please use the \'+\' button below to add a new vehicle.</string>
+    <string name="no_fillups">It is very lonely in here. Please use the \'+\' button below to add a new fill-up or select another year using the menu above.</string>
     <string name="title_activity_add_or_edit_car">AddOrEditCarActivity</string>
     <string name="car_brand">Brand</string>
     <string name="carModel">Model</string>

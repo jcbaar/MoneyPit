@@ -24,7 +24,7 @@
                 android:layout_height="54dp"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
-                android:scaleType="fitStart"
+                android:scaleType="centerCrop"
                 android:src="@drawable/nopicture" />
 
             <LinearLayout
