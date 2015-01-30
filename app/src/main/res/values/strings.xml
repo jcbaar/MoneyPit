@@ -138,7 +138,7 @@
     <string name="backup_summary">When you click on the BACKUP button a copy of the current database is created on your Google Drive. It is possible you need to select the account first and logon.</string>
     <string name="restore">RESTORE</string>
     <string name="restore_summary">When you select an available backup from the list below and click on the RESTORE button the selected backup will be restored. Note that this will overwrite your current database.</string>
-    <string name="restore_warning">Restoring a backup will overwrite the current database. All information will be lost.\n\n<b><i>This can not be undone!</i></b>\n\nAre you sure you want to continue?</string>
+    <string name="restore_warning">Restoring a backup will overwrite the current database. All information will be lost.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;&lt;i&gt;This can not be undone!&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Are you sure you want to continue?</string>
     <string name="restore_error_get_file">Unable to open the backup file.</string>
     <string name="drive_restore_success">The selected backup has been restored successfully.</string>
 

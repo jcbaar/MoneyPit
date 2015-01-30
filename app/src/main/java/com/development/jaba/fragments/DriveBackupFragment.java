@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,7 +104,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
                 @Override
                 public void onClick(View v) {
                     DialogHelper.showYesNoDialog(getString(R.string.warning),
-                            getString(R.string.restore_warning),
+                            Html.fromHtml(getString(R.string.restore_warning)),
                             new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
