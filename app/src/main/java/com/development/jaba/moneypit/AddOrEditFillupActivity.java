@@ -154,7 +154,19 @@ public class AddOrEditFillupActivity extends BaseActivity {
                 month = cal.get(Calendar.MONTH),
                 day = cal.get(Calendar.DAY_OF_MONTH);
 
-        mDate.updateDate(year, month, day);
+        mDate.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, monthOfYear, dayOfMonth,
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        calendar.get(Calendar.SECOND));
+
+
+                mSurroundingFillups = mContext.getSurroundingFillups(calendar.getTime(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
+            }
+        });
         mDate.setMaxDate(new Date().getTime());
     }
 

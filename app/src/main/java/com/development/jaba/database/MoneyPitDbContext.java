@@ -200,6 +200,9 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-04 19:24:56',129336,35.45,1.549,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-15 16:55:40',129866,37.3,1.509,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-22 07:35:26',130278,29.41,1.469,1,NULL,NULL,NULL);");
+
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-01-23 07:35:26',130478,14.5,1.419,0,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-01 13:35:26',130969,31.82,1.419,1,NULL,NULL,NULL);");
             }
             db.setTransactionSuccessful();
         } catch (SQLiteException ex) {
