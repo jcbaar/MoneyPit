@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import java.util.Vector;
  * ArrayAdapter for displaying the fill-ups in the database in a ListView
  */
 public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.FillupRowViewHolder> {
+
+    public static final int MENU_NAV = 100;
 
     private final LayoutInflater mInflater;
     private final Car mCar; // Car instance the fill-ups are bound to.
@@ -158,9 +161,18 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         }
 
         // When the item to show has a lat/lon position we make the ImageView for the
-        // map visible. Otherwise we make it gone.
+        // map visible. Also we append the navigate to item to the popup menu.
+        //
+        // Otherwise we hide the ImageView and navigate to item.
+        PopupMenu menu = vh.getPopupMenu();
+        if(menu != null ) {
+            menu.getMenu().removeGroup(MENU_NAV);
+        }
         boolean hasMap = item.getLatitude() != 0 || item.getLongitude() != 0;
         if (hasMap) {
+            if(menu != null) {
+                menu.getMenu().add(MENU_NAV, MENU_NAV, MENU_NAV, R.string.navigate_to);
+            }
             vh.getMap().setVisibility(View.VISIBLE);
         } else {
             vh.getMap().setVisibility(View.GONE);

@@ -123,7 +123,6 @@
     <string name="restore_error">Het is niet gelukt de reserve kopie van de database terug te zetten!</string>
     <string name="backup_ok">Er is met succes een reserve kopie van de database gemaakt!</string>
     <string name="restore_ok">De reserve kopie van de database is met succes hersteld!</string>
-    <string name="title_activity_drive_backup">DriveBackupActivity</string>
 
     <string name="drive_error_query_folders">Het is niet gelukt de mappen uit Google Drive op te halen.</string>
     <string name="drive_error_root_folder">Het is niet gelukt de basis map uit Google Drive op te halen.</string>
@@ -142,4 +141,5 @@
     <string name="restore_error_get_file">Het is niet gelukt het backup bestand te openen.</string>
     <string name="drive_restore_success">Het geselecteerde backup bestand is met succes hersteld.</string>
     <string name="upto">t/m</string>
+    <string name="navigate_to">Navigeer naar...</string>
 </resources>

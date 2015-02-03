@@ -142,5 +142,6 @@
     <string name="restore_error_get_file">Unable to open the backup file.</string>
     <string name="drive_restore_success">The selected backup has been restored successfully.</string>
     <string name="upto">upto</string>
+    <string name="navigate_to">Navigate to...</string>
 
 </resources>

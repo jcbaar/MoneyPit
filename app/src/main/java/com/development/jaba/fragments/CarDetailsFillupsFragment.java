@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -115,6 +116,17 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                                     },
                                     getActivity());
                             return true;
+
+                        case FillupRowAdapter.MENU_NAV:
+                        {
+                            Fillup selectedFillup = mFillupAdapter.getItem(position);
+                            Intent navigation = new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("http://maps.google.com/maps?daddr=" +
+                                            String.valueOf(selectedFillup.getLatitude()) + "," +
+                                            String.valueOf(selectedFillup.getLongitude())));
+                            startActivity(navigation);
+                            break;
+                        }
 
                         default:
                             break;

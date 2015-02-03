@@ -86,6 +86,14 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
     /**
+     * Gets the {@link android.support.v7.widget.PopupMenu}.
+     * @return The {@link android.support.v7.widget.PopupMenu} or null if none exists.
+     */
+    public PopupMenu getPopupMenu() {
+        return mPopupMenu;
+    }
+
+    /**
      * Helper function to link a popup menu to the given {@link View}. The {@link View}
      * will get a {@link android.view.View.OnClickListener} attached to it. When this listener
      * is called the popup menu is shown. Clicks on the menu items are sent through the {@link com.development.jaba.adapters.OnRecyclerItemClicked}
