@@ -68,7 +68,7 @@ public class DriveRestoreBackupAsyncTask extends BaseDriveAsyncTask {
 
         final String currentDBPath = MoneyPitApp.getContext().getDatabasePath(MoneyPitDbContext.DATABASE_NAME).getPath();
 
-        // Write the current database contents to the drive
+        // Write the backup file contents to the database
         // file in blocks of 4 KByte.
         try {
             InputStream inputStream = fileContents.getInputStream();
@@ -89,5 +89,4 @@ public class DriveRestoreBackupAsyncTask extends BaseDriveAsyncTask {
         fileContents.discard(getGoogleApiClient());
         return getContext().getString(R.string.drive_restore_success);
     }
-
 }
