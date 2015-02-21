@@ -193,7 +193,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
      * Checks to see whether or not paging and tabs should be present.
      */
     private void checkSlidingAvailability() {
-        boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear);
+        boolean hasData = mDbContext.hasData(mCarToShow.getId(), mCurrentYear) > 0;
 
         // No data? Go to the first page...
         if (!hasData) {

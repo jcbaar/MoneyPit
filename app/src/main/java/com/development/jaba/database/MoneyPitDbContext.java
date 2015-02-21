@@ -6,24 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
-import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.ConditionalHelper;
 import com.development.jaba.utilities.DateHelper;
 import com.jjoe64.graphview.series.DataPoint;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -188,7 +180,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-03 18:04:54',123529,35.26,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-12 16:01:37',124053,34.7,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-20 17:49:48',124588,33.73,1.679,1,NULL,NULL,NULL);");
-                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-27 11:37:46',125015,30.28,1.669,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-27 11:37:46',125015,30.28,1.669,1,NULL,NULL,NLL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-10-06 18:01:50',125592,37.64,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-10-13 18:07:59',126157,35.46,1.659,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-10-20 18:12:47',126569,28.42,1.609,1,NULL,NULL,NULL);");
@@ -201,8 +193,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-15 16:55:40',129866,37.3,1.509,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-12-22 07:35:26',130278,29.41,1.469,1,NULL,NULL,NULL);");
 
-                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-01-23 07:35:26',130478,14.5,1.419,0,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-01-23 07:35:26',130478,14.5,1.409,0,'Deze tankbeurt is gegokt omdat Marcel tijdens de vakantie heeft bijgetanked',NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-01 13:35:26',130969,31.82,1.419,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-08 12:15:32',131361,30.76,1.459,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-19 16:45:12',131787,27.58,1.489,1,NULL,NULL,NULL);");
             }
             db.setTransactionSuccessful();
         } catch (SQLiteException ex) {
@@ -217,76 +211,6 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         /*
             Perform upgrade logic here.
          */
-    }
-    //endregion
-
-    //region Backup/restore
-
-    /**
-     * Helper to log backup/restore errors and to signal the user that
-     * the backup or restore action failed.
-     */
-    private void backupRestoreError(IOException ex, String message) {
-        Log.e("backup_restore", ex.getMessage());
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void restoreDatabase() {
-        File sd = Environment.getExternalStorageDirectory();
-
-        if (sd.canWrite()) {
-            final String currentDBPath = mContext.getDatabasePath(DATABASE_NAME).getPath();
-            final String backupDBPath = "MoneyPit.bak.sqlite"; // From SD directory.
-
-            final File backupDB = new File(currentDBPath);
-            final File currentDB = new File(sd, backupDBPath);
-
-            FileChannel src = null, dst = null;
-            try {
-                src = new FileInputStream(currentDB).getChannel();
-                dst = new FileOutputStream(backupDB).getChannel();
-
-                dst.transferFrom(src, 0, src.size());
-                Toast.makeText(mContext, mContext.getString(R.string.restore_ok), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                backupRestoreError(e, mContext.getString(R.string.restore_error));
-            } finally {
-                try {
-                    if (src != null) src.close();
-                    if (dst != null) dst.close();
-                } catch (IOException e) {
-                    backupRestoreError(e, mContext.getString(R.string.restore_error));
-                }
-            }
-        }
-    }
-
-    public void backupDatabase() {
-        File sd = Environment.getExternalStorageDirectory();
-
-        if (sd.canWrite()) {
-            final String currentDBPath = mContext.getDatabasePath(DATABASE_NAME).getPath();
-            String backupDBPath = "MoneyPit.bak.sqlite";
-            File currentDB = new File(currentDBPath);
-            File backupDB = new File(sd, backupDBPath);
-
-            FileChannel src = null, dst = null;
-            try {
-                src = new FileInputStream(currentDB).getChannel();
-                dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                Toast.makeText(mContext, mContext.getString(R.string.backup_ok), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                backupRestoreError(e, mContext.getString(R.string.backup_error));
-            } finally {
-                try {
-                    if (src != null) src.close();
-                    if (dst != null) dst.close();
-                } catch (IOException e) {
-                    backupRestoreError(e, mContext.getString(R.string.backup_error));
-                }
-            }
-        }
     }
     //endregion
 
@@ -919,31 +843,32 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      *
      * @param carId The ID of the {@link Car} for which check.
      * @param year  The year for which to check if there is data.
-     * @return true if data was found, false if not.
+     * @return The number of record found for the given car.
      */
-    public boolean hasData(int carId, int year) {
+    public int hasData(int carId, int year) {
         SQLiteDatabase db;
         Cursor cursor = null;
+        int records = 0;
 
-        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId= ? AND CAST(strftime('%Y', Date) AS INT) = ?";
+        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId = ? AND ( ? = 0 OR CAST(strftime('%Y', Date) AS INT) = ?)";
         String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(year),
                 String.valueOf(year)};
 
         try {
             db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
 
-            boolean hasData = false;
             if (cursor.moveToFirst()) {
-                hasData = cursor.getInt(0) > 0;
+                records = cursor.getInt(0);
             }
 
             cursor.close();
             cursor = null;
-            return hasData;
+            return records;
         } catch (SQLiteException ex) {
             Log.e("hasData", ex.getMessage());
-            return false;
+            return 0;
         } finally {
             if (cursor != null) {
                 cursor.close();

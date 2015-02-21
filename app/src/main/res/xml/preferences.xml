@@ -6,11 +6,6 @@
             android:key="estimate_odometer"
             android:title="@string/estimate_odo"
             android:summary="@string/estimate_odo_summary"/>
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="export_import_pictures"
-            android:title="@string/export_import_pictures"
-            android:summary="@string/export_import_pictures_summary"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/location_settings">
         <CheckBoxPreference

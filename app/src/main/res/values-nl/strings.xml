@@ -48,7 +48,7 @@
     <string name="shortMile">mi</string>
     <string name="days">dagen</string>
     <string name="general_settings">Algemene instellingen</string>
-    <string name="estimate_odo_summary">Wanneer aangevinkt zal dit de kilometer teller instelling inschatten bij het onvoeren van een nieuwe tankbeurt.</string>
+    <string name="estimate_odo_summary">Wanneer aangevinkt zal dit de kilometer teller instelling inschatten bij het invoeren van een nieuwe tankbeurt.</string>
     <string name="export_import_pictures_summary">Wanneer aangevinkt zal dit bij het importeren en exporteren van informatie ook de foto\'s meenemen.</string>
     <string name="car_list_averages">Gem. %1$s, %2$s per tankbeurt.</string>
     <string name="dialog_yes">Ja</string>
@@ -142,4 +142,6 @@
     <string name="drive_restore_success">Het geselecteerde backup bestand is met succes hersteld.</string>
     <string name="upto">t/m</string>
     <string name="navigate_to">Navigeer naar...</string>
+    <string name="error_no_camera">Uw toestel heeft geen kamera.</string>
+    <string name="error_save_picture">Er was een probleem met het opslaan van de foto...</string>
 </resources>

@@ -4,7 +4,7 @@
     <color name="primaryColorDark">#0D47A1</color>
     <color name="accentColor">#C95D63</color>
     <color name="accentColorPressed">#ff974c4c</color>
-    <color name="accentColorRipple">#ffe1c500</color>
+    <color name="accentColorRipple">#ff974c4c</color>
     <color name="errorColor">#BF00</color>
 
     <color name="primaryText">#212121</color>

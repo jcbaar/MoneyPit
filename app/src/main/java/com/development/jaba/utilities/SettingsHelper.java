@@ -12,7 +12,6 @@ public class SettingsHelper {
      * Preferences keys.
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
-            PREF_IMPORT_EXPORT_PICTURES = "export_import_pictures",
             PREF_ALLOW_LOCATION = "allow_location",
             PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
@@ -37,15 +36,6 @@ public class SettingsHelper {
      */
     public boolean getEstimateOdometer() {
         return mPreferences.getBoolean(PREF_ESTIMATE_ODOMETER, true);
-    }
-
-    /**
-     * Gets the PREF_IMPORT_EXPORT_PICTURES setting.
-     *
-     * @return The value of the PREF_IMPORT_EXPORT_PICTURES setting.
-     */
-    public boolean getExportImportPictures() {
-        return mPreferences.getBoolean(PREF_IMPORT_EXPORT_PICTURES, true);
     }
 
     /**

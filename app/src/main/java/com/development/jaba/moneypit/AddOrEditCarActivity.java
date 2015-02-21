@@ -2,13 +2,19 @@ package com.development.jaba.moneypit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -20,6 +26,9 @@ import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.EditTextEx;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.development.jaba.view.EditTextEx.BaseValidator;
@@ -31,9 +40,15 @@ import static com.development.jaba.view.EditTextEx.BaseValidator;
 public class AddOrEditCarActivity extends BaseActivity {
 
     private final static int REQUEST_GET_PICTURE = 1;
+    private final static int REQUEST_TAKE_PHOTO = 2;
+
+    private final static String CAPTURED_PHOTO_PATH_KEY = "mCurrentPhotoPath";
+    private final static String CAPTURED_PHOTO_URI_KEY = "mCapturedImageURI";
 
     private Spinner mDistanceUnits,
             mVolumeUnits;
+
+    private ImageView mImage;
 
     private EditTextEx mMake,
             mModel,
@@ -44,6 +59,9 @@ public class AddOrEditCarActivity extends BaseActivity {
     private MoneyPitDbContext context;
     private Car mCarToEdit;
     private int mViewPosition = -1;
+
+    private String mCurrentPhotoPath = null;
+    private Uri mCapturedImageURI = null;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -91,6 +109,16 @@ public class AddOrEditCarActivity extends BaseActivity {
         mBuildYear = (EditTextEx) findViewById(R.id.carBuildYear);
         mLicense = (EditTextEx) findViewById(R.id.carLicense);
         mCurrency = (EditTextEx) findViewById(R.id.carCurrency);
+        mImage = (ImageView) findViewById(R.id.imageView);
+
+        // Color the image buttons.
+        ImageButton pictureRoll = (ImageButton) findViewById(R.id.pictureRoll);
+        ImageButton pictureCamera = (ImageButton) findViewById(R.id.pictureCamera);
+        ImageButton pictureDelete = (ImageButton) findViewById(R.id.pictureDelete);
+
+        setButtonImageColor(pictureRoll, R.drawable.ic_camera_roll_grey600_24dp);
+        setButtonImageColor(pictureCamera, R.drawable.ic_photo_camera_grey600_24dp);
+        setButtonImageColor(pictureDelete, R.drawable.ic_delete_grey600_24dp);
 
         // And the Spinners.
         mDistanceUnits = (Spinner) findViewById(R.id.carDistanceUnit);
@@ -113,16 +141,35 @@ public class AddOrEditCarActivity extends BaseActivity {
         mCurrency.setValidator(new EditTextEx.RequiredValidator(this));
         mBuildYear.setValidator(new BuildYearValidator(this));
 
+        // Restore any saved state.
+        restoreState(savedInstanceState);
+
         // Setup the activity title depending on whether we are editing and
         // existing Car entity or a new one.
         if (mCarToEdit.getId() != 0) {
-            toUi();
+            // When there is no saved state we setup the values from the
+            // passed in instance to the UI.
+            if(savedInstanceState == null) {
+                toUi();
+            }
             setTitle(getString(R.string.title_edit_car));
         } else {
             setTitle(getString(R.string.title_create_car));
         }
+    }
 
-        restoreState(savedInstanceState);
+    /**
+     * Setup a drawable in the given ImageButton and color it appropriately.
+     * @param button The {@link android.widget.ImageButton} to set the  image onto.
+     * @param resId The resource ID of the drawable to set on the {@link android.widget.ImageButton}
+     */
+    private void setButtonImageColor(ImageButton button, int resId) {
+        Drawable d = getResources().getDrawable(resId);
+        PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
+
+        // TODO: Using R.color.abc_primary_text_material_dark will not work properly when styling is applied.
+        d.mutate().setColorFilter(getResources().getColor(R.color.abc_primary_text_material_dark), mode);
+        button.setImageDrawable(d);
     }
 
     /**
@@ -139,6 +186,15 @@ public class AddOrEditCarActivity extends BaseActivity {
             mCurrency.setText(savedInstanceState.getString(Car.KEY_CURRENCY));
             mDistanceUnits.setSelection(savedInstanceState.getInt(Car.KEY_DISTANCEUNIT));
             mVolumeUnits.setSelection(savedInstanceState.getInt(Car.KEY_VOLUMEUNIT));
+            mCarToEdit.setImageBytes(savedInstanceState.getByteArray(Car.KEY_PICTURE));
+            mImage.setImageBitmap(mCarToEdit.getImage());
+
+            if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
+                mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
+            }
+            if (savedInstanceState.containsKey(CAPTURED_PHOTO_URI_KEY)) {
+                mCapturedImageURI = Uri.parse(savedInstanceState.getString(CAPTURED_PHOTO_URI_KEY));
+            }
         }
     }
 
@@ -156,6 +212,14 @@ public class AddOrEditCarActivity extends BaseActivity {
             savedInstanceState.putString(Car.KEY_CURRENCY, mCurrency.getText().toString());
             savedInstanceState.putInt(Car.KEY_DISTANCEUNIT, mDistanceUnits.getSelectedItemPosition());
             savedInstanceState.putInt(Car.KEY_VOLUMEUNIT, mVolumeUnits.getSelectedItemPosition());
+            savedInstanceState.putByteArray(Car.KEY_PICTURE, mCarToEdit.getImageBytes());
+
+            if (mCurrentPhotoPath != null) {
+                savedInstanceState.putString(CAPTURED_PHOTO_PATH_KEY, mCurrentPhotoPath);
+            }
+            if (mCapturedImageURI != null) {
+                savedInstanceState.putString(CAPTURED_PHOTO_URI_KEY, mCapturedImageURI.toString());
+            }
         }
     }
 
@@ -171,6 +235,7 @@ public class AddOrEditCarActivity extends BaseActivity {
         mCurrency.setText(mCarToEdit.getCurrency());
         mDistanceUnits.setSelection(mCarToEdit.getDistanceUnit().getValue() - 1);
         mVolumeUnits.setSelection(mCarToEdit.getVolumeUnit().getValue() - 1);
+        mImage.setImageBitmap(mCarToEdit.getImage());
     }
 
     /**
@@ -294,21 +359,52 @@ public class AddOrEditCarActivity extends BaseActivity {
                     Uri selectedImage = imageReturnedIntent.getData();
                     mCarToEdit.setImage(this, selectedImage);
 
-                    ImageView i = (ImageView) findViewById(R.id.imageView);
-                    i.setImageBitmap(mCarToEdit.getImage());
+                    mImage.setImageBitmap(mCarToEdit.getImage());
                 }
+                break;
+
+            case REQUEST_TAKE_PHOTO:
+                if(resultCode == RESULT_OK) {
+                    mCarToEdit.setImage(this, mCapturedImageURI);
+                    mImage.setImageBitmap(mCarToEdit.getImage());
+                }
+                break;
         }
     }
 
+    /**
+     * Removes the picture from the {@link com.development.jaba.model.Car} entity.
+     *
+     * @param view The {@link android.view.View} that initiated this event.
+     */
     public void clearPicture(View view) {
         mCarToEdit.setImage(this, null);
+        mImage.setImageBitmap(null);
     }
 
+    /**
+     * Load a picture from the pictures present on the device storage and set it
+     * on the {@link com.development.jaba.model.Car} entity.
+     *
+     * @param view The {@link android.view.View} that initiated this event.
+     */
     public void getPicture(View view) {
-        getPicture2();
+        getPictureFromCameraRoll();
     }
 
-    private void getPicture2() {
+    /**
+     * Take a picture with the device camera and set it on the {@link com.development.jaba.model.Car} entity.
+     *
+     * @param view The {@link android.view.View} that initiated this event.
+     */
+    public void takePicture(View view) {
+        getPictureFromCamera();
+    }
+
+    /**
+     * Start the activity for picking an image.
+     */
+    private void getPictureFromCameraRoll() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -316,6 +412,59 @@ public class AddOrEditCarActivity extends BaseActivity {
         startActivityForResult(photoPickerIntent, REQUEST_GET_PICTURE);
     }
 
+    /**
+     * Start the activity for taking a picture with the device camera.
+     */
+    private void getPictureFromCamera() {
+        // Check if there is a camera. Show a toast if there isn't.
+        PackageManager packageManager = getPackageManager();
+        if(!packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            showToast(getString(R.string.error_no_camera));
+            return;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go.
+            // If you don't do this, you may get a crash in some devices.
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                showToast(getString(R.string.error_save_picture));
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                mCapturedImageURI = Uri.fromFile(photoFile);
+                mCurrentPhotoPath = mCapturedImageURI.getPath();
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    /**
+     * Creates a {@link java.io.File} object to be used by the device camera
+     * for storing the picture.
+     *
+     * @return The {@link java.io.File} object.
+     * @throws IOException
+     */
+    protected File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+    }
 
     /**
      * Build year validator. Checks if the value is between 1672 and the current year.

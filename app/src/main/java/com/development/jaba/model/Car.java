@@ -161,6 +161,14 @@ public class Car implements Serializable {
         }
     }
 
+    public byte[] getImageBytes() {
+        return mImage;
+    }
+
+    public void setImageBytes(byte[] image) {
+        mImage = image;
+    }
+
     public String getDateRange() {
         return mDateRange;
     }

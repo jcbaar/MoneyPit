@@ -217,6 +217,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
             super.onPostExecute(result);
             if (getActivity() != null) {
                 showToast(result);
+                new DriveLoadBackupsAsyncTask(getContext(), getGoogleApiClient(), mBackupFolder).execute();
             }
         }
     }

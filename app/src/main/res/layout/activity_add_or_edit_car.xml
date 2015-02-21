@@ -125,24 +125,47 @@
                 </TableRow>
             </TableLayout>
 
-            <Button
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="+"
-                android:id="@+id/button2"
-                android:onClick="getPicture" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-"
-                android:id="@+id/button3"
-                android:onClick="clearPicture" />
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
+
+                    <ImageButton
+                        style="@style/ActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_camera_roll_grey600_24dp"
+                        android:id="@+id/pictureRoll"
+                        android:onClick="getPicture" />
+                    <ImageButton
+                        style="@style/ActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pictureCamera"
+                        android:src="@drawable/ic_photo_camera_grey600_24dp"
+                        android:onClick="takePicture" />
+                    <ImageButton
+                        style="@style/ActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_delete_grey600_24dp"
+                        android:id="@+id/pictureDelete"
+                        android:onClick="clearPicture" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView"/>
-
         </LinearLayout>
     </ScrollView>
 
