@@ -79,6 +79,18 @@
         <item name="android:paddingRight">8dp</item>
     </style>
 
+    <style name="ActionImageButton" parent="@android:style/Widget.Button">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">36dp</item>
+        <item name="android:background">@drawable/button_states</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginLeft">6dp</item>
+        <item name="android:layout_marginRight">6dp</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">2dp</item>
+    </style>
+
     <style name="FlatActionButton" parent="@android:style/Widget.Button">
         <item name="android:layout_height">36dp</item>
         <item name="android:background">@drawable/flat_button_states</item>
