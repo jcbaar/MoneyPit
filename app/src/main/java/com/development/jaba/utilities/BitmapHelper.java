@@ -1,11 +1,13 @@
 package com.development.jaba.utilities;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.development.jaba.moneypit.R;
@@ -34,6 +36,34 @@ public final class BitmapHelper {
             Log.e("getOrientation", "Failed to get image orientation.");
             return -1;
         }
+    }
+
+    /**
+     * Queries the orientation of the given image {@link android.net.Uri}. The query
+     * is done in the {@link android.provider.MediaStore}.
+     *
+     * @param context The calling {@link android.content.Context}.
+     * @param imageUri The {@link android.net.Uri} pointing to the image.
+     * @return The orientation of the image.
+     */
+    private static int getOrientationFromMediaStore(Context context, Uri imageUri) {
+        String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION};
+        Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
+
+        int orientation = -1;
+        if (cursor != null && cursor.moveToFirst()) {
+            orientation = cursor.getInt(0);
+            cursor.close();
+        }
+
+        switch(orientation)
+        {
+            case 90: return ExifInterface.ORIENTATION_ROTATE_90;
+            case 180: return ExifInterface.ORIENTATION_ROTATE_180;
+            case 270: return ExifInterface.ORIENTATION_ROTATE_270;
+            default: break;
+        }
+        return ExifInterface.ORIENTATION_NORMAL;
     }
 
     /**
@@ -124,7 +154,13 @@ public final class BitmapHelper {
 
         // The new size we want to scale to
         final int maxSize = context.getResources().getInteger(R.integer.image_scale_max_size);
-        final int orientation = getOrientation(selectedImage);
+        int orientation = getOrientation(selectedImage);
+        if(orientation <= 0)
+        {
+            // If we did not find an orientation in the EXIF we try to get it
+            // from the media store.
+            orientation = getOrientationFromMediaStore(context, selectedImage);
+        }
 
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
