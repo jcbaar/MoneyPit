@@ -23,7 +23,8 @@ import java.io.InputStream;
 public final class BitmapHelper {
 
     /**
-     * Queries the orientation of the given image {@link android.net.Uri}.
+     * Queries the orientation of the given image {@link android.net.Uri}. The query
+     * is done using the {@link android.media.ExifInterface}.
      *
      * @param photoUri The {@link android.net.Uri} pointing to the image.
      * @return The orientation of the image.
@@ -50,9 +51,11 @@ public final class BitmapHelper {
         String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION};
         Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
 
-        int orientation = -1;
-        if (cursor != null && cursor.moveToFirst()) {
-            orientation = cursor.getInt(0);
+        int orientation = 0;
+        if (cursor != null) {
+            if(cursor.moveToFirst()) {
+                orientation = cursor.getInt(0);
+            }
             cursor.close();
         }
 

@@ -38,7 +38,6 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
 
     private MoneyPitDbContext mContext;         // The MoneyPit database mContext.
     private FillupRowAdapter mFillupAdapter;    // Adapter for holding the Fill-up list.
-    private List<Fillup> mFillups;              // The list of Fillup entities from the database.
     private FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
     private OnDataChangedListener mCallback;    // Listener for data changes.
     private RecyclerViewEx mFillupList;
@@ -100,11 +99,6 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                                             super.onPositive(dialog);
                                             Fillup selectedFillup = mFillupAdapter.getItem(position);
                                             mContext.deleteFillup(selectedFillup);
-
-                                            // Ideally this should be enough but this will not re-compute the
-                                            // follow up fill-ups.
-                                            //mFillupAdapter.notifyItemRemoved(position);
-                                            //mFillups.remove(selectedFillup);
 
                                             new LoadDataTask().execute();
 
@@ -254,8 +248,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
          */
         @Override
         protected void onPostExecute(List<Fillup> result) {
-            mFillups = result;
-            mFillupAdapter.setData(mFillups);
+            mFillupAdapter.setData(result);
         }
     }
 }
