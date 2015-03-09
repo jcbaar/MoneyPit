@@ -60,6 +60,10 @@
             android:label="@string/title_activity_settings" />
 
         <activity
+            android:name=".TotalSummaryActivity"
+            android:label="@string/title_activity_totalsummary" />
+
+        <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".MainDrawerActivity">

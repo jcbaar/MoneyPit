@@ -47,7 +47,7 @@ public final class BitmapHelper {
      * @param imageUri The {@link android.net.Uri} pointing to the image.
      * @return The orientation of the image.
      */
-    private static int getOrientationFromMediaStore(Context context, Uri imageUri) {
+    public static int getOrientationFromMediaStore(Context context, Uri imageUri) {
         String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION};
         Cursor cursor = context.getContentResolver().query(imageUri, projection, null, null, null);
 
@@ -77,9 +77,9 @@ public final class BitmapHelper {
      * rotated {@link android.graphics.Bitmap} is returned and the input {@link android.graphics.Bitmap}
      * is recycled.
      *
-     * @param bitmap      The {@link android.graphics.Bitmap} to rotate.
+     * @param bitmap      The {@link android.graphics.Bitmap} to rotate. Note that this is recycled after rotation.
      * @param orientation The EXIF orientation to set for the {@link android.graphics.Bitmap}.
-     * @return The rotated {@link android.graphics.Bitmap} or null in case of a out of memory error.
+     * @return The rotated {@link android.graphics.Bitmap}. In case of an out of memory error the input bitmap is returned.
      */
     public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
 
@@ -120,7 +120,7 @@ public final class BitmapHelper {
             return bmRotated;
         } catch (OutOfMemoryError e) {
             Log.e("rotateBitmap", "Out of memory during bitmap rotation.");
-            return null;
+            return bitmap;
         }
     }
 

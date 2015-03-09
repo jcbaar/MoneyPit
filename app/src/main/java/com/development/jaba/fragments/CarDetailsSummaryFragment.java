@@ -1,5 +1,6 @@
 package com.development.jaba.fragments;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.development.jaba.database.MoneyPitDbContext;
@@ -29,6 +31,8 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
     private MoneyPitDbContext mContext;
     private View mLayout;
+    private LinearLayout mData;
+    private TextView mNoData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,8 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         if (savedInstanceState != null) {
             if (mCar == null) {
                 mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
+                mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
             }
-            mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         }
     }
 
@@ -45,6 +49,8 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car_details_summary, container, false);
         mLayout = view;
+        mData = (LinearLayout) view.findViewById(R.id.summary_data);
+        mNoData = (TextView) view.findViewById(R.id.summary_nodata);
 
         mContext = new MoneyPitDbContext(getActivity());
         if (mCar != null) {
@@ -57,9 +63,14 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             } else {
                 image.setVisibility(View.GONE);
             }
-            summarize();
         }
         return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        summarize();
     }
 
     /**
@@ -71,7 +82,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        if (mContext != null && mCar != null) {
+        if (mContext != null && mCar != null && isAdded()) {
             summarize();
         }
     }
@@ -104,12 +115,18 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             // TODO: This uses the same data set as the CarDetailsFillups fragment. They should really share it...
             MoneyPitDbContext context = new MoneyPitDbContext(getActivity());
             List<Fillup> data = context.getFillupsOfCar(mCar.getId(), mCurrentYear);
-            mOldest = data.get(data.size() - 1).getDate();
-            mNewest = data.get(0).getDate();
-
-            CarSummary summary = new CarSummary();
-            summary.setup(data);
-            return summary;
+            if(data.size() > 1) {
+                mOldest = data.get(data.size() - 1).getDate();
+                mNewest = data.get(0).getDate();
+                CarSummary summary = new CarSummary();
+                summary.setup(data);
+                return summary;
+            }
+            else {
+                mOldest = new Date();
+                mNewest = new Date();
+                return null;
+            }
         }
 
         void setHeader(int resId, int labelId) {
@@ -154,6 +171,21 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         @Override
         protected void onPostExecute(CarSummary result) {
 
+            if(!isAdded()) {
+                return;
+            }
+
+            TextView label = (TextView) mLayout.findViewById(R.id.carLabel);
+            label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
+
+            if(result == null) {
+                mNoData.setVisibility(View.VISIBLE);
+                mData.setVisibility(View.GONE);
+                return;
+            }
+            mNoData.setVisibility(View.GONE);
+            mData.setVisibility(View.VISIBLE);
+
             setHeader(R.id.headerTotals, R.string.summary_totals);
             setData(R.id.distance, R.string.summary_distance_total, FormattingHelper.toDistance(mCar, result.TotalDistance));
             setData(R.id.fuel, R.string.summary_cost_total, FormattingHelper.toPrice(mCar, result.TotalFuelCost));
@@ -174,9 +206,6 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
             setData(R.id.expensiveFillup, R.string.summary_most_expensive_fillup, FormattingHelper.toPrice(mCar, result.MostExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(result.MostExpensiveFillup.Date) + ")");
             setData(R.id.cheapFillup, R.string.summary_least_expensive_fillup, FormattingHelper.toPrice(mCar, result.LeastExpensiveFillup.Value) + " (" + FormattingHelper.toShortDate(result.LeastExpensiveFillup.Date) + ")");
-
-            TextView label = (TextView) mLayout.findViewById(R.id.carLabel);
-            label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
         }
     }
 }

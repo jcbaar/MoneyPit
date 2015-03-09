@@ -197,6 +197,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-01 13:35:26',130969,31.82,1.419,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-08 12:15:32',131361,30.76,1.459,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-19 16:45:12',131787,27.58,1.489,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-28 19:10:07',132228,33.31,1.529,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-03-08 19:10:07',132720,33.78,1.529,1,NULL,NULL,NULL);");
             }
             db.setTransactionSuccessful();
         } catch (SQLiteException ex) {
@@ -553,7 +555,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer))) / Volume AS Economy, " +
                 "Price * Volume AS TotalPrice " +
                 "FROM Fillup AS T1 " +
-                "WHERE (CarId = ?) AND (? = 0 OR ? = CAST(strftime('%Y', Date) AS INT)) " +
+                "WHERE (CarId = ?) AND (? = '0' OR ? = CAST(strftime('%Y', Date) AS INT)) " +
                 "ORDER BY Date DESC";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
@@ -565,6 +567,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         SQLiteDatabase db;
         Cursor cursor = null;
+
         try {
             db = mDbManager.openDatabase();
             cursor = db.rawQuery(query, args);
@@ -850,7 +853,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         Cursor cursor = null;
         int records = 0;
 
-        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId = ? AND ( ? = 0 OR CAST(strftime('%Y', Date) AS INT) = ?)";
+        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId = ? AND ( ? = '0' OR CAST(strftime('%Y', Date) AS INT) = ?)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(year),
                 String.valueOf(year)};

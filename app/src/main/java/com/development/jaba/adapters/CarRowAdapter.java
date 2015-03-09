@@ -154,7 +154,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             mAverage = (TextView) itemView.findViewById(R.id.carAverages);
 
             // Attach a PopupMenu to the menu button.
-            setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));
+            setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete_summary));
         }
 
         public ImageView getImage() {

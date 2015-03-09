@@ -8,9 +8,7 @@ import android.util.Log;
 import java.io.File;
 
 /**
- * Application derived class to make the application context available
- * to static helper methods.
- * TODO Find another way to do this. This does not feel right...
+ * Application derived class with some static helper methods.
  */
 public class MoneyPitApp extends Application {
 

@@ -16,19 +16,19 @@
                 android:id="@+id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:scaleType="center"
-                android:src="@drawable/nopicture"
-                android:layout_centerHorizontal="true" />
+                android:src="@drawable/nopicture" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/image"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
                 android:background="@drawable/car_summary_header"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:layout_centerHorizontal="true">
+                android:padding="8dp">
 
                 <TextView
                     android:id="@+id/carLabel"
@@ -39,88 +39,104 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <include
-            android:id="@+id/headerTotals"
-            layout="@layout/fragment_car_details_summary_header" />
-
-        <include
-            android:id="@+id/distance"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <include
-            android:id="@+id/fuel"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <include
-            android:id="@+id/volume"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <Space
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_margin" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/no_summary_data"
+            android:id="@+id/summary_nodata"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"/>
 
-        <include
-            android:id="@+id/headerAvg"
-            layout="@layout/fragment_car_details_summary_header" />
-
-        <include
-            android:id="@+id/economy"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <include
-            android:id="@+id/costMonth"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <include
-            android:id="@+id/costDistance"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <include
-            android:id="@+id/costVolume"
-            layout="@layout/fragment_car_details_summary_data" />
-
-        <Space
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_margin" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/summary_data">
 
-        <include
-            android:id="@+id/summary"
-            layout="@layout/fragment_car_details_summary_header" />
+            <include
+                android:id="@+id/headerTotals"
+                layout="@layout/fragment_car_details_summary_header" />
 
-        <include
-            android:id="@+id/expensiveMonth"
-            layout="@layout/fragment_car_details_summary_data" />
+            <include
+                android:id="@+id/distance"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <include
-            android:id="@+id/cheapMonth"
-            layout="@layout/fragment_car_details_summary_data" />
+            <include
+                android:id="@+id/fuel"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_margin" />
+            <include
+                android:id="@+id/volume"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <include
-            android:id="@+id/bestEconomy"
-            layout="@layout/fragment_car_details_summary_data" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_margin" />
 
-        <include
-            android:id="@+id/worstEconomy"
-            layout="@layout/fragment_car_details_summary_data" />
+            <include
+                android:id="@+id/headerAvg"
+                layout="@layout/fragment_car_details_summary_header" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_margin" />
+            <include
+                android:id="@+id/economy"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <include
-            android:id="@+id/expensiveFillup"
-            layout="@layout/fragment_car_details_summary_data" />
+            <include
+                android:id="@+id/costMonth"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <include
-            android:id="@+id/cheapFillup"
-            layout="@layout/fragment_car_details_summary_data" />
+            <include
+                android:id="@+id/costDistance"
+                layout="@layout/fragment_car_details_summary_data" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_margin" />
+            <include
+                android:id="@+id/costVolume"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_margin" />
+
+            <include
+                android:id="@+id/summary"
+                layout="@layout/fragment_car_details_summary_header" />
+
+            <include
+                android:id="@+id/expensiveMonth"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <include
+                android:id="@+id/cheapMonth"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_margin" />
+
+            <include
+                android:id="@+id/bestEconomy"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <include
+                android:id="@+id/worstEconomy"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_margin" />
+
+            <include
+                android:id="@+id/expensiveFillup"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <include
+                android:id="@+id/cheapFillup"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_margin" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

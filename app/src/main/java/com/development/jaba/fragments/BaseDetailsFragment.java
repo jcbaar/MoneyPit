@@ -13,7 +13,7 @@ import com.development.jaba.moneypit.Keys;
 public class BaseDetailsFragment extends Fragment {
 
     public Car mCar;
-    public int mCurrentYear;
+    public int mCurrentYear = 0;
 
     /**
      * Default empty constructor

@@ -21,6 +21,7 @@ import com.development.jaba.moneypit.AddOrEditCarActivity;
 import com.development.jaba.moneypit.CarDetailsActivity;
 import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
+import com.development.jaba.moneypit.TotalSummaryActivity;
 import com.development.jaba.utilities.DialogHelper;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -119,6 +120,13 @@ public class CarListFragment extends Fragment {
                                 },
                                 getActivity());
                         return true;
+
+                    case 2:
+                        Intent summary = new Intent(getActivity(), TotalSummaryActivity.class);
+                        Car selectedCar = mCarAdapter.getItem(position);
+                        summary.putExtra(Keys.EK_CAR, selectedCar);
+                        startActivity(summary);
+                        break;
 
                     default:
                         break;
