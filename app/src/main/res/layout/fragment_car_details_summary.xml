@@ -24,10 +24,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/image"
+                android:id="@+id/labelLayout"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
                 android:background="@drawable/car_summary_header"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:padding="8dp">
 
                 <TextView

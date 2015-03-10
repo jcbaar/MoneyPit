@@ -174,9 +174,10 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             if(!isAdded()) {
                 return;
             }
-
             TextView label = (TextView) mLayout.findViewById(R.id.carLabel);
             label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
+            LinearLayout ll = (LinearLayout) mLayout.findViewById(R.id.labelLayout);
+            ll.setVisibility(View.VISIBLE);
 
             if(result == null) {
                 mNoData.setVisibility(View.VISIBLE);
