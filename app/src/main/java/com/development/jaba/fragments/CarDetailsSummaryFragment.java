@@ -29,7 +29,6 @@ import java.util.List;
  */
 public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
-    private MoneyPitDbContext mContext;
     private View mLayout;
     private LinearLayout mData;
     private TextView mNoData;
@@ -52,7 +51,6 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         mData = (LinearLayout) view.findViewById(R.id.summary_data);
         mNoData = (TextView) view.findViewById(R.id.summary_nodata);
 
-        mContext = new MoneyPitDbContext(getActivity());
         if (mCar != null) {
             ImageView image = (ImageView) view.findViewById(R.id.image);
 
@@ -83,7 +81,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        if (mContext != null && mCar != null) {
+        if (mCar != null) {
             summarize();
         }
     }
