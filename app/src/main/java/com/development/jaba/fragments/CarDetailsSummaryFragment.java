@@ -63,6 +63,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             } else {
                 image.setVisibility(View.GONE);
             }
+            summarize();
         }
         return view;
     }
@@ -82,7 +83,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        if (mContext != null && mCar != null && isAdded()) {
+        if (mContext != null && mCar != null) {
             summarize();
         }
     }
