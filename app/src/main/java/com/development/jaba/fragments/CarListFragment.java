@@ -3,6 +3,8 @@ package com.development.jaba.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +25,6 @@ import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.moneypit.TotalSummaryActivity;
 import com.development.jaba.utilities.DialogHelper;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
@@ -146,7 +147,6 @@ public class CarListFragment extends Fragment {
         carList.setHasFixedSize(true);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
-        fab.attachToRecyclerView(carList);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

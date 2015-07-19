@@ -24,13 +24,12 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:design:22.2.1'
     compile 'com.google.android.gms:play-services-drive:7.5.0'
 
     compile 'com.afollestad:material-dialogs:0.7.2.7'
-    compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.jjoe64:graphview:4.0.0'
 }

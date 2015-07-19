@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,7 +26,6 @@ import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.view.RecyclerViewEx;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
@@ -111,8 +112,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                                     getActivity());
                             return true;
 
-                        case FillupRowAdapter.MENU_NAV:
-                        {
+                        case FillupRowAdapter.MENU_NAV: {
                             Fillup selectedFillup = mFillupAdapter.getItem(position);
                             Intent navigation = new Intent(Intent.ACTION_VIEW,
                                     Uri.parse("http://maps.google.com/maps?daddr=" +
@@ -135,7 +135,6 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
             mFillupList.setHasFixedSize(false);
 
             mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
-            mFab.attachToRecyclerView(mFillupList);
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -221,7 +220,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
      * data changes.
      */
     public interface OnDataChangedListener {
-        public void onDataChanged(int year);
+        void onDataChanged(int year);
     }
 
     /**

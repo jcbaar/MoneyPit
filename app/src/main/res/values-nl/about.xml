@@ -11,7 +11,6 @@
         &lt;br/&gt;&lt;br/&gt;
         MoneyPit is gemaakt met behulp van de volgende componenten:&lt;br/&gt;&lt;br/&gt;
         &lt;a href="https://github.com/afollestad/material-dialogs"&gt;Material Design Dialogs&lt;/a&gt;&lt;br/&gt;
-        &lt;a href="https://github.com/makovkastar/FloatingActionButton"&gt;Floating Action Button&lt;/a&gt;&lt;br/&gt;
         &lt;a href="http://www.android-graphview.org/"&gt;GraphView&lt;/a&gt;&lt;br/&gt;
     </string>
 </resources>

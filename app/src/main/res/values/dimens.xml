@@ -7,4 +7,5 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="app_bar_top_padding">0dp</dimen>
     <dimen name="settings_margin">8dip</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
