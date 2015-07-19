@@ -3,6 +3,7 @@ package com.development.jaba.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -12,10 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,24 +27,12 @@ import com.development.jaba.utilities.UtilsHelper;
  */
 public class EditTextEx extends LinearLayout {
 
-    private final AnimationSet mHideHintSet;
-    private final AnimationSet mShowHintSet;
-    private final AnimationSet mHideErrorSet;
-    private final AnimationSet mShowErrSet;
-/*    private Animation mAnimateVisible,  // Animation for showing the hint indication.
-            mAnimateGone,               // Animation for hiding the hint indication.
-            mAnimateVisibleError,       // Animation for showing the error indication.
-            mAnimateGoneError;          // Animation for hiding the error indication.
-            */
-    private int mMaxLength,             // The maximum number of characters the EditText can contain.
-            mAnimDuration;              // The animation duration.
+    private int mMaxLength;             // The maximum number of characters the EditText can contain.
     private int mErrorColor;            // The error color.
     private String mHintString;         // The hint string.
-    private final TextView mHint,             // The hint TextView.
-            mError,                     // The error TextView.
-            mCharCount;
+    private final TextView mCharCount;  // The character counter.
     private final EditText mEditor;           // The EditText.
-    private final LinearLayout mBottomInfo;   // The LinearLayout containing the error and character counter views.
+    private final TextInputLayout mWrapper;
     private BaseValidator mValidator;   // Validator for this instance.
 
     /**
@@ -83,16 +69,16 @@ public class EditTextEx extends LinearLayout {
         inflater.inflate(R.layout.view_edittext_ex, this);
 
         // Get the views.
-        mHint = (TextView) findViewById(R.id.editEx_hint);
-        mError = (TextView) findViewById(R.id.editEx_error);
         mCharCount = (TextView) findViewById(R.id.editEx_charCount);
         mEditor = (EditText) findViewById(R.id.editEx_editor);
-        mBottomInfo = (LinearLayout) findViewById(R.id.editEx_bottomInfo);
+        mWrapper = (TextInputLayout) findViewById(R.id.editEx_wrapper);
 
         // Re-generate an id for the EditText because when there are more than one
         // instances of this view in the same activity androids restore on orientation
         // changes will screw things up.
         mEditor.setId(UtilsHelper.generateViewId());
+
+        mCharCount.setTextColor(getResources().getColor(R.color.accentColor));
 
         // Get the attributes.
         if (attrs != null) {
@@ -105,7 +91,6 @@ public class EditTextEx extends LinearLayout {
             try {
                 mMaxLength = a.getInteger(0, -1);
                 mHintString = b.getString(0);
-                mAnimDuration = c.getInteger(R.styleable.EditTextEx_eteDuration, 400);
                 mErrorColor = c.getColor(R.styleable.EditTextEx_eteErrorColor, Color.argb(200, 255, 0, 0));
 
                 // Make sure we pass on the correct input type to the EditText.
@@ -119,43 +104,6 @@ public class EditTextEx extends LinearLayout {
             }
         }
 
-        // Setup the animation listeners. These take care of making the views (in)visible
-        // at the appropriate moments.
-        MyAnimationListner hideHintListener = new MyAnimationListner(mHint, true, true);
-        MyAnimationListner showHintListener = new MyAnimationListner(mHint, false, true);
-        MyAnimationListner hideErrListener = new MyAnimationListner(mError, true, false);
-        MyAnimationListner showErrListener = new MyAnimationListner(mError, false, false);
-
-        // And the animations.
-        mHideHintSet = createAnimationSet(hideHintListener, true);
-        mShowHintSet = createAnimationSet(showHintListener, false);
-
-        mHideErrorSet = createAnimationSet(hideErrListener, true);
-        mShowErrSet = createAnimationSet(showErrListener, false);
-
-/*        mAnimateGone = new AlphaAnimation(1, 0);
-        mAnimateGone.setDuration(mAnimDuration);
-        mAnimateGone.setFillAfter(true);
-        mAnimateGone.setAnimationListener(hideHintListener);
-
-        mAnimateVisible = new AlphaAnimation(0, 1);
-        mAnimateVisible.setDuration(mAnimDuration);
-        mAnimateVisible.setFillAfter(true);
-        mAnimateVisible.setAnimationListener(showHintListener);
-
-        mAnimateGoneError = new AlphaAnimation(1, 0);
-        mAnimateGoneError.setDuration(mAnimDuration);
-        mAnimateGoneError.setFillAfter(true);
-        mAnimateGoneError.setAnimationListener(hideErrListener);
-
-        mAnimateVisibleError = new AlphaAnimation(0, 1);
-        mAnimateVisibleError.setDuration(mAnimDuration);
-        mAnimateVisibleError.setFillAfter(true);
-        mAnimateGoneError.setAnimationListener(showErrListener);*/
-
-        // Hide the hint by default.
-        mHint.setVisibility(View.GONE);
-
         // If we have a maximum number of characters the user can enter
         // we will setup a LengthFilter to enforce this.
         if (mMaxLength > 0) {
@@ -165,31 +113,32 @@ public class EditTextEx extends LinearLayout {
         }
 
         // Setup the views.
-        mEditor.setHint(mHintString);
-        mHint.setText(mHintString);
-        mError.setText(null);
-        mError.setTextColor(mErrorColor);
-
+        mWrapper.setHint(mHintString);
         mCharCount.setTextColor(getResources().getColor(R.color.accentColor));
 
         setCharCount();
-        checkBottomLine();
 
-        // Focus changes on the EditText are forwarded to if the view has a
-        // focus change listener. A focus change of the EditText is also used to
-        // execute the validation (if present) and to see if the error/character
-        // count line must be visible.
+        // Focus changes on the EditText are forwarded if the view has a
+        // focus change listener. Als the current focus change listener of the EditText
+        // is stored so that we can call it when focus changes happen. A focus change of
+        // the EditText is also used to execute the validation (if present) and to see
+        // if the error/character count line must be visible.
+        final OnFocusChangeListener editorListener = mEditor.getOnFocusChangeListener();
         final View thisView = this;
         mEditor.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                OnFocusChangeListener listner = getOnFocusChangeListener();
-                if (listner != null) {
-                    listner.onFocusChange(thisView, hasFocus);
+                OnFocusChangeListener listener = getOnFocusChangeListener();
+                if (listener != null) {
+                    listener.onFocusChange(thisView, hasFocus);
+                }
+
+                // Make sure we also call into the EditText focus change listener.
+                if (editorListener != null) {
+                    editorListener.onFocusChange(mEditor, hasFocus);
                 }
 
                 if (!hasFocus) {
-                    checkBottomLine();
                     validate();
                 }
                 setCharCount();
@@ -210,62 +159,9 @@ public class EditTextEx extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                int visibility = View.GONE;
-                if (s.length() != 0 && !TextUtils.isEmpty(mHintString)) {
-                    visibility = View.VISIBLE;
-                }
-
-                if (mHint.getVisibility() != visibility) {
-                    if (visibility == View.GONE) {
-                        mHint.startAnimation(mHideHintSet);
-                    } else {
-                        mHint.startAnimation(mShowHintSet);
-                    }
-                }
                 setCharCount();
             }
         });
-    }
-
-    /**
-     * Creates a scale + alpha animation set for showing or hiding
-     * @param listener The {@link com.development.jaba.view.EditTextEx.MyAnimationListner} for the {@link android.view.animation.AnimationSet}.
-     * @param isHideSet True when the {@link android.view.animation.AnimationSet} is to hide a view, false if is not.
-     * @return The created {@link android.view.animation.AnimationSet}
-     */
-    private AnimationSet createAnimationSet(Animation.AnimationListener listener, boolean isHideSet) {
-        // And the animations.
-        AnimationSet as = new AnimationSet(false);
-        as.setAnimationListener(listener);
-
-        AlphaAnimation alpha = new AlphaAnimation(isHideSet ? 1 : 0, isHideSet ? 0 : 1);
-        alpha.setDuration(mAnimDuration);
-        alpha.setFillAfter(true);
-
-        ScaleAnimation scale = new ScaleAnimation(isHideSet ? 1 : 0, isHideSet ? 0 : 1, isHideSet ? 1 : 0, isHideSet ? 0 : 1, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
-        scale.setDuration(mAnimDuration);
-        scale.setFillAfter(true);
-
-        as.addAnimation(alpha);
-        as.addAnimation(scale);
-        return as;
-    }
-
-    /**
-     * Checks to see whether or not the layout with the error and
-     * character counter views must be visible.
-     */
-    private void checkBottomLine() {
-        if(TextUtils.isEmpty(mError.getText()) && mMaxLength <= 0) {
-            if (mBottomInfo.getVisibility() != View.GONE) {
-                mBottomInfo.setVisibility(View.GONE);
-            }
-        }
-        else {
-            if (mBottomInfo.getVisibility() != View.VISIBLE) {
-                mBottomInfo.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     /**
@@ -278,11 +174,17 @@ public class EditTextEx extends LinearLayout {
             }
         }
         else {
-            if(mCharCount.getVisibility() != View.VISIBLE) {
-                mCharCount.setVisibility(View.VISIBLE);
+            if(mEditor.hasFocus() == false) {
+                if(mCharCount.getVisibility() != View.GONE) {
+                    mCharCount.setVisibility(View.GONE);
+                }
             }
-            mCharCount.setText(String.format("%d/%d", mEditor.getText().length(), mMaxLength));
-            mCharCount.setTextColor(mEditor.hasFocus() ? getResources().getColor(R.color.accentColor) : mEditor.getTextColors().getDefaultColor());
+            else {
+                if (mCharCount.getVisibility() != View.VISIBLE) {
+                    mCharCount.setVisibility(View.VISIBLE);
+                }
+                mCharCount.setText(String.format("%d/%d", mEditor.getText().length(), mMaxLength));
+            }
         }
     }
 
@@ -345,9 +247,14 @@ public class EditTextEx extends LinearLayout {
      * @param error The error message to show. null will clear the error message.
      */
     public void setError(CharSequence error) {
-        mError.setText(error);
-        checkBottomLine();
-        mError.startAnimation(TextUtils.isEmpty(error) ? mHideErrorSet : mShowErrSet);
+        if(error != null) {
+            mWrapper.setError(error);
+            mWrapper.setErrorEnabled(true);
+        }
+        else
+        {
+            mWrapper.setErrorEnabled(false);
+        }
     }
 
     /**

@@ -1,49 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/editEx_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editEx_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.TextInputLayout>
+
     <TextView
-        android:id="@+id/editEx_hint"
-        android:layout_width="match_parent"
+        android:id="@+id/editEx_charCount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_alignEnd="@id/editEx_wrapper"
+        android:layout_alignRight="@id/editEx_wrapper"
+        android:paddingRight="4dp"
+        android:text="0/50"
+        android:textSize="11sp" />
 
-        android:paddingLeft="4dp"
-        android:text="Hint"
-        android:textSize="@dimen/abc_text_size_small_material" />
-
-    <EditText
-        android:id="@+id/editEx_editor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editEx_bottomInfo"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/editEx_error"
-            android:layout_width="0sp"
-
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="4dp"
-            android:text="Error label"
-            android:paddingRight="4dp"
-            android:textSize="@dimen/abc_text_size_small_material" />
-
-        <TextView
-            android:id="@+id/editEx_charCount"
-            android:layout_width="wrap_content"
-
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
-            android:paddingRight="4dp"
-            android:text="0/50"
-            android:textSize="@dimen/abc_text_size_small_material" />
-
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

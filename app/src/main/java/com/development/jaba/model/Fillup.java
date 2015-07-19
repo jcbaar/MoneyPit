@@ -74,10 +74,18 @@ public class Fillup implements Serializable {
             this.mLatitude = cursor.getDouble(9);
 
             // Computed in query, not stored in data model.
-            this.mDistance = cursor.getDouble(10);
-            this.mDaysSinceLastFillup = cursor.getInt(11);
-            this.mFuelConsumption = cursor.getDouble(12);
-            this.mTotalPrice = cursor.getDouble(13);
+            if(cursor.getColumnCount() > 10) {
+                this.mDistance = cursor.getDouble(10);
+                this.mDaysSinceLastFillup = cursor.getInt(11);
+                this.mFuelConsumption = cursor.getDouble(12);
+                this.mTotalPrice = cursor.getDouble(13);
+            }
+            else {
+                this.mDistance = 0.0;
+                this.mDaysSinceLastFillup = 0;
+                this.mFuelConsumption = 0.0;
+                this.mTotalPrice = 0.0;
+            }
         } catch (Exception e) {
             Log.e("Fillup(cursor)", Log.getStackTraceString(e));
         }
