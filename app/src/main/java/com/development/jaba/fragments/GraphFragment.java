@@ -95,12 +95,18 @@ public class GraphFragment extends BaseDetailsFragment {
 
         // Sum up the values in the data.
         double average = 0.0f;
+        int count = 0;
         for (DataPoint value : values) {
-            average += value.getY();
+            // We only average on values that indeed have a value
+            // assigned to it.
+            if(value.getY() != 0) {
+                average += value.getY();
+                count++;
+            }
         }
 
         // And create the average.
-        average /= values.length;
+        average /= count;
 
         // Fill the averages array with the average value.
         for (int i = 0; i < 12; i++) {

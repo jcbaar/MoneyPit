@@ -4,16 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
- * A simple {@link android.support.v7.app.ActionBarActivity} derived class that serves as a base
+ * A simple {@link AppCompatActivity} derived class that serves as a base
  * class for the activities. It handles some generic things all activities share like the
  * {@link android.support.v7.widget.Toolbar}.
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 

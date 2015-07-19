@@ -398,7 +398,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
                 "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
-                "WHERE Fillup.FullTank = 1 " +
+                "WHERE Fillup.FullTank = 1 AND Fillup.Volume <> 0 " +
                 "GROUP BY Car._id";
 
         SQLiteDatabase db;
@@ -436,7 +436,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         String query;
         query = "SELECT Car._id, SUM(Price)/COUNT(1), SUM(Volume)/COUNT(1) FROM Fillup " +
                 "LEFT OUTER JOIN Car ON Car._id = Fillup.CarId " +
-                "WHERE Fillup.FullTank = 1 AND Car._id = ?";
+                "WHERE Fillup.FullTank = 1 AND Fillup.Volume <> 0 AND Car._id = ?";
         String[] args = new String[]{String.valueOf(carId)};
 
         SQLiteDatabase db;
@@ -607,8 +607,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public SurroundingFillups getSurroundingFillups(Date date, int carId, int fillupId) {
         SurroundingFillups result = new SurroundingFillups();
 
-        String query1 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date < ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date DESC LIMIT 1";
-        String query2 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date > ?) AND (CarId = ?) AND (_id <> ?) ORDER BY Date ASC LIMIT 1";
+        String query1 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date < ?) AND (CarId = ?) AND (Volume <> 0) AND (_id <> ?) ORDER BY Date DESC LIMIT 1";
+        String query2 = "SELECT * FROM " + TABLE_FILLUP + " WHERE (Date > ?) AND (CarId = ?) AND (Volume <> 0) AND (_id <> ?) ORDER BY Date ASC LIMIT 1";
         String[] args = new String[]{DateHelper.toDateTimeString(date),
                 String.valueOf(carId),
                 String.valueOf(fillupId)};
@@ -656,7 +656,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     public int getOldestDataYear(int carId) {
         int year = DateHelper.getYearFromDate(new Date());
 
-        String query = "SELECT Date FROM " + TABLE_FILLUP + " WHERE (CarId = ?) ORDER BY Date ASC LIMIT 1";
+        String query = "SELECT Date FROM " + TABLE_FILLUP + " WHERE (CarId = ? AND Volume <> 0) ORDER BY Date ASC LIMIT 1";
         String[] args = new String[]{String.valueOf(carId)};
 
         SQLiteDatabase db;
@@ -690,7 +690,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param year  The year the data should belong to.
      */
     public DataPoint[] getFuelCostPerMonth(int carId, int year) {
-        String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
+        String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(year)};
 
@@ -705,8 +705,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public DataPoint[] getFuelCostPerKilometerPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price*Volume) / " +
-                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) " +
-                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1)) " +
+                "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
@@ -723,8 +723,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public DataPoint[] getDistancePerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) " +
-                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) " +
+                "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
@@ -741,8 +741,8 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public DataPoint[] getEconomyPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
-                "FROM Fillup AS T1 WHERE CarId=? AND CAST(strftime('%Y', Date) AS INT) = ?" +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
+                "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(carId),
@@ -803,7 +803,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         SQLiteDatabase db;
         Cursor cursor = null;
 
-        String query = "SELECT Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer), " +
+        String query = "SELECT Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer), " +
                 "FullTank " +
                 "FROM Fillup AS T1 WHERE CarId= ?" +
                 "ORDER BY DATE DESC";
@@ -853,7 +853,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         Cursor cursor = null;
         int records = 0;
 
-        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId = ? AND ( ? = '0' OR CAST(strftime('%Y', Date) AS INT) = ?)";
+        String query = "SELECT COUNT(1) FROM Fillup WHERE CarId = ? AND Volume <> 0 AND ( ? = '0' OR CAST(strftime('%Y', Date) AS INT) = ?)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(year),
                 String.valueOf(year)};
