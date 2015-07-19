@@ -147,5 +147,6 @@
     <string name="error_save_picture">There was a problem saving the photo...</string>
     <string name="title_activity_totalsummary">Total vehicle summary</string>
     <string name="no_summary_data">No data to summarize or not enough data to summarize. At least 2 fill-ups must be present for the vehicle in the given time range to be able to summarize the information.</string>
+    <string name="model_create_failed">Failed to create the basic data model. Exiting app...</string>
 
 </resources>

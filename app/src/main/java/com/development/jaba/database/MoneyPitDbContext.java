@@ -1,5 +1,6 @@
 package com.development.jaba.database;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,8 +13,10 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.ConditionalHelper;
 import com.development.jaba.utilities.DateHelper;
+import com.development.jaba.utilities.DialogHelper;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.Date;
@@ -70,6 +73,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     //region Database create/update
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // First create the data model.
         try {
             db.beginTransaction();
             db.execSQL("CREATE TABLE IF NOT EXISTS [Car] ( " +
@@ -100,8 +104,21 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                     "[Message] NTEXT NOT NULL, " +
                     "[Stacktrace] NTEXT NOT NULL, " +
                     "[Stamp] DATETIME NOT NULL);");
+            db.setTransactionSuccessful();
+        } catch (SQLiteException ex) {
+            Log.e("onCreate", ex.getMessage());
+            DialogHelper.showMessageDialog(mContext.getString(R.string.dialog_error_title), mContext.getString(R.string.model_create_failed), mContext);
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+            return;
+        } finally {
+            db.endTransaction();
+        }
 
-            if (ConditionalHelper.DebugData) {
+        // Then, if debug data is turned on, create some data.
+        if (ConditionalHelper.DebugData) {
+            try {
+                db.beginTransaction();
                 db.execSQL("INSERT INTO Car([Make], [Model], [Picture], [LicensePlate], [BuildYear], [Currency], [VolumeUnit], [DistanceUnit]) VALUES('Peugeot','207',null,'98-TX-NV',2007,'€',1,1);");
                 db.execSQL("INSERT INTO Car([Make], [Model], [Picture], [LicensePlate], [BuildYear], [Currency], [VolumeUnit], [DistanceUnit]) VALUES('Waypoint','Markers',null,'AA-11-BB',2013,'€',1,1);");
 
@@ -179,7 +196,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-08-27 12:01:57',122981,30.49,1.659,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-03 18:04:54',123529,35.26,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-12 16:01:37',124053,34.7,1.679,1,NULL,NULL,NULL);");
-//                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-20 17:49:48',124588,33.73,1.679,1,NULL,NULL,NULL);");
+                db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-20 17:49:48',124588,33.73,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-09-27 11:37:46',125015,30.28,1.669,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-10-06 18:01:50',125592,37.64,1.679,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2014-10-13 18:07:59',126157,35.46,1.659,1,NULL,NULL,NULL);");
@@ -199,12 +216,12 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-19 16:45:12',131787,27.58,1.489,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-02-28 19:10:07',132228,33.31,1.529,1,NULL,NULL,NULL);");
                 db.execSQL("INSERT INTO Fillup([CarId], [Date], [Odometer], [Volume], [Price], [FullTank], [Note], [Longitude], [Latitude]) VALUES(1,'2015-03-08 19:10:07',132720,33.78,1.529,1,NULL,NULL,NULL);");
+                db.setTransactionSuccessful();
+            } catch (SQLiteException ex) {
+                Log.e("onCreate", ex.getMessage());
+            } finally {
+                db.endTransaction();
             }
-            db.setTransactionSuccessful();
-        } catch (SQLiteException ex) {
-            Log.e("onCreate", ex.getMessage());
-        } finally {
-            db.endTransaction();
         }
     }
 

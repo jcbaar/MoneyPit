@@ -146,4 +146,5 @@
     <string name="error_save_picture">Er was een probleem met het opslaan van de foto...</string>
     <string name="title_activity_totalsummary">Totale samenvatting voertuig</string>
     <string name="no_summary_data">Geen informatie om samen te vatten of niet genoeg informatie om samen te vatten. Ten minste 2 tankbeurten moeten aanwezig zijn in de opgegeven periode om de informatie samen te kunnen vatten.</string>
+    <string name="model_create_failed">Niet gelukt het basis data model te maken. App afsluiten...</string>
 </resources>
