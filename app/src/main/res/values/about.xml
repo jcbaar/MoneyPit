@@ -11,7 +11,7 @@
         &lt;br/&gt;&lt;br/&gt;
         MoneyPit has been build with the help of the following components:&lt;br/&gt;&lt;br/&gt;
         &lt;a href="https://github.com/afollestad/material-dialogs"&gt;Material Design Dialogs&lt;/a&gt;&lt;br/&gt;
-        &lt;a href="http://www.android-graphview.org/"&gt;GraphView&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="https://github.com/PhilJay/MPAndroidChart"&gt;MPAndroidChart&lt;/a&gt;&lt;br/&gt;
     </string>
 
 </resources>

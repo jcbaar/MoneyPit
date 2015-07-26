@@ -1,34 +1,32 @@
 package com.development.jaba.fragments;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.DataPointInterface;
-import com.jjoe64.graphview.series.OnDataPointTapListener;
-import com.jjoe64.graphview.series.Series;
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.util.Date;
+import java.util.List;
 
 /**
- * A {@link GraphFragment} subclass containing the const-per-month
- * and cost-per-month-per-distance-unit graphs.
+ * A {@link GraphFragment} subclass containing the distance-per-month
+ * and economy-per-month graphs.
  */
 public class CarDetailsCostFragment extends GraphFragment {
 
-    private MoneyPitDbContext mDbContext;
-    private GraphView mCostPerMonth,
+    private CombinedChart mCostPerMonth,
             mCostPerDistanceUnit;
 
     /**
@@ -45,41 +43,20 @@ public class CarDetailsCostFragment extends GraphFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_car_details_cost, container, false);
 
-        mDbContext = new MoneyPitDbContext(getActivity());
-        mMonths = getResources().getStringArray(R.array.months);
+        mCostPerMonth = (CombinedChart) view.findViewById(R.id.costPerMonth);
+        mCostPerDistanceUnit = (CombinedChart) view.findViewById(R.id.costPerDistanceUnit);
 
-        mCostPerMonth = (GraphView) view.findViewById(R.id.costPerMonth);
-        mCostPerDistanceUnit = (GraphView) view.findViewById(R.id.costPerDistanceUnit);
-
-        mCostPerMonth.setTitle(getResources().getString(R.string.graph_fuel_cost));
-        mCostPerDistanceUnit.setTitle(String.format(getResources().getString(R.string.graph_fuel_cost_per_distance_unit),
-                mCar.getDistanceUnit().getUnitName().toLowerCase()));
-
-        setupRenderers(mCostPerMonth, new DefaultLabelFormatter() {
+        setupChart(mCostPerMonth, new ValueFormatter() {
             @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
-                    if (value >= 0 && value <= 12) {
-                        return mMonths[(int) value];
-                    }
-                    return super.formatLabel(value, true);
-                } else {
-                    return FormattingHelper.toPrice(mCar, value) + " ";
-                }
+            public String getFormattedValue(float value) {
+                return FormattingHelper.toPrice(mCar, value) + " ";
             }
         });
 
-        setupRenderers(mCostPerDistanceUnit, new DefaultLabelFormatter() {
+        setupChart(mCostPerDistanceUnit, new ValueFormatter() {
             @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
-                    if (value >= 0 && value <= 12) {
-                        return mMonths[(int) value];
-                    }
-                    return super.formatLabel(value, true);
-                } else {
-                    return FormattingHelper.toPricePerDistanceUnit(mCar, value) + " ";
-                }
+            public String getFormattedValue(float value) {
+                return FormattingHelper.toPricePerDistanceUnit(mCar, value) + " ";
             }
         });
 
@@ -88,31 +65,54 @@ public class CarDetailsCostFragment extends GraphFragment {
     }
 
     /**
-     * Setup the series in the {@link com.jjoe64.graphview.GraphView} views.
+     * Setup the data.
      */
     private void setupBarsAndAverages() {
         if (mCurrentYear == 0) {
             mCurrentYear = DateHelper.getYearFromDate(new Date());
         }
 
-        if (mDbContext != null && mCar != null) {
-            final Resources res = getResources();
-            DataPoint[] data = mDbContext.getFuelCostPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerMonth, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
+        if(!isAdded()) {
+            return;
+        }
+
+        MoneyPitDbContext db = getDbContext();
+        if (db != null && mCar != null) {
+            List<BarEntry> dataCM = db.getFuelCostPerMonth(mCar.getId(), mCurrentYear);
+            List<BarEntry> dataCD = db.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
+
+            setupChartData(mCostPerMonth, dataCM, R.string.graph_cost_legend);
+            setupChartData(mCostPerDistanceUnit, dataCD, R.string.graph_cost_legend);
+
+            mCostPerMonth.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
-                public void onTap(Series series, DataPointInterface dataPoint) {
-                    Snackbar.make(mCostPerMonth, String.format(res.getString(R.string.graph_cost_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            " " +
-                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
+                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+                    if (e.getVal() != 0 && dataSetIndex == 0) {
+                        Snackbar.make(mCostPerMonth, String.format(getResources().getString(R.string.graph_cost_per_month), DateHelper.toMonthNameString(e.getXIndex()), mCurrentYear) +
+                                " " +
+                                FormattingHelper.toPrice(mCar, e.getVal()), Snackbar.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onNothingSelected() {
+
                 }
             });
-            data = mDbContext.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
-            setupBarsSeries(mCostPerDistanceUnit, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
+
+            mCostPerDistanceUnit.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
-                public void onTap(Series series, DataPointInterface dataPoint) {
-                    Snackbar.make(mCostPerDistanceUnit, String.format(res.getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            " " +
-                            FormattingHelper.toPricePerDistanceUnit(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
+                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+                    if (e.getVal() != 0 && dataSetIndex == 0) {
+                        Snackbar.make(mCostPerDistanceUnit, String.format(getResources().getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.toMonthNameString(e.getXIndex()), mCurrentYear) +
+                                " " +
+                                FormattingHelper.toPricePerDistanceUnit(mCar, e.getVal()), Snackbar.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onNothingSelected() {
+
                 }
             });
         }
