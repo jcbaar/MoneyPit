@@ -1,30 +1,37 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.development.jaba.moneypit.CarDetailsActivity">
 
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar" />
-
-    <com.development.jaba.view.SlidingTabLayout
-        android:id="@+id/sliding_tabs"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
-        app:stlDividerColor="@color/slidingTabDividerColor"
-        app:stlIndicatorColor="@color/slidingTabIndicatorColor"
-        app:stlTitleColor="@color/slidingTabTitleColor"
-        app:stlTitleColorSelected="@color/slidingTabSelectedTitleColor" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            style="@style/MoneyPitTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryColor"
+            android:elevation="@dimen/actionbar_elevation"
+            app:tabGravity="fill"
+            app:tabMode="scrollable" />
+    </android.support.design.widget.AppBarLayout>
 
     <com.development.jaba.view.ViewPagerEx
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </com.development.jaba.view.ViewPagerEx>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

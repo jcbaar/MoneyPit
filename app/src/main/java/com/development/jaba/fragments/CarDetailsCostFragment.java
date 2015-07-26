@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,18 +101,18 @@ public class CarDetailsCostFragment extends GraphFragment {
             setupBarsSeries(mCostPerMonth, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
-                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_cost_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            "\n" +
-                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mCostPerMonth, String.format(res.getString(R.string.graph_cost_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
+                            " " +
+                            FormattingHelper.toPrice(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
                 }
             });
             data = mDbContext.getFuelCostPerKilometerPerMonth(mCar.getId(), mCurrentYear);
             setupBarsSeries(mCostPerDistanceUnit, data, res.getString(R.string.graph_cost_legend), new OnDataPointTapListener() {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
-                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            "\n" +
-                            FormattingHelper.toPricePerDistanceUnit(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mCostPerDistanceUnit, String.format(res.getString(R.string.graph_cost_per_distance_per_month), getResources().getString(R.string.longKilometer).toLowerCase(), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
+                            " " +
+                            FormattingHelper.toPricePerDistanceUnit(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
                 }
             });
         }

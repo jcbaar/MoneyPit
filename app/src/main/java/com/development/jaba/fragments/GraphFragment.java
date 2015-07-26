@@ -3,6 +3,7 @@ package com.development.jaba.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.GetChars;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.Keys;
@@ -71,16 +72,21 @@ public class GraphFragment extends BaseDetailsFragment {
      * @param formatter The {@link com.jjoe64.graphview.DefaultLabelFormatter} to use for label formatting.
      */
     public void setupRenderers(GraphView gv, DefaultLabelFormatter formatter) {
+
+        gv.setTitleTextSize(spToPixels(getActivity(), 10));
+
         GridLabelRenderer renderer = gv.getGridLabelRenderer();
-        renderer.setTextSize(spToPixels(getActivity(), 10));
         renderer.setNumHorizontalLabels(12);
         renderer.setGridStyle(GridLabelRenderer.GridStyle.NONE);
         renderer.setLabelFormatter(formatter);
+        renderer.setTextSize(dpToPixels(getActivity(), 10));
 
         LegendRenderer legend = gv.getLegendRenderer();
+        legend.setTextSize(spToPixels(getActivity(), 10));
         legend.setVisible(true);
         legend.setAlign(LegendRenderer.LegendAlign.TOP);
         legend.setBackgroundColor(getResources().getColor(R.color.legendBackgroundColor));
+        gv.setLegendRenderer(legend);
     }
 
     /**

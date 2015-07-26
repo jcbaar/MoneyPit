@@ -1,11 +1,14 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,16 +24,16 @@
                 android:src="@drawable/nopicture" />
 
             <LinearLayout
+                android:id="@+id/labelLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/image"
-                android:id="@+id/labelLayout"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
                 android:background="@drawable/car_summary_header"
                 android:orientation="vertical"
-                android:visibility="gone"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/carLabel"
@@ -42,19 +45,20 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/summary_nodata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/no_summary_data"
-            android:id="@+id/summary_nodata"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"/>
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:text="@string/no_summary_data"
+            android:visibility="gone" />
+
 
         <LinearLayout
+            android:id="@+id/summary_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/summary_data">
+            android:orientation="vertical">
 
             <include
                 android:id="@+id/headerTotals"
@@ -141,4 +145,4 @@
                 android:layout_height="@dimen/settings_margin" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

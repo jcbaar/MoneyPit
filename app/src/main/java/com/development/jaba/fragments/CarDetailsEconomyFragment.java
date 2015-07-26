@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
@@ -67,6 +69,7 @@ public class CarDetailsEconomyFragment extends GraphFragment {
             }
         });
 
+        setupBarsAndAverages();
         setupRenderers(mEconomyPerMonth, new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
@@ -81,7 +84,6 @@ public class CarDetailsEconomyFragment extends GraphFragment {
             }
         });
 
-        setupBarsAndAverages();
         return view;
     }
 
@@ -99,18 +101,18 @@ public class CarDetailsEconomyFragment extends GraphFragment {
             setupBarsSeries(mDistancePerMonth, data, res.getString(R.string.graph_distance_legend), new OnDataPointTapListener() {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
-                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_distance_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            "\n" +
-                            FormattingHelper.toDistance(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mDistancePerMonth, String.format(res.getString(R.string.graph_distance_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
+                            " " +
+                            FormattingHelper.toDistance(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
                 }
             });
             data = mDbContext.getEconomyPerMonth(mCar.getId(), mCurrentYear);
             setupBarsSeries(mEconomyPerMonth, data, res.getString(R.string.graph_economy_legend), new OnDataPointTapListener() {
                 @Override
                 public void onTap(Series series, DataPointInterface dataPoint) {
-                    Toast.makeText(getActivity(), String.format(res.getString(R.string.graph_economy_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
-                            "\n" +
-                            FormattingHelper.toEconomy(mCar, dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mEconomyPerMonth, String.format(res.getString(R.string.graph_economy_per_month), DateHelper.toMonthNameString((int) dataPoint.getX()), mCurrentYear) +
+                            " " +
+                            FormattingHelper.toEconomy(mCar, dataPoint.getY()), Snackbar.LENGTH_LONG).show();
                 }
             });
         }

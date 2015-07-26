@@ -17,6 +17,23 @@
         <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>
     </style>
 
+    <style name="MoneyPitTabLayout" parent="Widget.Design.TabLayout">
+<!--        <item name="tabMaxWidth">@dimen/tab_max_width</item>-->
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/MoneyPitCustomTabTextAppearance</item>
+        <item name="tabSelectedTextColor">@color/slidingTabSelectedTitleColor</item>
+    </style>
+
+    <style name="MoneyPitCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/slidingTabTitleColor</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
     <style name="MoneyPitActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">@color/primaryColor</item>
     </style>

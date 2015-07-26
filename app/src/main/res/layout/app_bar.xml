@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/app_bar_top_padding"
+    android:elevation="@dimen/actionbar_elevation"
     style="@style/MoneyPitToolBar">
 
 </android.support.v7.widget.Toolbar>

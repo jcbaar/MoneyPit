@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -151,7 +152,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
             if (getActivity() != null) {
                 if (!TextUtils.isEmpty(s)) {
                     // Something failed.
-                    showToast(s);
+                    Snackbar.make(mContainer, s, Snackbar.LENGTH_LONG).show();
                 } else {
                     // Folder exists. Enable UI and start loading the
                     // backup files available for restoring.
@@ -184,7 +185,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
             if (getActivity() != null) {
                 if (result != null) {
                     // Something failed.
-                    showToast(result);
+                    Snackbar.make(mContainer, result, Snackbar.LENGTH_LONG).show();
                 } else {
                     // Loads the available files into the UI for selection.
                     RestoreFile[] files = new RestoreFile[getResults().size()];
@@ -216,7 +217,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (getActivity() != null) {
-                showToast(result);
+                Snackbar.make(mContainer, result, Snackbar.LENGTH_LONG).show();
                 new DriveLoadBackupsAsyncTask(getContext(), getGoogleApiClient(), mBackupFolder).execute();
             }
         }
@@ -241,7 +242,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (getActivity() != null) {
-                showToast(result);
+                Snackbar.make(mContainer, result, Snackbar.LENGTH_LONG).show();
                 mProgress.stop();
                 mBackup.setEnabled(true);
                 mRestore.setEnabled(mAdapter.getCount() > 0);

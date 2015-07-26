@@ -1,6 +1,8 @@
 package com.development.jaba.moneypit;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,7 +25,6 @@ import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.SettingsHelper;
-import com.development.jaba.view.SlidingTabLayout;
 import com.development.jaba.view.ViewPagerEx;
 
 import java.util.Date;
@@ -37,7 +38,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
     ViewPagerEx mViewPager;                     // ViewPager that serves as a host for the fragments.
     MoneyPitDbContext mDbContext;               // Database context.
     SettingsHelper mSettings;                   // Settings context.
-    SlidingTabLayout mSlidingTabLayout;         // Sliding tab that controls the ViewPager.
+    TabLayout mSlidingTabLayout;                // Sliding tab that controls the ViewPager.
     Spinner mYearSpinner;                       // Year selection spinner.
 
     @Override
@@ -94,7 +95,9 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             mCurrentYear = getCarYearFromPrefs();
         }
 
-        setTitle(mCarToShow.toString());
+        if(mCarToShow != null) {
+            setTitle(mCarToShow.toString());
+        }
 
         // Check if there is any data available.
         mDbContext = new MoneyPitDbContext(this);
@@ -141,26 +144,11 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPagerEx) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        mSlidingTabLayout.setViewPager(mViewPager);
+        mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setupWithViewPager(mViewPager);
 
         // Setup the page sliding functionality.
         checkSlidingAvailability();
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mSlidingTabLayout.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                // Get the fragment at the given position and tell it it's been
-                // selected in the ViewPager.
-                BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(position);
-                if (fragment != null) {
-                    fragment.onFragmentSelectedInViewPager();
-                }
-            }
-        });
     }
 
     /**

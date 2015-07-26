@@ -136,22 +136,4 @@ public class BaseDriveFragment extends Fragment implements
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
     }
-
-    /**
-     * Shows a simple short {@link android.widget.Toast} message.
-     *
-     * @param message The message to show.
-     */
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Shows a simple short {@link android.widget.Toast} message.
-     *
-     * @param resId The resource Id of the message to show.
-     */
-    public void showToast(int resId) {
-        Toast.makeText(getActivity(), getActivity().getText(resId), Toast.LENGTH_SHORT).show();
-    }
 }

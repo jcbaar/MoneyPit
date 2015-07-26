@@ -8,4 +8,5 @@
     <dimen name="app_bar_top_padding">0dp</dimen>
     <dimen name="settings_margin">8dip</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="actionbar_elevation">4dp</dimen>
 </resources>

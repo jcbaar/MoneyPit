@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -164,12 +166,14 @@ public class AddOrEditCarActivity extends BaseActivity {
      * @param resId The resource ID of the drawable to set on the {@link android.widget.ImageButton}
      */
     private void setButtonImageColor(ImageButton button, int resId) {
-        Drawable d = getResources().getDrawable(resId);
-        PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
+        Drawable d = ContextCompat.getDrawable(this, resId);
+        if(d != null) {
+            PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
 
-        // TODO: Using R.color.abc_primary_text_material_dark will not work properly when styling is applied.
-        d.mutate().setColorFilter(getResources().getColor(R.color.abc_primary_text_material_dark), mode);
-        button.setImageDrawable(d);
+            // TODO: Using R.color.abc_primary_text_material_dark will not work properly when styling is applied.
+            d.mutate().setColorFilter(getResources().getColor(R.color.abc_primary_text_material_dark), mode);
+            button.setImageDrawable(d);
+        }
     }
 
     /**
@@ -419,7 +423,7 @@ public class AddOrEditCarActivity extends BaseActivity {
         // Check if there is a camera. Show a toast if there isn't.
         PackageManager packageManager = getPackageManager();
         if(!packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            showToast(getString(R.string.error_no_camera));
+            Snackbar.make(mImage, R.string.error_no_camera, Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -434,7 +438,7 @@ public class AddOrEditCarActivity extends BaseActivity {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                showToast(getString(R.string.error_save_picture));
+                Snackbar.make(mImage, R.string.error_save_picture, Snackbar.LENGTH_LONG).show();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {

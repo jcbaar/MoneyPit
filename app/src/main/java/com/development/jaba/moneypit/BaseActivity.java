@@ -2,11 +2,14 @@ package com.development.jaba.moneypit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -34,8 +37,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            ActionBar ab = getSupportActionBar();
+            if(ab != null) {
+                ab.setDisplayHomeAsUpEnabled(true);
+                ab.setHomeButtonEnabled(true);
+            }
         }
     }
 
@@ -75,23 +81,5 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Shows a simple short {@link android.widget.Toast} message.
-     *
-     * @param message The message to show.
-     */
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Shows a simple short {@link android.widget.Toast} message.
-     *
-     * @param resId The resource Id of the message to show.
-     */
-    public void showToast(int resId) {
-        Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT).show();
     }
 }
