@@ -1,16 +1,13 @@
 package com.development.jaba.moneypit;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 /**
  * A simple {@link AppCompatActivity} derived class that serves as a base
@@ -42,6 +39,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                 ab.setDisplayHomeAsUpEnabled(true);
                 ab.setHomeButtonEnabled(true);
             }
+        }
+
+        // On Lollipop and and higher we want a "transparent" status bar for the
+        // navigation drawer. On the other activities we set the primaryColorDark.
+        // This is an ugly solution but for now it works...
+        if (this.getClass() != MainDrawerActivity.class &&
+                Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
         }
     }
 

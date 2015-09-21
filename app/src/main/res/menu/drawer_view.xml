@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/group1">
+        <item
+            android:id="@+id/vehivles"
+            android:checked="true"
+            android:icon="@drawable/ic_directions_car_grey600_24dp"
+            android:title="@string/nav_cars" />
+        <item
+            android:id="@+id/backup"
+            android:icon="@drawable/ic_backup_grey600_24dp"
+            android:title="@string/backup_restore" />
+
+    </group>
+    <group
+        android:checkableBehavior="none"
+        android:id="@+id/group2">
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_grey600_24dp"
+            android:title="@string/nav_settings" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_live_help_grey600_24dp"
+            android:title="@string/nav_about" />
+    </group>
+</menu>

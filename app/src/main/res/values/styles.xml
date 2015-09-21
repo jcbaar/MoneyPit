@@ -12,6 +12,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/background_material_light</item>
 
         <item name="actionModeStyle">@style/MoneyPitActionMode</item>
         <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>

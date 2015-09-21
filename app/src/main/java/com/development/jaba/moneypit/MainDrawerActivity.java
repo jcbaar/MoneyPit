@@ -1,27 +1,30 @@
 package com.development.jaba.moneypit;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.DriveBackupFragment;
-import com.development.jaba.fragments.NavigationDrawerFragment;
 
 
-public class MainDrawerActivity extends BaseActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainDrawerActivity extends BaseActivity {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private DrawerLayout mDrawer;
+    private NavigationView mDrawerView;
+    private ActionBarDrawerToggle mToggle;
 
-    private android.support.v4.app.Fragment mFragment = null;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -71,33 +74,72 @@ public class MainDrawerActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerView = (NavigationView) findViewById(R.id.navigation_drawer);
         mTitle = getTitle();
-
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), getToolbar());
+        mToggle = setupDrawerToggle();
+        mDrawer.setDrawerListener(mToggle);
+        setupDrawerContent(mDrawerView);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, CarListFragment.newInstance()).commit();
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        switch (position + 1) {
-            case 1: // Cars fragment.
-                mFragment = CarListFragment.newInstance();
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.drawer_open, R.string.drawer_close);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment;
+
+        switch (menuItem.getItemId()) {
+            case R.id.vehivles:
+                fragment = CarListFragment.newInstance();
                 setTitle(getString(R.string.nav_cars));
                 break;
-
-            case 2:
-                mFragment = DriveBackupFragment.newInstance();
+            case R.id.backup:
+                fragment = DriveBackupFragment.newInstance();
                 setTitle(getString(R.string.backup_restore));
                 break;
-
-            default:
-                break;
+            case R.id.settings: {
+                Intent s = new Intent(this, SettingsActivity.class);
+                startActivity(s);
+                if (mDrawer != null) {
+                    mDrawer.closeDrawer(mDrawerView);
+                }
+                return;
+            }
+            default: {
+                Intent s = new Intent(this, AboutActivity.class);
+                startActivity(s);
+                if (mDrawer != null) {
+                    mDrawer.closeDrawer(mDrawerView);
+                }
+                return;
+            }
         }
 
+        // Insert the fragment by replacing any existing fragment
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        mDrawer.closeDrawers();
     }
 
 
@@ -117,10 +159,36 @@ public class MainDrawerActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+        if (mDrawer.isDrawerOpen(Gravity.LEFT)) {
             restoreActionBar();
             return true;
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mToggle.onConfigurationChanged(newConfig);
     }
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/general_settings">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="estimate_odometer"
             android:title="@string/estimate_odo"
             android:summary="@string/estimate_odo_summary"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/location_settings">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="allow_location"
             android:title="@string/allow_location"
