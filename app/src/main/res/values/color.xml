@@ -17,8 +17,10 @@
 
     <color name="flatButtonClicked">#90b7b7b7</color>
 
-    <color name="listCardBackground">#FFFFFF</color>
+    <color name="listCardBackgroundDark">@color/background_material_dark</color>
+    <color name="listCardBackground">@color/background_material_light</color>
     <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
+    <color name="listCardBackgroundSelectedDark">@color/primaryColorLight</color>
     <color name="listCardBorder">#ffdddddd</color>
     <color name="listCardBorderShadow">#90dddddd</color>
     <color name="listCardBorderSelected">@color/primaryColor</color>

@@ -24,6 +24,7 @@ public class MainDrawerActivity extends BaseActivity {
     private DrawerLayout mDrawer;
     private NavigationView mDrawerView;
     private ActionBarDrawerToggle mToggle;
+    private int mCheckedId = -1;
 
 
     /**
@@ -34,6 +35,7 @@ public class MainDrawerActivity extends BaseActivity {
     // Storage for camera image URI components
     private final static String CAPTURED_PHOTO_PATH_KEY = "mCurrentPhotoPath";
     private final static String CAPTURED_PHOTO_URI_KEY = "mCapturedImageURI";
+    private final static String CHECKED_ITEM = "mCheckedId";
 
     // Required for camera operations in order to save the image file on resume.
     private String mCurrentPhotoPath = null;
@@ -41,6 +43,7 @@ public class MainDrawerActivity extends BaseActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(CHECKED_ITEM, mCheckedId);
         if (mCurrentPhotoPath != null) {
             savedInstanceState.putString(CAPTURED_PHOTO_PATH_KEY, mCurrentPhotoPath);
         }
@@ -80,8 +83,18 @@ public class MainDrawerActivity extends BaseActivity {
         mToggle = setupDrawerToggle();
         mDrawer.setDrawerListener(mToggle);
         setupDrawerContent(mDrawerView);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, CarListFragment.newInstance()).commit();
+
+
+        if (savedInstanceState != null) {
+            mCheckedId = savedInstanceState.getInt(CHECKED_ITEM);
+        }
+        MenuItem item = mDrawerView.getMenu().findItem(mCheckedId);
+        if (item != null) {
+            selectDrawerItem(item);
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, CarListFragment.newInstance()).commit();
+        }
     }
 
 
@@ -103,12 +116,15 @@ public class MainDrawerActivity extends BaseActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment;
 
+        mCheckedId = -1;
         switch (menuItem.getItemId()) {
-            case R.id.vehivles:
+            case R.id.vehicles:
+                mCheckedId = R.id.vehicles;
                 fragment = CarListFragment.newInstance();
                 setTitle(getString(R.string.nav_cars));
                 break;
             case R.id.backup:
+                mCheckedId = R.id.backup;
                 fragment = DriveBackupFragment.newInstance();
                 setTitle(getString(R.string.backup_restore));
                 break;

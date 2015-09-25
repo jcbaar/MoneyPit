@@ -1,11 +1,16 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- *** LIGHT THEME ******************************************************************** -->
     <style name="AppTheme" parent="AppTheme.Base">
         <!-- Non API-level specific customizations go here... -->
     </style>
 
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="listCardBackgroundColor">@color/listCardBackground</item>
+        <item name="listCardBackgroundPressedColor">@color/listCardBackgroundSelected</item>
+        <item name="listCardRippleColor">@color/listCardBackgroundSelected</item>
+
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColorDark</item>
         <item name="colorAccent">@color/accentColor</item>
@@ -17,9 +22,34 @@
         <item name="actionModeStyle">@style/MoneyPitActionMode</item>
         <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>
     </style>
+    <!-- *** LIGHT THEME END **************************************************************** -->
 
+    <!-- *** DARK THEME ********************************************************************* -->
+    <style name="AppThemeDark" parent="AppThemeDark.Base">
+        <!-- Non API-level specific customizations go here... -->
+    </style>
+
+    <style name="AppThemeDark.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="listCardBackgroundColor">@color/listCardBackgroundDark</item>
+        <item name="listCardBackgroundPressedColor">@color/listCardBackgroundSelected</item>
+        <item name="listCardRippleColor">@color/listCardBackgroundSelected</item>
+
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryColorDark</item>
+        <item name="colorAccent">@color/accentColor</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/background_material_dark</item>
+
+        <item name="actionModeStyle">@style/MoneyPitActionMode</item>
+        <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>
+    </style>
+    <!-- *** DARK THEME END ***************************************************************** -->
+
+
+    <!-- Theme independant styles. -->
     <style name="MoneyPitTabLayout" parent="Widget.Design.TabLayout">
-<!--        <item name="tabMaxWidth">@dimen/tab_max_width</item>-->
         <item name="tabIndicatorColor">?attr/colorAccent</item>
         <item name="tabIndicatorHeight">3dp</item>
         <item name="tabPaddingStart">12dp</item>
@@ -48,7 +78,6 @@
     </style>
 
     <style name="ListPrimaryText" parent="@android:style/Widget.TextView">
-        <item name="android:textColor">@color/primary_text_default_material_light</item>
         <item name="android:textSize">20sp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_gravity">left|center_vertical</item>
@@ -58,7 +87,6 @@
     </style>
 
     <style name="ListSecondaryText" parent="@android:style/Widget.TextView">
-        <item name="android:textColor">@color/secondary_text_default_material_light</item>
         <item name="android:layout_centerInParent">true</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center_vertical</item>
@@ -67,7 +95,6 @@
     </style>
 
     <style name="ListTertiaryText" parent="@android:style/Widget.TextView">
-        <item name="android:textColor">@color/secondary_text_default_material_light</item>
         <item name="android:layout_centerInParent">true</item>
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center_vertical</item>
@@ -107,20 +134,6 @@
         <item name="android:layout_marginRight">6dp</item>
         <item name="android:paddingLeft">2dp</item>
         <item name="android:paddingRight">2dp</item>
-    </style>
-
-    <style name="FlatActionButton" parent="@android:style/Widget.Button">
-        <item name="android:layout_height">36dp</item>
-        <item name="android:background">@drawable/flat_button_states</item>
-        <item name="android:textColor">@color/accentColor</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:layout_marginTop">6dp</item>
-        <item name="android:layout_marginBottom">6dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
     </style>
 
     <style name="DatePicker" parent="@android:style/Widget.DatePicker">

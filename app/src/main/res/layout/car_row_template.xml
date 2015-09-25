@@ -59,9 +59,9 @@
                         android:layout_alignParentStart="false"
                         android:layout_alignParentLeft="true"
                         android:layout_toStartOf="@id/headerMenu"
+                        android:layout_toLeftOf="@id/headerMenu"
 
-                        style="@style/ListPrimaryText"
-                        android:layout_centerVertical="true" />
+                        style="@style/ListPrimaryText" />
                 </RelativeLayout>
 
                 <TextView

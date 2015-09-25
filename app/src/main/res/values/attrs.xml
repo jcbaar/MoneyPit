@@ -20,4 +20,9 @@
         <attr name="cpvColor" format="color" />
         <attr name="cpvStartDelay" format="integer" />
     </declare-styleable>
+
+    <!-- Styled colors -->
+    <attr name="listCardBackgroundColor" format="color" />
+    <attr name="listCardBackgroundPressedColor" format="color" />
+    <attr name="listCardRippleColor" format="color" />
 </resources>

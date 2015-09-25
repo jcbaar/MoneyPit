@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/listCardBackgroundSelected">
+    android:color="?attr/listCardRippleColor">
     <item
         android:state_pressed="true"
         android:drawable="@drawable/list_card_background" />
