@@ -48,7 +48,7 @@
     <string name="shortMile">mi</string>
     <string name="days">days</string>
     <string name="general_settings">General settings</string>
-    <string name="estimate_odo_summary">When checked this will estimate the odometer setting when entering a new fill-up.</string>
+    <string name="estimate_odo_summary">When this option is turned on the odometer setting will be estimated when entering a new fill-up.</string>
     <string name="export_import_pictures_summary">When checked this will include the images when importing and exporting vehicles.</string>
     <string name="car_list_averages">Avg. %1$s, %2$s per fill-up.</string>
     <string name="dialog_yes">Yes</string>

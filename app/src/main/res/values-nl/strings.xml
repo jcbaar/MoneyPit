@@ -48,7 +48,7 @@
     <string name="shortMile">mi</string>
     <string name="days">dagen</string>
     <string name="general_settings">Algemene instellingen</string>
-    <string name="estimate_odo_summary">Wanneer aangevinkt zal dit de kilometer teller instelling inschatten bij het invoeren van een nieuwe tankbeurt.</string>
+    <string name="estimate_odo_summary">Wanneer deze optie aan staat wordt de kilometer teller instelling ingeschat bij het invoeren van een nieuwe tankbeurt.</string>
     <string name="export_import_pictures_summary">Wanneer aangevinkt zal dit bij het importeren en exporteren van informatie ook de foto\'s meenemen.</string>
     <string name="car_list_averages">Gem. %1$s, %2$s per tankbeurt.</string>
     <string name="dialog_yes">Ja</string>
@@ -110,7 +110,7 @@
     <string name="error_map_image">Het is niet gelukt de kaart te downloaden.\nControleer uw internet verbinding.</string>
     <string name="location_settings">Lokatie en kaarten</string>
     <string name="allow_location">Lokatie mag worden vastgelegd</string>
-    <string name="allow_location_summary">Wanneer aangevinkt zal de lokatie van elke tankbeurt in de database worden opgeslagen.</string>
+    <string name="allow_location_summary">Wanneer deze optie aan staat zal de lokatie van elke tankbeurt in de database worden opgeslagen.</string>
     <string name="no_location_provider">Er is geen lokatie beschikbaar. De lokatie zal niet worden opgeslagen.</string>
     <string name="misc_settings">Overige</string>
     <string name="clear_map_cache">Het lokale kaart geheugen legen</string>

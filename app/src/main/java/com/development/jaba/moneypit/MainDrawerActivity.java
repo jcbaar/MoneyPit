@@ -2,9 +2,7 @@ package com.development.jaba.moneypit;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,36 +30,13 @@ public class MainDrawerActivity extends BaseActivity {
      */
     private CharSequence mTitle;
 
-    // Storage for camera image URI components
-    private final static String CAPTURED_PHOTO_PATH_KEY = "mCurrentPhotoPath";
-    private final static String CAPTURED_PHOTO_URI_KEY = "mCapturedImageURI";
+    // Storage keys for activity data.
     private final static String CHECKED_ITEM = "mCheckedId";
-
-    // Required for camera operations in order to save the image file on resume.
-    private String mCurrentPhotoPath = null;
-    private Uri mCapturedImageURI = null;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(CHECKED_ITEM, mCheckedId);
-        if (mCurrentPhotoPath != null) {
-            savedInstanceState.putString(CAPTURED_PHOTO_PATH_KEY, mCurrentPhotoPath);
-        }
-        if (mCapturedImageURI != null) {
-            savedInstanceState.putString(CAPTURED_PHOTO_URI_KEY, mCapturedImageURI.toString());
-        }
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
-            mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
-        }
-        if (savedInstanceState.containsKey(CAPTURED_PHOTO_URI_KEY)) {
-            mCapturedImageURI = Uri.parse(savedInstanceState.getString(CAPTURED_PHOTO_URI_KEY));
-        }
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -73,6 +48,11 @@ public class MainDrawerActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
+    /**
+     * Called to create the the activity.
+     *
+     * @param savedInstanceState Previously saved values.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +64,9 @@ public class MainDrawerActivity extends BaseActivity {
         mDrawer.setDrawerListener(mToggle);
         setupDrawerContent(mDrawerView);
 
-
+        // Do we have a previously checked navigation drawer item?
+        // If we do we restore the fragment of that checked item. Otherwise
+        // we setup the first fragment.
         if (savedInstanceState != null) {
             mCheckedId = savedInstanceState.getInt(CHECKED_ITEM);
         }
@@ -116,7 +98,6 @@ public class MainDrawerActivity extends BaseActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment;
 
-        mCheckedId = -1;
         switch (menuItem.getItemId()) {
             case R.id.vehicles:
                 mCheckedId = R.id.vehicles;
@@ -129,19 +110,19 @@ public class MainDrawerActivity extends BaseActivity {
                 setTitle(getString(R.string.backup_restore));
                 break;
             case R.id.settings: {
-                Intent s = new Intent(this, SettingsActivity.class);
-                startActivity(s);
                 if (mDrawer != null) {
                     mDrawer.closeDrawer(mDrawerView);
                 }
+                Intent s = new Intent(this, SettingsActivity.class);
+                startActivity(s);
                 return;
             }
             default: {
-                Intent s = new Intent(this, AboutActivity.class);
-                startActivity(s);
                 if (mDrawer != null) {
                     mDrawer.closeDrawer(mDrawerView);
                 }
+                Intent s = new Intent(this, AboutActivity.class);
+                startActivity(s);
                 return;
             }
         }
