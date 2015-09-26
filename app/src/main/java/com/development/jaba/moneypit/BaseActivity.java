@@ -52,7 +52,11 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // This is an ugly solution but for now it works...
         if (this.getClass() != MainDrawerActivity.class &&
                 Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
+            if (mCurrentTheme.equals(SettingsHelper.THEME_LIGHT)) {
+                getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
+            } else {
+                getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark_Dark));
+            }
         }
     }
 

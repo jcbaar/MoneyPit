@@ -40,14 +40,8 @@
                     android:layout_marginTop="-10dp">
 
                     <ImageButton
-                        android:layout_gravity="right"
-                        android:id="@+id/headerMenu"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="#0000"
-                        android:src="@drawable/card_menu_button_overflow_material"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true" />
+                        style="@style/OverflowMenuButton"
+                        android:id="@+id/headerMenu" />
 
                     <TextView
                         android:id="@+id/carMakeModel"
@@ -87,5 +81,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider" />
+        android:background="?attr/dividerColor" />
 </LinearLayout>

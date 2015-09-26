@@ -1,7 +1,10 @@
 package com.development.jaba.fragments;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
@@ -34,6 +37,9 @@ public class GraphFragment extends BaseDetailsFragment {
     protected List<String> mMonths; // Month names to show on the X-axis.
     MoneyPitDbContext mDbContext; // Database context.
 
+    private int mTextColor = 0,
+            mBackgroundColor = 0,
+            mBarColor = 0;
     /**
      * Gets the list of month names.
      * @return The {@link List<String>} containing the month names.
@@ -62,23 +68,50 @@ public class GraphFragment extends BaseDetailsFragment {
      * @param formatter The {@link ValueFormatter} used to format the values of the chart.
      */
     public void setupChart(CombinedChart chart, ValueFormatter formatter) {
+
+        Context context = getContext();
+
+        int[] attrs = {R.attr.chartAxisTextColor, R.attr.chartBackgroundColor, R.attr.colorPrimary};
+        mTextColor = context.getResources().getColor(android.R.color.primary_text_light);
+        mBackgroundColor = context.getResources().getColor(android.R.color.background_light);
+        mBarColor = context.getResources().getColor(R.color.primaryColor);
+        // Get out our attributes.
+        if (attrs != null) {
+            TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs);
+
+            try {
+                mTextColor = a.getColor(0, mTextColor);
+                mBackgroundColor = a.getColor(1, mBackgroundColor);
+                mBarColor = a.getColor(2, mBarColor);
+            } catch (Exception e) {
+                Log.e("setupChart", "Unable to load attributes");
+            } finally {
+                a.recycle();
+            }
+        }
+
         chart.setDescription(null);
         chart.setDrawValueAboveBar(true);
         chart.setPinchZoom(false);
         chart.setScaleXEnabled(false);
         chart.setScaleYEnabled(false);
         chart.getAxisRight().setEnabled(false);
+        chart.setBackgroundColor(mBackgroundColor);
+        chart.setGridBackgroundColor(mBackgroundColor);
+        chart.getLegend().setTextColor(mTextColor);
 
         XAxis xa = chart.getXAxis();
         xa.setPosition(XAxis.XAxisPosition.BOTTOM);
         xa.setDrawGridLines(false);
         xa.setSpaceBetweenLabels(2);
         xa.setLabelsToSkip(0);
+        xa.setTextColor(mTextColor);
 
         YAxis ya = chart.getAxisLeft();
         ya.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         ya.setDrawGridLines(false);
         ya.setValueFormatter(formatter);
+        ya.setTextColor(mTextColor);
     }
 
     /**
@@ -103,7 +136,7 @@ public class GraphFragment extends BaseDetailsFragment {
             // First the values as a BarChart.
             BarData bd = new BarData();
             BarDataSet bds = new BarDataSet(values, res.getString(legendResId));
-            bds.setColor(getResources().getColor(R.color.primaryColor));
+            bds.setColor(mBarColor);
             bd.addDataSet(bds);
 
             // Setup both the BarChart data and the LineChart data.
@@ -113,6 +146,7 @@ public class GraphFragment extends BaseDetailsFragment {
 
             // Set and animate in view.
             chart.setData(cd);
+            cd.setValueTextColor(mTextColor);
             chart.animateY(200);
         }
     }

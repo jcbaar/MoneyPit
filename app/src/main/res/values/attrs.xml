@@ -21,8 +21,27 @@
         <attr name="cpvStartDelay" format="integer" />
     </declare-styleable>
 
-    <!-- Styled colors -->
+    <!-- Styled attributes -->
+    <attr name="chartAxisTextColor" format="color" />
+    <attr name="chartBackgroundColor" format="color" />
+
     <attr name="listCardBackgroundColor" format="color" />
     <attr name="listCardBackgroundPressedColor" format="color" />
     <attr name="listCardRippleColor" format="color" />
+    <attr name="listCardPrimaryTextColor" format="color" />
+    <attr name="listCardSecondaryTextColor" format="color" />
+
+    <attr name="yearSpinnerBackgroundColor" format="color" />
+    <attr name="yearSpinnerTextColor" format="color" />
+
+    <attr name="actionBarColor" format="color" />
+    <attr name="actionBarTextColor" format="color" />
+    <attr name="actionBarSelectedTextColor" format="color" />
+    <attr name="actionBarIndicatorColor" format="color" />
+
+    <attr name="dividerColor" format="color" />
+
+    <attr name="toolbarPopupTheme" format="reference" />
+
+    <attr name="overflowButton" format="reference" />
 </resources>
