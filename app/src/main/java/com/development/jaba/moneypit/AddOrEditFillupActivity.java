@@ -122,8 +122,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
             setTitle(getString(R.string.title_create_fillup));
 
             // If settings tell us to, estimate the odometer setting.
-            SettingsHelper settings = new SettingsHelper(this);
-            if (settings.getEstimateOdometer()) {
+            if (getSettings().getBooleanValue(SettingsHelper.PREF_ESTIMATE_ODOMETER, true)) {
                 Fillup before = mSurroundingFillups.getBefore();
                 if (before != null) {
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
@@ -133,7 +132,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
             // When allowed to do so we try to also record the
             // location of the fill-up.
-            if (settings.getAllowLocation()) {
+            if (getSettings().getBooleanValue(SettingsHelper.PREF_ALLOW_LOCATION, false)) {
                 mLocHelp = new LocationTracker(this);
                 mLocHelp.startLocationTracking();
             }

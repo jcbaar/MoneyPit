@@ -149,5 +149,7 @@
     <string name="model_create_failed">Niet gelukt het basis data model te maken. App afsluiten...</string>
     <string name="drawer_open">Open navigatie scherm</string>
     <string name="drawer_close">Sluit navigatie scherm</string>
+    <string name="settings_theme">Thema</string>
+    <string name="settings_theme_summary">Kies het thema van de app.</string>
 
 </resources>

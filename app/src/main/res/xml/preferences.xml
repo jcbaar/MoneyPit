@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/general_settings">
+        <ListPreference
+            android:key="selected_theme"
+            android:title="@string/settings_theme"
+            android:summary="@string/settings_theme_summary"
+            android:entries="@array/theme"
+            android:entryValues="@array/themeValues" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="estimate_odometer"
@@ -13,8 +19,6 @@
             android:key="allow_location"
             android:title="@string/allow_location"
             android:summary="@string/allow_location_summary" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/misc_settings">
         <Preference
             android:title="@string/clear_map_cache"
             android:summary="@string/clear_map_cache_summary"

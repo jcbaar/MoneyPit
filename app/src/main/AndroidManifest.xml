@@ -47,12 +47,12 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings">
 
+        </activity>
         <activity
             android:name=".TotalSummaryActivity"
             android:label="@string/title_activity_totalsummary" />
-
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about">

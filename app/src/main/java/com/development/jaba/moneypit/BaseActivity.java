@@ -1,6 +1,7 @@
 package com.development.jaba.moneypit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -9,26 +10,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.development.jaba.utilities.SettingsHelper;
+
 /**
  * A simple {@link AppCompatActivity} derived class that serves as a base
  * class for the activities. It handles some generic things all activities share like the
  * {@link android.support.v7.widget.Toolbar}.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Toolbar mToolbar;
+    private SettingsHelper mSettings;
+    private boolean mThemeChanged = false;
+    private String mCurrentTheme = SettingsHelper.THEME_LIGHT;
 
-    /**
-     * Sets up the {@link android.support.v7.widget.Toolbar} with the ID R.id.app_bar
-     * as the AppBar.
-     * <p/>
-     * It uses {@see com.development.jaba.moneypit.BaseActivity#getLayoutResource} to know which
-     * layout to use as content view.
-     *
-     * @param savedInstanceState Previously saved values.
-     */
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSettings = new SettingsHelper(this);
+        mSettings.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        mCurrentTheme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
+        switch (mCurrentTheme) {
+            case SettingsHelper.THEME_DARK:
+                setTheme(R.style.AppThemeDark);
+                break;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -86,5 +92,76 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Gets the {@link SettingsHelper} instance for the activity.
+     *
+     * @return The {@link SettingsHelper} instance.
+     */
+    public SettingsHelper getSettings() {
+        return mSettings;
+    }
+
+    /**
+     * When resumed we check to see whether or not we are marked for
+     * reload (theme changed).
+     */
+    @Override
+    protected void onStart() {
+        if (mThemeChanged) {
+            reloadActivity();
+        }
+        super.onStart();
+    }
+
+    /**
+     * When resumed we check to see whether or not we are marked for
+     * reload (theme changed).
+     */
+    @Override
+    protected void onResume() {
+        if (mThemeChanged) {
+            reloadActivity();
+        }
+        super.onResume();
+    }
+
+    /**
+     * Reloads the current activity (used for theme changes).
+     */
+    private void reloadActivity() {
+        Class<?> cls = getClass();
+        finish();
+        Intent intent = new Intent(this, cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    /**
+     * Listens for changes on the theme settings. When the theme is changed we mark the activity
+     * for reloading when started or resumed. If the current activity is the {@link SettingsActivity}
+     * we reload it immediately.
+     *
+     * @param sharedPreferences The {@link SharedPreferences} instance.
+     * @param key               The key of the changed setting.
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // Was it the theme that changed?
+        if (key.equals(SettingsHelper.PREF_THEME)) {
+            // Paranoia? Make sure the setting actually did change.
+            String theme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
+            if (!theme.equals(mCurrentTheme)) {
+                // If this is the SettingsActivity we reload now. Otherwise we
+                // mark the activity for realod after resume or start.
+                if (getClass() == SettingsActivity.class) {
+                    reloadActivity();
+                } else {
+                    mThemeChanged = true;
+                }
+            }
+        }
     }
 }

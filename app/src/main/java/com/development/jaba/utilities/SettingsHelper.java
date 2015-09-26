@@ -13,7 +13,10 @@ public class SettingsHelper {
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
             PREF_ALLOW_LOCATION = "allow_location",
-            PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+            PREF_THEME = "selected_theme";
+
+    public final static String THEME_LIGHT = "light",
+            THEME_DARK = "dark";
 
     /**
      * {@link SharedPreferences} reference.
@@ -27,42 +30,46 @@ public class SettingsHelper {
      */
     public SettingsHelper(Context context) {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Setup defaults when they do not yet exist.
+        if (!mPreferences.contains(PREF_ESTIMATE_ODOMETER)) {
+            mPreferences.edit().putBoolean(PREF_ESTIMATE_ODOMETER, true).apply();
+        }
+        if (!mPreferences.contains(PREF_ALLOW_LOCATION)) {
+            mPreferences.edit().putBoolean(PREF_ALLOW_LOCATION, false).apply();
+        }
+        if (!mPreferences.contains(PREF_THEME)) {
+            mPreferences.edit().putString(PREF_THEME, THEME_LIGHT).apply();
+        }
     }
 
     /**
-     * Gets the PREF_ESTIMATE_ODOMETER setting.
-     *
-     * @return The value of the PREF_ESTIMATE_ODOMETER setting.
+     * Gets the {@link SharedPreferences} instance.
+     * @return The {@link SharedPreferences} instance.
      */
-    public boolean getEstimateOdometer() {
-        return mPreferences.getBoolean(PREF_ESTIMATE_ODOMETER, true);
+    public SharedPreferences getSharedPreferences() {
+        return mPreferences;
     }
 
     /**
-     * Gets the PREF_USER_LEARNED_DRAWER settings.
+     * Gets the given boolean value from the preferences.
      *
-     * @return The value of the PREF_USER_LEARNED_DRAWER setting.
+     * @param key          The key under which the value is stored.
+     * @param defaultValue The default value if it is not present in the preferences.
+     * @return The boolean value or it's default if not set yet..
      */
-    public boolean getUserLearnedDrawer() {
-        return mPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+    public boolean getBooleanValue(String key, boolean defaultValue) {
+        return mPreferences.getBoolean(key, false);
     }
 
     /**
-     * Sets the value of the PREF_USER_LEARNED_DRAWER setting.
+     * Saves the given boolean value to the preferences.
      *
-     * @param value The value the PREF_USER_LEARNED_DRAWER setting must be set to.
+     * @param key   The key under which the value is saved.
+     * @param value The boolean value to save to the preferences.
      */
-    public void setUserLearnedDrawer(boolean value) {
-        mPreferences.edit().putBoolean(PREF_USER_LEARNED_DRAWER, value).apply();
-    }
-
-    /**
-     * Gets the PREF_ALLOW_LOCATION settings.
-     *
-     * @return The value of the PREF_ALLOW_LOCATION setting.
-     */
-    public boolean getAllowLocation() {
-        return mPreferences.getBoolean(PREF_ALLOW_LOCATION, false);
+    public void setBooleanValue(String key, boolean value) {
+        mPreferences.edit().putBoolean(key, value).apply();
     }
 
     /**
@@ -84,5 +91,26 @@ public class SettingsHelper {
      */
     public void setIntegerValue(String key, int value) {
         mPreferences.edit().putInt(key, value).apply();
+    }
+
+    /**
+     * Gets the given string value from the preferences.
+     *
+     * @param key          The key under which the value is stored.
+     * @param defaultValue The default value if it is not present in the preferences.
+     * @return The string value or it's default if not set yet..
+     */
+    public String getStringValue(String key, String defaultValue) {
+        return mPreferences.getString(key, defaultValue);
+    }
+
+    /**
+     * Saves the given string value to the preferences.
+     *
+     * @param key   The key under which the value is saved.
+     * @param value The String value to save to the preferences.
+     */
+    public void setStringValue(String key, String value) {
+        mPreferences.edit().putString(key, value).apply();
     }
 }
