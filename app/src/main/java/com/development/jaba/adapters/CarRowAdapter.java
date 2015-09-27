@@ -1,19 +1,19 @@
 package com.development.jaba.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
+import com.development.jaba.utilities.GetCarImageHelper;
+import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,13 +70,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         final Car item = mData.get(position);
 
         // Replace the default picture if one is provided from the database.
-        Bitmap bm = item.getImage();
-        if (bm != null) {
-            vh.getImage().setImageBitmap(bm);
-        }
-        else {
-            vh.getImage().setImageDrawable(mContext.getResources().getDrawable(R.drawable.nopicture));
-        }
+        new GetCarImageHelper(mContext, vh.getImage(), item, false).execute();
 
         // Setup the View with the item data.
         vh.getMake().setText(item.toString());
@@ -135,7 +129,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
     public class CarRowViewHolder extends BaseViewHolder {
 
         private final ImageButton mMenuButton;
-        private final ImageView mImage;
+        private final RecyclingImageView mImage;
         private final TextView mMake, mBuild, mAverage;
 
         /**
@@ -148,7 +142,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         public CarRowViewHolder(Context context, View itemView) {
             super(context, itemView);
             mMenuButton = (ImageButton) itemView.findViewById(R.id.headerMenu);
-            mImage = (ImageView) itemView.findViewById(R.id.carPicture);
+            mImage = (RecyclingImageView) itemView.findViewById(R.id.carPicture);
             mMake = (TextView) itemView.findViewById(R.id.carMakeModel);
             mBuild = (TextView) itemView.findViewById(R.id.carBuildYear);
             mAverage = (TextView) itemView.findViewById(R.id.carAverages);
@@ -157,7 +151,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete_summary));
         }
 
-        public ImageView getImage() {
+        public RecyclingImageView getImage() {
             return mImage;
         }
 

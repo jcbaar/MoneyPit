@@ -105,7 +105,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         View layout = inflater.inflate(R.layout.year_spinner, null);
         mYearSpinner = (Spinner) layout.findViewById(R.id.yearSpinner);
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.RIGHT;
+        layoutParams.gravity = Gravity.END;
         getToolbar().addView(layout, 0, layoutParams);
         setupYears();
 

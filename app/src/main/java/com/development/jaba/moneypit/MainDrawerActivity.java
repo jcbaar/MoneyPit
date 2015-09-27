@@ -2,14 +2,16 @@ package com.development.jaba.moneypit;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -60,7 +62,13 @@ public class MainDrawerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         LinearLayout hi = (LinearLayout) findViewById(R.id.headerBackground);
-        hi.setBackgroundDrawable(UtilsHelper.getTintedDrawable(getResources(), R.drawable.background_header, getColorPrimary()));
+        Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
+        if (Build.VERSION.SDK_INT >= 16) {
+            hi.setBackground(drawable);
+        } else {
+            //noinspection deprecation
+            hi.setBackgroundDrawable(drawable);
+        }
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerView = (NavigationView) findViewById(R.id.navigation_drawer);
@@ -161,7 +169,7 @@ public class MainDrawerActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mDrawer.isDrawerOpen(Gravity.LEFT)) {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             restoreActionBar();
             return true;
         }

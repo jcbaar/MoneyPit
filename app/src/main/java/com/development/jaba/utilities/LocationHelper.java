@@ -1,10 +1,13 @@
 package com.development.jaba.utilities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 /**
@@ -35,7 +38,9 @@ public class LocationHelper implements LocationListener {
      */
     public void stopLocationTracking() {
         if (mLocationManager != null && mTrackingStarted) {
-            mLocationManager.removeUpdates(this);
+            if (checkSelfPermission()) {
+                mLocationManager.removeUpdates(this);
+            }
         }
     }
 
@@ -44,28 +49,31 @@ public class LocationHelper implements LocationListener {
      */
     public void startLocationTracking() {
         try {
-            if (!mGpsEnabled && !mNetworkEnabled) {
-                // There is no location provider available. No-op for now.
-                // Let it fail silently...
-                //Toast.makeText(mContext, mContext.getString(R.string.no_location_provider), Toast.LENGTH_SHORT).show();
-            } else {
-                if (mNetworkEnabled) {
-                    mLocationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            0, 0, this);
-                    mTrackingStarted = true;
-                }
+            if (checkSelfPermission()) {
+                if (mGpsEnabled || mNetworkEnabled) {
+                    if (mNetworkEnabled) {
+                        mLocationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                0, 0, this);
+                        mTrackingStarted = true;
+                    }
 
-                if (mGpsEnabled) {
-                    mLocationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            0, 0, this);
-                    mTrackingStarted = true;
+                    if (mGpsEnabled) {
+                        mLocationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                0, 0, this);
+                        mTrackingStarted = true;
+                    }
                 }
             }
         } catch (Exception e) {
             Log.e("LocationTracking", e.getMessage());
         }
+    }
+
+    private boolean checkSelfPermission() {
+        return !(ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
     }
 
     /**

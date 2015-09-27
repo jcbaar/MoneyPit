@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +46,7 @@ public class CircularProgressView extends View {
                     0, 0);
 
             try {
-                mColor = a.getColor(R.styleable.CircularProgressView_cpvColor, context.getResources().getColor(R.color.primaryColor));
+                mColor = a.getColor(R.styleable.CircularProgressView_cpvColor, ContextCompat.getColor(context, R.color.primaryColor));
                 mStartDelay = a.getInteger(R.styleable.CircularProgressView_cpvStartDelay, 0);
             } catch (Exception e) {
                 Log.e(TAG, "Unable to load attributes");
@@ -96,7 +98,7 @@ public class CircularProgressView extends View {
      * @param visibility  The new visibility state.
      */
     @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         if (mDrawable != null) {
             if (visibility == VISIBLE) {

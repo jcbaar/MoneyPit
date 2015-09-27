@@ -33,7 +33,9 @@ public class BaseDetailsFragment extends Fragment {
         BaseDetailsFragment fragment = null;
         try {
             fragment = (BaseDetailsFragment) c.newInstance();
-        } catch (java.lang.InstantiationException | IllegalAccessException e) {
+        } catch (java.lang.InstantiationException e) {
+            Log.e("BaseDetailsFragment", e.getMessage());
+        } catch (IllegalAccessException e) {
             Log.e("BaseDetailsFragment", e.getMessage());
         }
         if (fragment != null) {

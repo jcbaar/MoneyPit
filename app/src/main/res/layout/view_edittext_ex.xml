@@ -20,11 +20,11 @@
         android:id="@+id/editEx_charCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
+        android:layout_gravity="top|end"
         android:layout_alignEnd="@id/editEx_wrapper"
         android:layout_alignRight="@id/editEx_wrapper"
         android:paddingRight="4dp"
         android:text="0/50"
-        android:textSize="11sp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

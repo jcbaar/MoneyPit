@@ -268,6 +268,6 @@ public class LinearLayoutEx extends LinearLayout {
      * state has changed.
      */
     public interface ExpansionStateListener {
-        public void OnExpansionStateChanged(boolean isExpanded);
+        void OnExpansionStateChanged(boolean isExpanded);
     }
 }

@@ -18,7 +18,7 @@
 
         <TableRow>
 
-            <ImageView
+            <com.development.jaba.view.RecyclingImageView
                 android:id="@+id/carPicture"
                 android:layout_width="96dp"
                 android:layout_height="54dp"

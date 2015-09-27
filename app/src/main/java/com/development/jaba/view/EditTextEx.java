@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -78,7 +79,7 @@ public class EditTextEx extends LinearLayout {
         // changes will screw things up.
         mEditor.setId(UtilsHelper.generateViewId());
 
-        mCharCount.setTextColor(getResources().getColor(R.color.accentColor));
+        mCharCount.setTextColor(ContextCompat.getColor(context, R.color.accentColor));
 
         // Get the attributes.
         if (attrs != null) {
@@ -114,7 +115,7 @@ public class EditTextEx extends LinearLayout {
 
         // Setup the views.
         mWrapper.setHint(mHintString);
-        mCharCount.setTextColor(getResources().getColor(R.color.accentColor));
+        mCharCount.setTextColor(ContextCompat.getColor(context, R.color.accentColor));
 
         setCharCount();
 
@@ -174,7 +175,7 @@ public class EditTextEx extends LinearLayout {
             }
         }
         else {
-            if(mEditor.hasFocus() == false) {
+            if (!mEditor.hasFocus()) {
                 if(mCharCount.getVisibility() != View.GONE) {
                     mCharCount.setVisibility(View.GONE);
                 }

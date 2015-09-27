@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,7 +22,9 @@ import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.ImageDownloadHelperTask;
+import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.LinearLayoutEx;
+import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -96,14 +99,11 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      * @param lat The latitude of the center position of the static map.
      * @param lon The longitude of the center position of the static map.
      */
-    private void showMap(ImageView map, double lat, double lon) {
+    private void showMap(RecyclingImageView map, double lat, double lon) {
         map.setVisibility(View.VISIBLE);
 
         String slat = String.valueOf(lat),
                 slon = String.valueOf(lon);
-
-        // Default to not loaded image.
-        map.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_loadfail));
 
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -114,9 +114,10 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                 .appendQueryParameter("center", slat + "," + slon)
                 .appendQueryParameter("zoom", "16")
                 .appendQueryParameter("size", "400x225")
-                .appendQueryParameter("markers", "color:" + String.format("0x%06X", 0xFFFFFF & mContext.getResources().getColor(R.color.accentColor)) + "|label:*|" + slat + "," + slon);
+                .appendQueryParameter("markers", "color:" + String.format("0x%06X", 0xFFFFFF & ContextCompat.getColor(mContext, R.color.accentColor)) + "|label:*|" + slat + "," + slon);
 
         String cacheFilename = slat + "_" + slon;
+
         new GetStaticMap(map, "/MoneyPit/mapcache/").execute(builder.toString(), cacheFilename);
     }
 
@@ -145,10 +146,10 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
 
         // When the fill-up is a partial fill-up we mark this by giving the fill-up
         // icon the accent color.
-        Drawable d = mContext.getResources().getDrawable(R.drawable.ic_local_gas_station_grey600_24dp);
+        Drawable d = ContextCompat.getDrawable(mContext, R.drawable.ic_local_gas_station_grey600_24dp);
         if (!item.getFullTank()) {
             PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
-            d.mutate().setColorFilter(mContext.getResources().getColor(R.color.accentColor), mode);
+            d.mutate().setColorFilter(ContextCompat.getColor(mContext, R.color.accentColor), mode);
         }
         vh.getFull().setImageDrawable(d);
 
@@ -286,7 +287,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                         mExpandedItems.add(String.valueOf(position));
 
                         // Load the map position only when we are expanding.
-                        ImageView map = (ImageView) lle.findViewById(R.id.map);
+                        RecyclingImageView map = (RecyclingImageView) lle.findViewById(R.id.map);
                         if (map != null) {
                             showMap(map, item.getLatitude(), item.getLongitude());
                         }
@@ -310,7 +311,8 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         private final TextView mDate, mOdometer, mDistance,
                 mDays, mTotalCost, mVolume, mCost, mEconomy, mNoteContents;
         private final ImageButton mMenuButton;
-        private final ImageView mLocation, mNote, mFull, mMap;
+        private final ImageView mLocation, mNote, mFull;
+        private final RecyclingImageView mMap;
         private final LinearLayoutEx mExpandable;
 
         /**
@@ -337,7 +339,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             mFull = (ImageView) itemView.findViewById(R.id.full);
             mExpandable = (LinearLayoutEx) itemView.findViewById(R.id.animateView);
             mNoteContents = (TextView) itemView.findViewById(R.id.noteContent);
-            mMap = (ImageView) itemView.findViewById(R.id.map);
+            mMap = (RecyclingImageView) itemView.findViewById(R.id.map);
 
             // Attach a PopupMenu to the menu button.
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));
@@ -395,7 +397,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             return mNoteContents;
         }
 
-        public ImageView getMap() {
+        public RecyclingImageView getMap() {
             return mMap;
         }
     }
@@ -430,9 +432,11 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
 
+            mImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_loadfail));
             if (result != null) {
-                mImageView.setImageBitmap(result);
+                UtilsHelper.blendInImage(mContext, mImageView, result);
             } else {
+                // Default to not loaded image.
                 Toast.makeText(mContext, mContext.getResources().getString(R.string.error_map_image), Toast.LENGTH_SHORT).show();
             }
         }

@@ -1,12 +1,20 @@
 package com.development.jaba.utilities;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.development.jaba.bitmaps.RecyclingBitmapDrawable;
+import com.development.jaba.moneypit.R;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,19 +54,40 @@ public class UtilsHelper {
      * Generates a tinted {@link Drawable} from the given drawable resource and color.
      * Note that this will work best if the original drawable is grey-scaled.
      *
-     * @param res           The {@link Resources} instance to get the {@link Drawable} from.
+     * @param context       The {@link Context} instance to get the {@link Drawable} from.
      * @param drawableResId The resource ID of the {@link Drawable}
      * @param color         The color to tint the {@link Drawable} with.
      * @return The tinted {@link Drawable} or null in case of an error.
      */
-    public static Drawable getTintedDrawable(Resources res,
+    public static Drawable getTintedDrawable(Context context,
                                              @DrawableRes int drawableResId,
                                              int color) {
-        Drawable drawable = res.getDrawable(drawableResId);
+        Drawable drawable = ContextCompat.getDrawable(context, drawableResId);
         if (drawable != null) {
             drawable.setColorFilter(color, PorterDuff.Mode.OVERLAY);
         }
         return drawable;
     }
 
+    /**
+     * Blends in a {@link Bitmap} in the given {@link ImageView}.
+     *
+     * @param context The {@link Context}
+     * @param view    The {@link ImageView}
+     * @param bitmap  The {@link Bitmap}
+     */
+    public static void blendInImage(Context context, ImageView view, Bitmap bitmap) {
+        view.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_loadfail));
+        if (bitmap != null) {
+            // Transition drawable with a transparent drawable and the final drawable
+            final TransitionDrawable td =
+                    new TransitionDrawable(new Drawable[]{
+                            new ColorDrawable(0),
+                            new RecyclingBitmapDrawable(context.getResources(), bitmap)
+                    });
+            // Set background to loading bitmap
+            view.setImageDrawable(td);
+            td.startTransition(200);
+        }
+    }
 }

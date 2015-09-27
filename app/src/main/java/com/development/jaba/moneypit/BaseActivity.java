@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,9 +53,9 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // Pre-load some of the theme colors. This way we have easy access
         // to them at run time.
         int[] attrs = {R.attr.colorPrimary, R.attr.colorPrimaryDark, R.attr.colorAccent};
-        mColorPrimary = getResources().getColor(R.color.primaryColor);
-        mColorPrimaryDark = getResources().getColor(R.color.primaryColorDark);
-        mColorAccent = getResources().getColor(R.color.accentColor);
+        mColorPrimary = ContextCompat.getColor(this, R.color.primaryColor);
+        mColorPrimaryDark = ContextCompat.getColor(this, R.color.primaryColorDark);
+        mColorAccent = ContextCompat.getColor(this, R.color.accentColor);
 
         // Get out our attributes.
         if (attrs != null) {

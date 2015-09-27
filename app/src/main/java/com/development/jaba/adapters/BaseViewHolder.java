@@ -70,7 +70,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     @Override
     public void onClick(View v) {
         if(mClickListener != null) {
-            mClickListener.onRecyclerItemClicked(v, getPosition(), false);
+            mClickListener.onRecyclerItemClicked(v, getAdapterPosition(), false);
         }
     }
 
@@ -82,7 +82,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
      */
     @Override
     public boolean onLongClick(View v) {
-        return mClickListener != null && mClickListener.onRecyclerItemClicked(v, getPosition(), true);
+        return mClickListener != null && mClickListener.onRecyclerItemClicked(v, getAdapterPosition(), true);
     }
 
     /**
@@ -165,7 +165,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             public boolean onMenuItemClick(MenuItem item) {
                 mMenuView.setSelected(false);
                 if(mClickListener != null) {
-                    mClickListener.onRecyclerItemMenuSelected(getPosition(), item);
+                    mClickListener.onRecyclerItemMenuSelected(getAdapterPosition(), item);
                 }
                 return false;
             }

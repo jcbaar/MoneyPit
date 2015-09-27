@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.development.jaba.database.MoneyPitDbContext;
@@ -72,9 +73,9 @@ public class GraphFragment extends BaseDetailsFragment {
         Context context = getContext();
 
         int[] attrs = {R.attr.chartAxisTextColor, R.attr.chartBackgroundColor, R.attr.colorPrimary};
-        mTextColor = context.getResources().getColor(android.R.color.primary_text_light);
-        mBackgroundColor = context.getResources().getColor(android.R.color.background_light);
-        mBarColor = context.getResources().getColor(R.color.primaryColor);
+        mTextColor = ContextCompat.getColor(context, android.R.color.primary_text_light);
+        mBackgroundColor = ContextCompat.getColor(context, android.R.color.background_light);
+        mBarColor = ContextCompat.getColor(context, R.color.primaryColor);
         // Get out our attributes.
         if (attrs != null) {
             TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs);
@@ -177,7 +178,7 @@ public class GraphFragment extends BaseDetailsFragment {
         }
 
         LineDataSet lds = new LineDataSet(avgData, getResources().getString(R.string.graph_average));
-        lds.setColor(getResources().getColor(R.color.accentColor));
+        lds.setColor(ContextCompat.getColor(getActivity(), R.color.accentColor));
         lds.setDrawValues(false);
         lds.setDrawCircles(false);
         lds.setLineWidth(2);

@@ -141,13 +141,13 @@
     <string name="restore_warning">Restoring a backup will overwrite the current database. All information will be lost.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;&lt;i&gt;This can not be undone!&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Are you sure you want to continue?</string>
     <string name="restore_error_get_file">Unable to open the backup file.</string>
     <string name="drive_restore_success">The selected backup has been restored successfully.</string>
-    <string name="upto">upto</string>
-    <string name="navigate_to">Navigate to...</string>
+    <string name="upto">up to</string>
+    <string name="navigate_to">Navigate to…</string>
     <string name="error_no_camera">This device does not have a camera.</string>
-    <string name="error_save_picture">There was a problem saving the photo...</string>
+    <string name="error_save_picture">There was a problem saving the photo…</string>
     <string name="title_activity_totalsummary">Total vehicle summary</string>
     <string name="no_summary_data">No data to summarize or not enough data to summarize. At least 2 fill-ups must be present for the vehicle in the given time range to be able to summarize the information.</string>
-    <string name="model_create_failed">Failed to create the basic data model. Exiting app...</string>
+    <string name="model_create_failed">Failed to create the basic data model. Exiting app…</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="settings_theme">Theme</string>

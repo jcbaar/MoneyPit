@@ -171,7 +171,7 @@ public class AddOrEditCarActivity extends BaseActivity {
             PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
 
             // TODO: Using R.color.abc_primary_text_material_dark will not work properly when styling is applied.
-            d.mutate().setColorFilter(getResources().getColor(R.color.abc_primary_text_material_dark), mode);
+            d.mutate().setColorFilter(ContextCompat.getColor(this, R.color.abc_primary_text_material_dark), mode);
             button.setImageDrawable(d);
         }
     }

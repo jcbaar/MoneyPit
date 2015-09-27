@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/settings_margin">
 
-            <ImageView
+            <com.development.jaba.view.RecyclingImageView
                 android:id="@+id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

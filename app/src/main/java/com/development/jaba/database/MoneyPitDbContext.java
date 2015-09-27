@@ -12,8 +12,8 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
+import com.development.jaba.moneypit.BuildConfig;
 import com.development.jaba.moneypit.R;
-import com.development.jaba.utilities.ConditionalHelper;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.github.mikephil.charting.data.BarEntry;
@@ -116,7 +116,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
         }
 
         // Then, if debug data is turned on, create some data.
-        if (ConditionalHelper.DebugData) {
+        if (BuildConfig.DEBUG) {
             try {
                 db.beginTransaction();
                 db.execSQL("INSERT INTO Car([Make], [Model], [Picture], [LicensePlate], [BuildYear], [Currency], [VolumeUnit], [DistanceUnit]) VALUES('Peugeot','207',null,'98-TX-NV',2007,'€',1,1);");

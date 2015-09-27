@@ -1,13 +1,11 @@
 package com.development.jaba.fragments;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,6 +17,8 @@ import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
+import com.development.jaba.utilities.GetCarImageHelper;
+import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Date;
 import java.util.List;
@@ -52,23 +52,17 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         mNoData = (TextView) view.findViewById(R.id.summary_nodata);
 
         if (mCar != null) {
-            ImageView image = (ImageView) view.findViewById(R.id.image);
+            RecyclingImageView image = (RecyclingImageView) view.findViewById(R.id.image);
 
-            Bitmap picture = mCar.getImage();
-            if (picture != null) {
-                image.setVisibility(View.VISIBLE);
-                image.setImageBitmap(picture);
-            } else {
-                image.setVisibility(View.GONE);
-            }
+            new GetCarImageHelper(getActivity(), image, mCar, true).execute();
             summarize();
         }
         return view;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         summarize();
     }
 
