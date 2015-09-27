@@ -6,13 +6,12 @@
     </style>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="listCardBackgroundColor">@color/listCardBackground</item>
-        <item name="listCardBackgroundPressedColor">@color/listCardBackgroundSelected</item>
         <item name="listCardRippleColor">@color/ripple_material_light</item>
         <item name="yearSpinnerBackgroundColor">@color/background_material_light</item>
         <item name="yearSpinnerTextColor">@color/abc_primary_text_material_light</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="dividerColor">@color/dividerColorLight</item>
+        <item name="listCardBackground">@drawable/list_card_states</item>
         <item name="listCardPrimaryTextColor">@color/listCardText</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryText</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_light</item>
@@ -22,6 +21,7 @@
         <item name="actionBarTextColor">@color/secondary_text_default_material_dark</item>
         <item name="actionBarSelectedTextColor">@color/primary_text_default_material_dark</item>
         <item name="actionBarIndicatorColor">@color/accentColor</item>
+        <item name="navigationItem">@color/drawer_item</item>
 
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColorDark</item>
@@ -42,13 +42,12 @@
     </style>
 
     <style name="AppThemeDark.Base" parent="Theme.AppCompat.NoActionBar">
-        <item name="listCardBackgroundColor">@color/listCardBackgroundDark</item>
-        <item name="listCardBackgroundPressedColor">@color/listCardBackgroundSelected</item>
         <item name="listCardRippleColor">@color/ripple_material_dark</item>
         <item name="yearSpinnerBackgroundColor">@color/background_material_dark</item>
         <item name="yearSpinnerTextColor">@color/abc_primary_text_material_dark</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="dividerColor">@color/dividerColorDark</item>
+        <item name="listCardBackground">@drawable/list_card_states_dark</item>
         <item name="listCardPrimaryTextColor">@color/listCardTextDark</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryTextDark</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_dark</item>
@@ -58,6 +57,7 @@
         <item name="actionBarTextColor">@color/secondary_text_default_material_dark</item>
         <item name="actionBarSelectedTextColor">@color/primary_text_default_material_dark</item>
         <item name="actionBarIndicatorColor">@color/accentColor</item>
+        <item name="navigationItem">@color/drawer_item_dark</item>
 
         <item name="colorPrimary">@color/primaryColor_Dark</item>
         <item name="colorPrimaryDark">@color/primaryColorDark_Dark</item>

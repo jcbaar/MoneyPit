@@ -2,12 +2,14 @@ package com.development.jaba.moneypit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.development.jaba.utilities.SettingsHelper;
@@ -23,20 +25,57 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     private SettingsHelper mSettings;
     private boolean mThemeChanged = false;
     private String mCurrentTheme = SettingsHelper.THEME_LIGHT;
+    private int mColorPrimary,
+            mColorPrimaryDark,
+            mColorAccent;
 
+    /**
+     * Callback which is called when the activity is created.
+     *
+     * @param savedInstanceState The {@link Bundle} with state information or null.
+     */
     protected void onCreate(Bundle savedInstanceState) {
+
+        // When the settings say we are running the dark theme we
+        // switch to that theme now. The light theme is the default.
         mSettings = new SettingsHelper(this);
         mSettings.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         mCurrentTheme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
         switch (mCurrentTheme) {
             case SettingsHelper.THEME_DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
+            default:
+                break;
         }
 
+        // Pre-load some of the theme colors. This way we have easy access
+        // to them at run time.
+        int[] attrs = {R.attr.colorPrimary, R.attr.colorPrimaryDark, R.attr.colorAccent};
+        mColorPrimary = getResources().getColor(R.color.primaryColor);
+        mColorPrimaryDark = getResources().getColor(R.color.primaryColorDark);
+        mColorAccent = getResources().getColor(R.color.accentColor);
+
+        // Get out our attributes.
+        if (attrs != null) {
+            TypedArray a = getTheme().obtainStyledAttributes(attrs);
+
+            try {
+                mColorPrimary = a.getColor(0, mColorPrimary);
+                mColorPrimaryDark = a.getColor(1, mColorPrimaryDark);
+                mColorAccent = a.getColor(2, mColorAccent);
+            } catch (Exception e) {
+                Log.e("CreateMainActivity", "Unable to load attributes");
+            } finally {
+                a.recycle();
+            }
+        }
+
+        // Build the activity.
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
+
+        // Setup the toolbar.
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -52,28 +91,8 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // This is an ugly solution but for now it works...
         if (this.getClass() != MainDrawerActivity.class &&
                 Build.VERSION.SDK_INT >= 21) {
-            if (mCurrentTheme.equals(SettingsHelper.THEME_LIGHT)) {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark));
-            } else {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.primaryColorDark_Dark));
-            }
+            getWindow().setStatusBarColor(mColorPrimaryDark);
         }
-    }
-
-    /**
-     * Sub-classes must aoverride this to supply the correct layout ID.
-     *
-     * @return The layout ID to inflate as content view.
-     */
-    protected abstract int getLayoutResource();
-
-    /**
-     * Gets a reference to the {@link android.support.v7.widget.Toolbar} used as AppBar.
-     *
-     * @return The {@link android.support.v7.widget.Toolbar}.
-     */
-    protected Toolbar getToolbar() {
-        return mToolbar;
     }
 
     /**
@@ -99,6 +118,22 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     }
 
     /**
+     * Sub-classes must aoverride this to supply the correct layout ID.
+     *
+     * @return The layout ID to inflate as content view.
+     */
+    protected abstract int getLayoutResource();
+
+    /**
+     * Gets a reference to the {@link android.support.v7.widget.Toolbar} used as AppBar.
+     *
+     * @return The {@link android.support.v7.widget.Toolbar}.
+     */
+    protected Toolbar getToolbar() {
+        return mToolbar;
+    }
+
+    /**
      * Gets the {@link SettingsHelper} instance for the activity.
      *
      * @return The {@link SettingsHelper} instance.
@@ -108,15 +143,43 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     }
 
     /**
+     * Gets the primary color for the current theme.
+     *
+     * @return The primary color of the current theme.
+     */
+    public int getColorPrimary() {
+        return mColorPrimary;
+    }
+
+    /**
+     * Gets the primary dark color for the current theme.
+     *
+     * @return The primary dark color of the current theme.
+     */
+    public int getColorPrimaryDark() {
+        return mColorPrimaryDark;
+    }
+
+    /**
+     * Gets the accent color for the current theme.
+     *
+     * @return The accent color of the current theme.
+     */
+    public int getColorAccent() {
+        return mColorAccent;
+    }
+
+    /**
      * When resumed we check to see whether or not we are marked for
      * reload (theme changed).
      */
     @Override
     protected void onStart() {
+        super.onStart();
         if (mThemeChanged) {
+            mThemeChanged = false;
             reloadActivity();
         }
-        super.onStart();
     }
 
     /**
@@ -125,16 +188,22 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
      */
     @Override
     protected void onResume() {
+        super.onResume();
         if (mThemeChanged) {
+            mThemeChanged = false;
             reloadActivity();
         }
-        super.onResume();
     }
 
     /**
      * Reloads the current activity (used for theme changes).
      */
     private void reloadActivity() {
+        // For some reason when I do recreate() the main activity will
+        // open it's drawer when recreated. This possibly has something
+        // to do with recreate() setting up instance states correctly.
+        //
+        // recreate();
         Class<?> cls = getClass();
         finish();
         Intent intent = new Intent(this, cls);
@@ -146,7 +215,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     /**
      * Listens for changes on the theme settings. When the theme is changed we mark the activity
      * for reloading when started or resumed. If the current activity is the {@link SettingsActivity}
-     * we reload it immediately.
+     * we reload it immediately because this is where the theme setting is actually changed.
      *
      * @param sharedPreferences The {@link SharedPreferences} instance.
      * @param key               The key of the changed setting.
@@ -159,7 +228,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
             String theme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
             if (!theme.equals(mCurrentTheme)) {
                 // If this is the SettingsActivity we reload now. Otherwise we
-                // mark the activity for realod after resume or start.
+                // mark the activity for reload after resume or start.
                 if (getClass() == SettingsActivity.class) {
                     reloadActivity();
                 } else {

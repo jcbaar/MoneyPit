@@ -1,7 +1,11 @@
 package com.development.jaba.utilities;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,4 +41,24 @@ public class UtilsHelper {
             return View.generateViewId();
         }
     }
+
+    /**
+     * Generates a tinted {@link Drawable} from the given drawable resource and color.
+     * Note that this will work best if the original drawable is grey-scaled.
+     *
+     * @param res           The {@link Resources} instance to get the {@link Drawable} from.
+     * @param drawableResId The resource ID of the {@link Drawable}
+     * @param color         The color to tint the {@link Drawable} with.
+     * @return The tinted {@link Drawable} or null in case of an error.
+     */
+    public static Drawable getTintedDrawable(Resources res,
+                                             @DrawableRes int drawableResId,
+                                             int color) {
+        Drawable drawable = res.getDrawable(drawableResId);
+        if (drawable != null) {
+            drawable.setColorFilter(color, PorterDuff.Mode.OVERLAY);
+        }
+        return drawable;
+    }
+
 }

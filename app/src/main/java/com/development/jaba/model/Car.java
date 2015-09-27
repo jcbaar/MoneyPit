@@ -143,7 +143,11 @@ public class Car implements Serializable {
 
     public Bitmap getImage() {
         if (mImage != null) {
-            return BitmapFactory.decodeByteArray(this.mImage, 0, this.mImage.length);
+            try {
+                return BitmapFactory.decodeByteArray(this.mImage, 0, this.mImage.length);
+            } catch (OutOfMemoryError e) {
+                Log.e("setImage", "Out of memory.");
+            }
         }
         return null;
     }
@@ -154,6 +158,9 @@ public class Car implements Serializable {
                 mImage = BitmapHelper.decodeUriAsByteArray(context, bitmapUri);
             } catch (FileNotFoundException e) {
                 Log.e("setImage", "Image file not found.");
+                mImage = null;
+            } catch (OutOfMemoryError e) {
+                Log.e("setImage", "Out of memory.");
                 mImage = null;
             }
         } else {

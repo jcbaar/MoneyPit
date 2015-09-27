@@ -12,9 +12,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.DriveBackupFragment;
+import com.development.jaba.utilities.UtilsHelper;
 
 
 public class MainDrawerActivity extends BaseActivity {
@@ -56,6 +58,9 @@ public class MainDrawerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LinearLayout hi = (LinearLayout) findViewById(R.id.headerBackground);
+        hi.setBackgroundDrawable(UtilsHelper.getTintedDrawable(getResources(), R.drawable.background_header, getColorPrimary()));
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerView = (NavigationView) findViewById(R.id.navigation_drawer);
@@ -111,7 +116,7 @@ public class MainDrawerActivity extends BaseActivity {
                 break;
             case R.id.settings: {
                 if (mDrawer != null) {
-                    mDrawer.closeDrawer(mDrawerView);
+                    mDrawer.closeDrawers();
                 }
                 Intent s = new Intent(this, SettingsActivity.class);
                 startActivity(s);
@@ -119,7 +124,7 @@ public class MainDrawerActivity extends BaseActivity {
             }
             default: {
                 if (mDrawer != null) {
-                    mDrawer.closeDrawer(mDrawerView);
+                    mDrawer.closeDrawers();
                 }
                 Intent s = new Intent(this, AboutActivity.class);
                 startActivity(s);
