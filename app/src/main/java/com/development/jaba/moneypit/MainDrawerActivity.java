@@ -3,7 +3,6 @@ package com.development.jaba.moneypit;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -63,12 +62,7 @@ public class MainDrawerActivity extends BaseActivity {
 
         LinearLayout hi = (LinearLayout) findViewById(R.id.headerBackground);
         Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
-        if (Build.VERSION.SDK_INT >= 16) {
-            hi.setBackground(drawable);
-        } else {
-            //noinspection deprecation
-            hi.setBackgroundDrawable(drawable);
-        }
+        UtilsHelper.setBackgroundDrawable(hi, drawable);
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerView = (NavigationView) findViewById(R.id.navigation_drawer);

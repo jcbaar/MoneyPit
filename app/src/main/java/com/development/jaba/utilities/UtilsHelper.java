@@ -90,4 +90,21 @@ public class UtilsHelper {
             td.startTransition(200);
         }
     }
+
+    /**
+     * Sets the background {@link Drawable} for the given {@link View}.
+     *
+     * @param view     The {@link View} to set the background {@link Drawable} for.
+     * @param drawable The {@link Drawable} to set.
+     */
+    public static void setBackgroundDrawable(View view, Drawable drawable) {
+        // On SDK 16 and higher we use setBackground(). Otherwise we use
+        // setBackgroundDrawable().
+        if (Build.VERSION.SDK_INT >= 16) {
+            view.setBackground(drawable);
+        } else {
+            //noinspection deprecation
+            view.setBackgroundDrawable(drawable);
+        }
+    }
 }
