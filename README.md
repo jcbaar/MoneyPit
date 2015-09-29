@@ -1,7 +1,4 @@
 MoneyPit
 ========
 
-Initial commit MoneyPit android version
-
-There is no point in downloading this code for now since this is a _VERY_ early android version of the 
-Windows Phone MoneyPit app. If you do decide to download it you are on your own.
+This is a port of my MoneyPit app for Windows Phone. This is a work in progress but all features are implemented so the app is usable.
