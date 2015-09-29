@@ -24,7 +24,6 @@ import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.ImageDownloadHelperTask;
 import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.LinearLayoutEx;
-import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +98,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      * @param lat The latitude of the center position of the static map.
      * @param lon The longitude of the center position of the static map.
      */
-    private void showMap(RecyclingImageView map, double lat, double lon) {
+    private void showMap(ImageView map, double lat, double lon) {
         map.setVisibility(View.VISIBLE);
 
         String slat = String.valueOf(lat),
@@ -287,7 +286,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                         mExpandedItems.add(String.valueOf(position));
 
                         // Load the map position only when we are expanding.
-                        RecyclingImageView map = (RecyclingImageView) lle.findViewById(R.id.map);
+                        ImageView map = (ImageView) lle.findViewById(R.id.map);
                         if (map != null) {
                             showMap(map, item.getLatitude(), item.getLongitude());
                         }
@@ -312,7 +311,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                 mDays, mTotalCost, mVolume, mCost, mEconomy, mNoteContents;
         private final ImageButton mMenuButton;
         private final ImageView mLocation, mNote, mFull;
-        private final RecyclingImageView mMap;
+        private final ImageView mMap;
         private final LinearLayoutEx mExpandable;
 
         /**
@@ -339,7 +338,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             mFull = (ImageView) itemView.findViewById(R.id.full);
             mExpandable = (LinearLayoutEx) itemView.findViewById(R.id.animateView);
             mNoteContents = (TextView) itemView.findViewById(R.id.noteContent);
-            mMap = (RecyclingImageView) itemView.findViewById(R.id.map);
+            mMap = (ImageView) itemView.findViewById(R.id.map);
 
             // Attach a PopupMenu to the menu button.
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));
@@ -397,7 +396,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             return mNoteContents;
         }
 
-        public RecyclingImageView getMap() {
+        public ImageView getMap() {
             return mMap;
         }
     }
