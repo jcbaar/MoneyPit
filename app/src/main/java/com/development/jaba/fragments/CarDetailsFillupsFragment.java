@@ -73,6 +73,8 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 public void onExpansionStateChanged(int position, boolean isExpanded) {
                     if (isExpanded) {
                         mFillupList.smoothScrollToPosition(position);
+                    } else {
+                        mFab.show();
                     }
                 }
 

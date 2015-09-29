@@ -147,6 +147,31 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         // Setup the page sliding functionality.
         checkSlidingAvailability();
+
+        // When swiping between different sections, select the corresponding
+        // tab. We can also use ActionBar.Tab#select() to do this if we have
+        // a reference to the Tab.
+        mSlidingTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Get the fragment at the given position and tell it it's been
+                // selected in the ViewPager.
+                BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(tab.getPosition());
+                if (fragment != null) {
+                    fragment.onFragmentSelectedInViewPager();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     /**
