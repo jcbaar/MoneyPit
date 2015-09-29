@@ -39,6 +39,7 @@ public class CarListFragment extends Fragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
+    private FloatingActionButton mFab;               // The floating action button.
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -145,14 +146,27 @@ public class CarListFragment extends Fragment {
         carList.setLayoutManager(new LinearLayoutManager(getActivity()));
         carList.setHasFixedSize(true);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editCar(null, -1);
             }
         });
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // When we became visible we need to make sure the
+        // FAB is also visible.
+        if (isVisibleToUser) {
+            if (mFab != null && !mFab.isShown()) {
+                mFab.show();
+            }
+        }
     }
 
     /**

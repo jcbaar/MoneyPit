@@ -58,13 +58,6 @@ public class BaseDetailsFragment extends Fragment {
     }
 
     /**
-     * This is overridden in sub classes to detect when the fragment is selected
-     * in a viewpager.
-     */
-    public void onFragmentSelectedInViewPager() {
-    }
-
-    /**
      * This is overridden in sub classes to inform the fragment the user selected
      * another year of data to display.
      *

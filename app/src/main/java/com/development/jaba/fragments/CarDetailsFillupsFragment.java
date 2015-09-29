@@ -55,8 +55,16 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     }
 
     @Override
-    public void onFragmentSelectedInViewPager() {
-        mFab.show();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // When we became visible we need to make sure the
+        // FAB is also visible.
+        if (isVisibleToUser) {
+            if (mFab != null && !mFab.isShown()) {
+                mFab.show();
+            }
+        }
     }
 
     @Override
