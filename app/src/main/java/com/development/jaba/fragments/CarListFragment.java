@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -179,7 +180,7 @@ public class CarListFragment extends Fragment {
         if (car != null) {
             carDetails.putExtra(Keys.EK_CAR, car);
         }
-        startActivity(carDetails);
+        ActivityCompat.startActivity(getActivity(), carDetails, null/*ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle()*/);
     }
 
     /**

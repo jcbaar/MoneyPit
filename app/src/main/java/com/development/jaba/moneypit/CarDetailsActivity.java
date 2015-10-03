@@ -23,6 +23,7 @@ import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.SettingsHelper;
+import com.development.jaba.view.PageTransformerEx;
 import com.development.jaba.view.ViewPagerEx;
 
 import java.util.Date;
@@ -142,6 +143,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPagerEx) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.DEPTH));
         mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 

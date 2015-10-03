@@ -43,6 +43,9 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         mSettings.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         mCurrentTheme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
         switch (mCurrentTheme) {
+            case SettingsHelper.THEME_BLACK:
+                setTheme(R.style.AppThemeBlack);
+                break;
             case SettingsHelper.THEME_DARK:
                 setTheme(R.style.AppThemeDark);
                 break;

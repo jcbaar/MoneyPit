@@ -105,7 +105,7 @@
                 style="@style/ListSecondaryText"
                 android:layout_column="0"
                 android:text="EUR 43.20"
-                android:textColor="@color/secondaryColor"
+                android:textColor="@color/primaryColor"
                 android:textStyle="bold" />
 
             <LinearLayout

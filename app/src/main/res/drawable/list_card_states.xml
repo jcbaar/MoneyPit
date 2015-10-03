@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="false"
-        android:drawable="@drawable/list_card_background_not_pressed"/>
-    <item android:state_pressed="true"
-        android:drawable="@drawable/list_card_background"/>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/listCardBackgroundSelected" />
+        </shape>
+    </item>
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/listCardBackground" />
+        </shape>
+    </item>
 </selector>

@@ -16,7 +16,8 @@ public class SettingsHelper {
             PREF_THEME = "selected_theme";
 
     public final static String THEME_LIGHT = "light",
-            THEME_DARK = "dark";
+            THEME_DARK = "dark",
+            THEME_BLACK = "black";
 
     /**
      * {@link SharedPreferences} reference.

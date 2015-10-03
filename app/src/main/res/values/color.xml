@@ -1,10 +1,5 @@
 <resources>
-    <color name="primaryColor_Dark">#505050</color>
-    <color name="primaryColorLight_Dark">#E0E0E0</color>
-    <color name="primaryColorDark_Dark">#404040</color>
-
     <color name="primaryColor">#2196F3</color>
-    <color name="secondaryColor">#2196F3</color>
     <color name="primaryColorLight">#BBDEFB</color>
     <color name="primaryColorDark">#0D47A1</color>
     <color name="accentColor">#C95D63</color>
@@ -14,6 +9,7 @@
 
     <color name="dividerColorLight">#CFCFCF</color>
     <color name="dividerColorDark">#4F4F4F</color>
+    <color name="dividerColorBlack">#2F2F2F</color>
 
     <color name="legendBackgroundColor">#96bbdefb</color>
     <color name="carLabelBackgroundColor">#d0bbdefb</color>
@@ -22,13 +18,13 @@
     <color name="listCardTextDark">@color/primary_text_default_material_dark</color>
     <color name="listCardSecondaryText">@color/secondary_text_default_material_light</color>
     <color name="listCardSecondaryTextDark">@color/secondary_text_default_material_dark</color>
-    <color name="listCardBackgroundDark">@color/background_material_dark</color>
     <color name="listCardBackground">@color/background_material_light</color>
-    <color name="listCardBackgroundSelected">@color/primaryColorLight</color>
-    <color name="listCardBackgroundSelectedDark">@color/primaryColorLight</color>
+    <color name="listCardBackgroundDark">@color/background_material_dark</color>
+    <color name="listCardBackgroundBlack">@android:color/black</color>
 
-    <color name="listDividerDark">#1FFFFFFF</color>
-    <color name="listDividerLight">#1F000000</color>
+    <color name="listCardBackgroundSelected">@color/ripple_material_light</color>
+    <color name="listCardBackgroundSelectedDark">@color/ripple_material_dark</color>
+    <color name="listCardBackgroundSelectedBlack">@color/ripple_material_dark</color>
 
     <color name="slidingTabTitleColor">#78FFFFFF</color>
     <color name="slidingTabSelectedTitleColor">#FFFFFF</color>

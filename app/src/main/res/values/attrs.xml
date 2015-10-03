@@ -26,6 +26,8 @@
     <attr name="chartBackgroundColor" format="color" />
 
     <attr name="listCardBackground" format="reference" />
+    <attr name="listCardBackgroundColor" format="color" />
+    <attr name="listCardBackgroundSelectedColor" format="color" />
     <attr name="listCardRippleColor" format="color" />
     <attr name="listCardPrimaryTextColor" format="color" />
     <attr name="listCardSecondaryTextColor" format="color" />

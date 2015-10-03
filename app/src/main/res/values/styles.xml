@@ -12,6 +12,8 @@
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="dividerColor">@color/dividerColorLight</item>
         <item name="listCardBackground">@drawable/list_card_states</item>
+        <item name="listCardBackgroundColor">@color/listCardBackground</item>
+        <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelected</item>
         <item name="listCardPrimaryTextColor">@color/listCardText</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryText</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_light</item>
@@ -48,19 +50,21 @@
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="dividerColor">@color/dividerColorDark</item>
         <item name="listCardBackground">@drawable/list_card_states_dark</item>
+        <item name="listCardBackgroundColor">@color/listCardBackgroundDark</item>
+        <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelectedDark</item>
         <item name="listCardPrimaryTextColor">@color/listCardTextDark</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryTextDark</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_dark</item>
         <item name="chartBackgroundColor">@color/background_material_dark</item>
         <item name="overflowButton">@drawable/card_menu_button_overflow_material_dark</item>
-        <item name="actionBarColor">@color/primaryColor_Dark</item>
+        <item name="actionBarColor">@color/primaryColor</item>
         <item name="actionBarTextColor">@color/secondary_text_default_material_dark</item>
         <item name="actionBarSelectedTextColor">@color/primary_text_default_material_dark</item>
         <item name="actionBarIndicatorColor">@color/accentColor</item>
         <item name="navigationItem">@color/drawer_item_dark</item>
 
-        <item name="colorPrimary">@color/primaryColor_Dark</item>
-        <item name="colorPrimaryDark">@color/primaryColorDark_Dark</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryColorDark</item>
         <item name="colorAccent">@color/accentColor</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
@@ -69,6 +73,21 @@
 
         <item name="actionModeStyle">@style/MoneyPitActionMode</item>
         <item name="android:actionModeStyle">@style/MoneyPitActionMode</item>
+    </style>
+    <!-- *** DARK THEME END ***************************************************************** -->
+
+    <!-- *** DARK THEME ********************************************************************* -->
+    <style name="AppThemeBlack" parent="AppThemeBlack.Base">
+        <!-- Non API-level specific customizations go here... -->
+    </style>
+
+    <style name="AppThemeBlack.Base" parent="AppThemeDark">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="listCardBackground">@drawable/list_card_states_black</item>
+        <item name="listCardBackgroundColor">@color/listCardBackgroundBlack</item>
+        <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelectedBlack</item>
+        <item name="chartBackgroundColor">@android:color/black</item>
+        <item name="dividerColor">@color/dividerColorBlack</item>
     </style>
     <!-- *** DARK THEME END ***************************************************************** -->
 
