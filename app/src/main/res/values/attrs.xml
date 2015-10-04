@@ -19,6 +19,7 @@
     <declare-styleable name="CircularProgressView">
         <attr name="cpvColor" format="color" />
         <attr name="cpvStartDelay" format="integer" />
+        <attr name="cvpThickness" format="dimension" />
     </declare-styleable>
 
     <!-- Styled attributes -->

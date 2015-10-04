@@ -26,6 +26,7 @@ public class CircularProgressView extends View {
     private CircularProgressDrawable mDrawable;
     private int mColor;
     private int mStartDelay;
+    private float mSize;
 
     public CircularProgressView(Context context) {
         this(context, null);
@@ -48,6 +49,7 @@ public class CircularProgressView extends View {
             try {
                 mColor = a.getColor(R.styleable.CircularProgressView_cpvColor, ContextCompat.getColor(context, R.color.primaryColor));
                 mStartDelay = a.getInteger(R.styleable.CircularProgressView_cpvStartDelay, 0);
+                mSize = a.getDimension(R.styleable.CircularProgressView_cvpThickness, 12.0f);
             } catch (Exception e) {
                 Log.e(TAG, "Unable to load attributes");
             } finally {
@@ -62,7 +64,7 @@ public class CircularProgressView extends View {
             }
         };
 
-        mDrawable = new CircularProgressDrawable(mColor, 10);
+        mDrawable = new CircularProgressDrawable(mColor, mSize);
         mDrawable.setCallback(this);
         setVisibility(View.GONE);
     }

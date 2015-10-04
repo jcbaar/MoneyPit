@@ -186,6 +186,8 @@
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
             app:cpvStartDelay="700"
+            app:cpvColor="?attr/colorPrimary"
+            app:cvpThickness="4dp"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 </ScrollView>
