@@ -135,9 +135,9 @@
     <string name="backup_restore">Backup and restore</string>
 
     <string name="backup">BACKUP</string>
-    <string name="backup_summary">When you click on the BACKUP button a copy of the current database is created on your Google Drive. It is possible you need to select the account first and logon.</string>
+    <string name="backup_summary">When you tap on the BACKUP button a copy of the current database is created on your Google Drive. It is possible you need to select the account first and logon.</string>
     <string name="restore">RESTORE</string>
-    <string name="restore_summary">When you select an available backup from the list below and click on the RESTORE button the selected backup will be restored. Note that this will overwrite your current database.</string>
+    <string name="restore_summary">When you select an available backup from the list below and tap on the RESTORE button the selected backup will be restored. Note that this will overwrite your current database.</string>
     <string name="restore_warning">Restoring a backup will overwrite the current database. All information will be lost.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;&lt;i&gt;This can not be undone!&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Are you sure you want to continue?</string>
     <string name="restore_error_get_file">Unable to open the backup file.</string>
     <string name="drive_restore_success">The selected backup has been restored successfully.</string>
@@ -152,6 +152,9 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="settings_theme">Theme</string>
     <string name="settings_theme_summary">Choose the theme for the app.</string>
+    <string name="account">Change Google account</string>
+    <string name="account_summary">When you tap on the button below you will be asked to select an account to use for backup and restore.
+    If you choose an account for which you did not give permission before, permission will be asked first.</string>
 
 
 </resources>

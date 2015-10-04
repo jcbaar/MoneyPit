@@ -115,6 +115,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:theme="@style/TintedImage"
                     android:id="@+id/full"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -122,6 +123,7 @@
                     android:src="@drawable/ic_local_gas_station_grey600_24dp" />
 
                 <ImageView
+                    android:theme="@style/TintedImage"
                     android:id="@+id/location"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -129,6 +131,7 @@
                     android:src="@drawable/ic_location_on_grey600_24dp" />
 
                 <ImageView
+                    android:theme="@style/TintedImage"
                     android:id="@+id/note"
                     android:layout_width="16dp"
                     android:layout_height="16dp"

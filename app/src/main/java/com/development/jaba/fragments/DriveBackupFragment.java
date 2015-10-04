@@ -31,7 +31,7 @@ import com.google.android.gms.drive.DriveId;
  */
 public class DriveBackupFragment extends BaseDriveFragment {
     private DriveFolder mBackupFolder;
-    private Button mBackup, mRestore;
+    private Button mBackup, mRestore, mAccount;
     private Spinner mRestoreList;
     private CircularProgressView mProgress;
     private LinearLayout mContainer;
@@ -52,6 +52,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
         super.onConnected(connectionHint);
         mProgress.stop();
         mContainer.setVisibility(View.VISIBLE);
+        mAccount.setEnabled(true);
 
         // Check for the existence of the backup folder.
         new CheckBackupFolderAsyncTask(getActivity(), getGoogleApiClient()).execute();
@@ -61,6 +62,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     public void onConnectionSuspended(int cause) {
         super.onConnectionSuspended(cause);
         mBackup.setEnabled(false);
+        mAccount.setEnabled(false);
         mContainer.setVisibility(View.GONE);
     }
 
@@ -116,6 +118,16 @@ public class DriveBackupFragment extends BaseDriveFragment {
                 }
             });
         }
+        mAccount = (Button) view.findViewById(R.id.account);
+        if (mAccount != null) {
+            mAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAccount.setEnabled(false);
+                    changeAccount();
+                }
+            });
+        }
         return view;
     }
 
@@ -128,6 +140,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
 
     private synchronized void restore() {
         if (mAdapter != null) {
+            mAccount.setEnabled(false);
             mBackup.setEnabled(false);
             mRestore.setEnabled(false);
             mRestoreList.setEnabled(false);

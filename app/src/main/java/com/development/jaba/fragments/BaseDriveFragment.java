@@ -19,14 +19,18 @@ package com.development.jaba.fragments;
  */
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
@@ -38,12 +42,31 @@ public class BaseDriveFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    /**
+     * Logging tag.
+     */
     private static final String TAG = "BaseDriveFragment";
+
+    /**
+     * True when we are trying to resolve connection errors.
+     */
+    private boolean mResolvingError = false;
 
     /**
      * Request code for auto Google Play Services error resolution.
      */
-    protected static final int REQUEST_CODE_RESOLUTION = 1;
+    protected static final int REQUEST_CODE_RESOLUTION = 1001;
+
+    /**
+     * Unique tag for error dialog fragment.
+     */
+    private static final String DIALOG_ERROR = "dialog_error";
+
+    /**
+     * Tag for storing error resolving state.
+     */
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
+
 
     /**
      * Google API client.
@@ -65,20 +88,50 @@ public class BaseDriveFragment extends Fragment implements
                     .addScope(Drive.SCOPE_FILE)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
+                    .useDefaultAccount()
                     .build();
         }
         mGoogleApiClient.connect();
     }
 
     /**
+     * Called when this {@link BaseDriveFragment} is created. Used to restore
+     * the error resolving state.
+     *
+     * @param savedInstanceState {@link Bundle} containing the instance states or null.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mResolvingError = savedInstanceState != null &&
+                savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+    }
+
+    /**
+     * Save instance states. Used to save error resolving state.
+     *
+     * @param outState The {@link Bundle} in which to save the states.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+    }
+
+
+    /**
      * Handles resolution callbacks.
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == Activity.RESULT_OK) {
-            mGoogleApiClient.connect();
+        if (requestCode == REQUEST_CODE_RESOLUTION) {
+            mResolvingError = false;
+            if (resultCode == Activity.RESULT_OK) {
+                if (!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
         }
     }
 
@@ -100,6 +153,7 @@ public class BaseDriveFragment extends Fragment implements
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "GoogleApiClient connected");
+        mResolvingError = false;
     }
 
     /**
@@ -118,21 +172,113 @@ public class BaseDriveFragment extends Fragment implements
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
-        if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), getActivity(), 0).show();
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (!result.hasResolution()) {
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
             return;
         }
         try {
+            mResolvingError = true;
             result.startResolutionForResult(getActivity(), REQUEST_CODE_RESOLUTION);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Exception while starting resolution activity", e);
+            mGoogleApiClient.connect();
         }
     }
 
     /**
-     * Getter for the {@code GoogleApiClient}.
+     * Creates a dialog for an error message
+     */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog and pass it
+        // the error to display.
+        ErrorDialogFragment dialogFragment = ErrorDialogFragment.newInstance(this, errorCode);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), "errordialog");
+    }
+
+    /**
+     *  Called from ErrorDialogFragment when the dialog is dismissed.
+     */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    /**
+     * Changes the account used for drive backup and restore.
+     */
+    public void changeAccount() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mResolvingError = false;
+            mGoogleApiClient.clearDefaultAccountAndReconnect();
+        }
+    }
+
+    /**
+     * Getter for the {@link GoogleApiClient} instance.
+     *
+     * @return The {@link GoogleApiClient} instance.
      */
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
+    }
+
+    /**
+     * A fragment to display an error dialog
+     */
+    public static class ErrorDialogFragment extends DialogFragment {
+        BaseDriveFragment mCaller;
+
+        /**
+         * Instantiate a new instance of the {@link com.development.jaba.fragments.BaseDriveFragment.ErrorDialogFragment}.
+         *
+         * @param caller    The {@link BaseDriveFragment} that is calling the error dialog.
+         * @param errorCode The error to show.
+         * @return A new instance of {@link com.development.jaba.fragments.BaseDriveFragment.ErrorDialogFragment}.
+         */
+        public static ErrorDialogFragment newInstance(BaseDriveFragment caller, int errorCode) {
+            ErrorDialogFragment dialog = new ErrorDialogFragment();
+            dialog.mCaller = caller;
+            Bundle args = new Bundle();
+            args.putInt(DIALOG_ERROR, errorCode);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        /**
+         * Constructor.Initializes and instance of the object.
+         */
+        public ErrorDialogFragment() {
+        }
+
+        /**
+         * Called to create the dialog fragment.
+         *
+         * @param savedInstanceState Saved instance variables.
+         * @return The {@link Dialog}.
+         */
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GoogleApiAvailability.getInstance().getErrorDialog(
+                    this.getActivity(), errorCode, REQUEST_CODE_RESOLUTION);
+        }
+
+        /**
+         * Called when the user dismisses the error dialog.
+         *
+         * @param dialog The {@link DialogInterface}.
+         */
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            // If we have a caller tell it the dialog was dismissed.
+            if (mCaller != null) {
+                mCaller.onDialogDismissed();
+            }
+        }
     }
 }

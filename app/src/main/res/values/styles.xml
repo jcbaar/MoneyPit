@@ -103,6 +103,10 @@
         <item name="android:background">?attr/actionBarColor</item>
     </style>
 
+    <style name="TintedImage">
+        <item name="android:tint">?attr/listCardSecondaryTextColor</item>
+    </style>
+
     <style name="MoneyPitCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">?attr/actionBarTextColor</item>

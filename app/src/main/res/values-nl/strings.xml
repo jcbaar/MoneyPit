@@ -134,9 +134,9 @@
     <string name="drive_backup_success">De backup is met success op Google Drive aangemaakt.</string>
     <string name="backup_restore">Backup en herstel</string>
     <string name="backup">BACKUP</string>
-    <string name="backup_summary">Wanneer u op de BACKUP knop klikt wordt er een kopie van de huidige database gemaakt op uw Google Drive. Het is mogelijk dat u eerst het account moet kiezen en moet inloggen voordat de kopie wordt gemaakt.</string>
+    <string name="backup_summary">Wanneer u op de BACKUP knop tikt wordt er een kopie van de huidige database gemaakt op uw Google Drive. Het is mogelijk dat u eerst het account moet kiezen en moet inloggen voordat de kopie wordt gemaakt.</string>
     <string name="restore">HERSTEL</string>
-    <string name="restore_summary">Wanneer u een backup uit de onderstaande lijst selecteerd en op de knop HERSTEL klikt wordt de geselecteerde backup hersteld. Let op dat de huidige database hiermee wordt overschreven.</string>
+    <string name="restore_summary">Wanneer u een backup uit de onderstaande lijst selecteerd en op de knop HERSTEL tikt wordt de geselecteerde backup hersteld. Let op dat de huidige database hiermee wordt overschreven.</string>
     <string name="restore_warning">Het herstellen van een backup overschrijft de huidige database. Alle informatie gaat verloren.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;&lt;i&gt;Dit kan niet ongedaan worden gemaakt!&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Weet U zeker dat U door wilt gaan?</string>
     <string name="restore_error_get_file">Het is niet gelukt het backup bestand te openen.</string>
     <string name="drive_restore_success">Het geselecteerde backup bestand is met succes hersteld.</string>
@@ -151,5 +151,8 @@
     <string name="drawer_close">Sluit navigatie scherm</string>
     <string name="settings_theme">Thema</string>
     <string name="settings_theme_summary">Kies het thema van de app.</string>
+    <string name="account">Wijzig Google account</string>
+    <string name="account_summary">Wanneer u op de onderstaande knop tikt wordt u gevraagd een account te kiezen welke gebruikt moet worden voor
+        backup en herstel. Als u een account kiest waarvoor u nog niet eerder toestemming heeft gegeven wordt eerst om toestemming gevraagd.</string>
 
 </resources>
