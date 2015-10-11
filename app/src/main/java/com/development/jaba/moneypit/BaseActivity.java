@@ -174,6 +174,14 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     }
 
     /**
+     * Gets whether or not we are running the light theme.
+     * @return True if we are running the light theme. False if not.
+     */
+    public boolean usingLightTheme() {
+        return mCurrentTheme.equals(SettingsHelper.THEME_LIGHT);
+    }
+
+    /**
      * When resumed we check to see whether or not we are marked for
      * reload (theme changed).
      */

@@ -35,6 +35,7 @@
         </activity>
         <activity
             android:name=".AddOrEditCarActivity"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_add_or_edit_car">
         </activity>
         <activity
@@ -43,6 +44,7 @@
         </activity>
         <activity
             android:name=".AddOrEditFillupActivity"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_add_or_edit_fillup">
         </activity>
         <activity

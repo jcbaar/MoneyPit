@@ -154,5 +154,6 @@
     <string name="account">Wijzig Google account</string>
     <string name="account_summary">Wanneer u op de onderstaande knop tikt wordt u gevraagd een account te kiezen welke gebruikt moet worden voor
         backup en herstel. Als u een account kiest waarvoor u nog niet eerder toestemming heeft gegeven wordt eerst om toestemming gevraagd.</string>
+    <string name="fillupDate">Datum</string>
 
 </resources>

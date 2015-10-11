@@ -22,26 +22,15 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Button
                 android:id="@+id/fillupDate"
-                style="@style/DatePicker" />
-
-            <CheckedTextView
-                android:id="@+id/fillupFullTank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/fillupFullTank"
-                android:gravity="center_vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginLeft="4dp"
                 android:layout_marginBottom="12dp"
-                android:layout_marginTop="-12dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple" />
+                android:hint="@string/fillupDate"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:layout_gravity="center_horizontal"
+                style="@style/Widget.AppCompat.Spinner.Underlined" />
 
             <com.development.jaba.view.EditTextEx
                 android:id="@+id/fillupOdo"
@@ -68,7 +57,19 @@
                 android:hint="@string/fillupPrice"
                 android:inputType="numberDecimal"
                 app:eteErrorColor="@color/errorColor"
-                android:paddingBottom="8dp" />
+                android:paddingBottom="12dp" />
+
+            <CheckedTextView
+                android:id="@+id/fillupFullTank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fillupFullTank"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginLeft="4dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple" />
 
             <com.development.jaba.view.EditTextEx
                 android:inputType="textMultiLine"

@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckedTextView;
-import android.widget.DatePicker;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
@@ -17,32 +17,64 @@ import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.LocationHelper;
 import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.EditTextEx;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddOrEditFillupActivity extends BaseActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class AddOrEditFillupActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
     private MoneyPitDbContext mContext;
     private Fillup mFillupToEdit;
     private Car mCar;
-    private DatePicker mDate;
-    private EditTextEx mOdometer,
-            mVolume,
-            mPrice,
-            mRemarks;
-    private CheckedTextView mFullTank;
     private SurroundingFillups mSurroundingFillups;
     private int mViewPosition = -1;
     private LocationTracker mLocHelp;
+    private Calendar mCalendar;
 
+    private final String PICKER = "DatePicker";
+
+    // Bind the views.
+    @Bind(R.id.fillupDate)
+    Button mDate;
+    @Bind(R.id.fillupOdo)
+    EditTextEx mOdometer;
+    @Bind(R.id.fillupVolume)
+    EditTextEx mVolume;
+    @Bind(R.id.fillupPrice)
+    EditTextEx mPrice;
+    @Bind(R.id.fillupRemark)
+    EditTextEx mRemarks;
+    @Bind(R.id.fillupFullTank)
+    CheckedTextView mFullTank;
+
+
+    /**
+     * Saves the values from the UI into a {@link android.os.Bundle}.
+     *
+     * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        saveState(savedInstanceState);
+        if (savedInstanceState != null) {
+            savedInstanceState.putString(Fillup.KEY_DATE, DateHelper.toDateTimeString(getDate()));
+            savedInstanceState.putString(Fillup.KEY_ODOMETER, mOdometer.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_VOLUME, mVolume.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_PRICE, mPrice.getText().toString());
+            savedInstanceState.putString(Fillup.KEY_NOTE, mRemarks.getText().toString());
+            savedInstanceState.putBoolean(Fillup.KEY_FULLTANK, mFullTank.isChecked());
+            savedInstanceState.putDouble(Fillup.KEY_LATITUDE, mFillupToEdit.getLatitude());
+            savedInstanceState.putDouble(Fillup.KEY_LONGITUDE, mFillupToEdit.getLongitude());
+        }
     }
 
     /**
@@ -68,12 +100,29 @@ public class AddOrEditFillupActivity extends BaseActivity {
         }
     }
 
+    /**
+     * The activity is resumed. Restore the {@link DatePickerDialog} it's callback.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag(PICKER);
+        if (dpd != null) dpd.setOnDateSetListener(this);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Bind views.
+        ButterKnife.bind(this);
+
         // Instantiate a database context..
         mContext = new MoneyPitDbContext(this);
+
+        // Instantiate Calendar instance.
+        mCalendar = Calendar.getInstance();
 
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car
@@ -85,6 +134,8 @@ public class AddOrEditFillupActivity extends BaseActivity {
             mViewPosition = b.getInt(Keys.EK_VIEWPOSITION);
         }
 
+        // When we are called to create a new fill up we create an empty
+        // instance here we use to edit.
         if (mFillupToEdit == null) {
             mFillupToEdit = new Fillup();
 
@@ -93,31 +144,23 @@ public class AddOrEditFillupActivity extends BaseActivity {
             mFillupToEdit.setDate(new Date());
         }
 
+        // Load up the surrounding fill ups.
         mSurroundingFillups = mContext.getSurroundingFillups(mFillupToEdit.getDate(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
 
-        mDate = (DatePicker) findViewById(R.id.fillupDate);
-        mOdometer = (EditTextEx) findViewById(R.id.fillupOdo);
-        mVolume = (EditTextEx) findViewById(R.id.fillupVolume);
-        mPrice = (EditTextEx) findViewById(R.id.fillupPrice);
-        mRemarks = (EditTextEx) findViewById(R.id.fillupRemark);
-        mFullTank = (CheckedTextView) findViewById(R.id.fillupFullTank);
-
-        mFullTank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFullTank.toggle();
-            }
-        });
-
+        // Wire up the field validators.
         mOdometer.setValidator(new OdoValidator(this));
         mVolume.setValidator(new EditTextEx.RequiredValidator(this));
         mPrice.setValidator(new EditTextEx.RequiredValidator(this));
 
+        // Setup the activity for either editing a new fill up
+        // or editing an existing fill up.
         if (mFillupToEdit.getId() != 0) {
             toUi();
             setTitle(getString(R.string.title_edit_fillup));
+
+            // When we are editing an existing fill up we do
+            // not change the location!
         } else {
-            setupDate(new Date());
             mFullTank.setChecked(true);
             setTitle(getString(R.string.title_create_fillup));
 
@@ -137,36 +180,61 @@ public class AddOrEditFillupActivity extends BaseActivity {
                 mLocHelp.startLocationTracking();
             }
         }
+
+        mDate.setText(FormattingHelper.toShortDate(mCalendar.getTime()));
         restoreState(savedInstanceState);
     }
 
     /**
-     * Setup the given date in the {@link android.widget.DatePicker}.
+     * Toggle's the {@link CheckedTextView} it's state.
      *
-     * @param d The date to set in the {@link android.widget.DatePicker}.
+     * @param view The clicked {@link View}
      */
-    private void setupDate(Date d) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
+    @OnClick(R.id.fillupFullTank)
+    public void check(View view) {
+        mFullTank.toggle();
+    }
 
-        int year = cal.get(Calendar.YEAR),
-                month = cal.get(Calendar.MONTH),
-                day = cal.get(Calendar.DAY_OF_MONTH);
+    /**
+     * Opens up the {@link DatePickerDialog} for the user to select a date.
+     *
+     * @param view The clicked {@link View}
+     */
+    @OnClick(R.id.fillupDate)
+    public void selectDate(View view) {
+        // Instantiate the dialog.
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                AddOrEditFillupActivity.this,
+                mCalendar.get(Calendar.YEAR),
+                mCalendar.get(Calendar.MONTH),
+                mCalendar.get(Calendar.DAY_OF_MONTH)
+        );
 
-        mDate.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, monthOfYear, dayOfMonth,
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        calendar.get(Calendar.SECOND));
+        // We assume that "now" is the maximum date we can enter.
+        Calendar max = Calendar.getInstance();
 
-
-                mSurroundingFillups = mContext.getSurroundingFillups(calendar.getTime(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
-            }
-        });
-        mDate.setMaxDate(new Date().getTime());
+        // Should we clamp the possible date when editing a fill up?
+        // For now we do not.
+        //
+        // When we are editing a fill up we clamp the possible date
+        // selection between the previous fill up and the next fill up
+        // relative to the edited fill up.
+                /*
+                if (mFillupToEdit.getId() != 0 && mSurroundingFillups != null) {
+                    if (mSurroundingFillups.getBefore() != null) {
+                        Calendar min = Calendar.getInstance();
+                        min.setTime(mSurroundingFillups.getBefore().getDate());
+                        dpd.setMinDate(min);
+                    }
+                    if (mSurroundingFillups.getAfter() != null) {
+                        max.setTime(mSurroundingFillups.getAfter().getDate());
+                    }
+                }
+                */
+        dpd.setMaxDate(max);
+        dpd.dismissOnPause(false);
+        dpd.setThemeDark(!usingLightTheme());
+        dpd.show(getFragmentManager(), PICKER);
     }
 
     /**
@@ -181,13 +249,17 @@ public class AddOrEditFillupActivity extends BaseActivity {
 
         if (mFillupToEdit.getId() == 0) {
             calDate.setTime(new Date());
-            calDate.set(mDate.getYear(), mDate.getMonth(), mDate.getDayOfMonth(),
+            calDate.set(mCalendar.get(Calendar.YEAR),
+                    mCalendar.get(Calendar.MONTH),
+                    mCalendar.get(Calendar.DAY_OF_MONTH),
                     calDate.get(Calendar.HOUR_OF_DAY),
                     calDate.get(Calendar.MINUTE),
                     calDate.get(Calendar.SECOND));
         } else {
             calDate.setTime(mFillupToEdit.getDate());
-            calDate.set(mDate.getYear(), mDate.getMonth(), mDate.getDayOfMonth(),
+            calDate.set(mCalendar.get(Calendar.YEAR),
+                    mCalendar.get(Calendar.MONTH),
+                    mCalendar.get(Calendar.DAY_OF_MONTH),
                     calDate.get(Calendar.HOUR_OF_DAY),
                     calDate.get(Calendar.MINUTE),
                     calDate.get(Calendar.SECOND));
@@ -202,7 +274,8 @@ public class AddOrEditFillupActivity extends BaseActivity {
      */
     private void restoreState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            setupDate(DateHelper.fromDateTimeString(savedInstanceState.getString(Fillup.KEY_DATE)));
+            mCalendar.setTime(DateHelper.fromDateTimeString(savedInstanceState.getString(Fillup.KEY_DATE)));
+            mDate.setText(FormattingHelper.toShortDate(mCalendar.getTime()));
             mOdometer.setText(savedInstanceState.getString(Fillup.KEY_ODOMETER));
             mVolume.setText(savedInstanceState.getString(Fillup.KEY_VOLUME));
             mPrice.setText(savedInstanceState.getString(Fillup.KEY_PRICE));
@@ -214,29 +287,12 @@ public class AddOrEditFillupActivity extends BaseActivity {
     }
 
     /**
-     * Saves the values from the UI into a {@link android.os.Bundle}.
-     *
-     * @param savedInstanceState The {@link android.os.Bundle} in which to save the values.
-     */
-    private void saveState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            savedInstanceState.putString(Fillup.KEY_DATE, DateHelper.toDateTimeString(getDate()));
-            savedInstanceState.putString(Fillup.KEY_ODOMETER, mOdometer.getText().toString());
-            savedInstanceState.putString(Fillup.KEY_VOLUME, mVolume.getText().toString());
-            savedInstanceState.putString(Fillup.KEY_PRICE, mPrice.getText().toString());
-            savedInstanceState.putString(Fillup.KEY_NOTE, mRemarks.getText().toString());
-            savedInstanceState.putBoolean(Fillup.KEY_FULLTANK, mFullTank.isChecked());
-            savedInstanceState.putDouble(Fillup.KEY_LATITUDE, mFillupToEdit.getLatitude());
-            savedInstanceState.putDouble(Fillup.KEY_LONGITUDE, mFillupToEdit.getLongitude());
-        }
-    }
-
-    /**
      * Copies the values from the {@link Fillup} entity we are editing to the
      * UI fields.
      */
     private void toUi() {
-        setupDate(mFillupToEdit.getDate());
+        mCalendar.setTime(mFillupToEdit.getDate());
+        mDate.setText(FormattingHelper.toShortDate(mFillupToEdit.getDate()));
         mOdometer.setText(String.valueOf(Math.round(mFillupToEdit.getOdometer())));
         mVolume.setText(String.valueOf(mFillupToEdit.getVolume()));
         mPrice.setText(String.valueOf(mFillupToEdit.getPrice()));
@@ -245,7 +301,7 @@ public class AddOrEditFillupActivity extends BaseActivity {
     }
 
     /**
-     * Copy the values from the UI to the Car entity we are editing.
+     * Copy the values from the UI fields to the {@link Fillup} entity we are editing.
      */
     private void fromUi() {
         mFillupToEdit.setDate(getDate());
@@ -268,6 +324,12 @@ public class AddOrEditFillupActivity extends BaseActivity {
                 mPrice.validate();
     }
 
+    /**
+     * Inflates the activity options menu.
+     *
+     * @param menu The {@link Menu} to inflate into.
+     * @return Always true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -275,6 +337,35 @@ public class AddOrEditFillupActivity extends BaseActivity {
         return true;
     }
 
+    /**
+     * Handles the menu item selection.
+     *
+     * @param item The item the user selected.
+     * @return true if handled, false if not handled.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_ok) {
+            addOrUpdateFillup();
+            return true;
+        } else if (id == R.id.action_cancel) {
+            if (getParent() == null) {
+                setResult(RESULT_CANCELED);
+            } else {
+                getParent().setResult(RESULT_CANCELED);
+            }
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Store the edited {@link Fillup} into the database.
+     * @return true for success, false for failure.
+     */
     private boolean addOrUpdateFillup() {
         // Validate the fields before we continue.
         boolean isOk = validateFields();
@@ -317,23 +408,25 @@ public class AddOrEditFillupActivity extends BaseActivity {
         return isOk;
     }
 
+    /**
+     * Callback of the {@link DatePickerDialog} which is called when the
+     * user has selected a date.
+     *
+     * @param view The source {@link DatePickerDialog}.
+     * @param year The selected year.
+     * @param monthOfYear The selected month.
+     * @param dayOfMonth The selected day of the month.
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        mCalendar.set(year, monthOfYear, dayOfMonth,
+                mCalendar.get(Calendar.HOUR_OF_DAY),
+                mCalendar.get(Calendar.MINUTE),
+                mCalendar.get(Calendar.SECOND));
 
-        if (id == R.id.action_ok) {
-            addOrUpdateFillup();
-            return true;
-        } else if (id == R.id.action_cancel) {
-            if (getParent() == null) {
-                setResult(RESULT_CANCELED);
-            } else {
-                getParent().setResult(RESULT_CANCELED);
-            }
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        // Show in the date view and setup the surrounding fill up again.
+        mDate.setText(FormattingHelper.toShortDate(mCalendar.getTime()));
+        mSurroundingFillups = mContext.getSurroundingFillups(mCalendar.getTime(), mFillupToEdit.getCarId(), mFillupToEdit.getId());
     }
 
     /**
