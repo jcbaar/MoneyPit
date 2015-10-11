@@ -22,6 +22,9 @@ import android.widget.TextView;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.UtilsHelper;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * View class which contains an @{link EditText} adorned with a "number of characters" indication,
  * error indication, floating hints and validation possibilities.
@@ -31,9 +34,9 @@ public class EditTextEx extends LinearLayout {
     private int mMaxLength;             // The maximum number of characters the EditText can contain.
     private int mErrorColor;            // The error color.
     private String mHintString;         // The hint string.
-    private final TextView mCharCount;  // The character counter.
-    private final EditText mEditor;           // The EditText.
-    private final TextInputLayout mWrapper;
+    @Bind(R.id.editEx_charCount) TextView mCharCount;  // The character counter.
+    @Bind(R.id.editEx_editor) EditText mEditor;           // The EditText.
+    @Bind(R.id.editEx_wrapper) TextInputLayout mWrapper;
     private BaseValidator mValidator;   // Validator for this instance.
 
     /**
@@ -70,9 +73,7 @@ public class EditTextEx extends LinearLayout {
         inflater.inflate(R.layout.view_edittext_ex, this);
 
         // Get the views.
-        mCharCount = (TextView) findViewById(R.id.editEx_charCount);
-        mEditor = (EditText) findViewById(R.id.editEx_editor);
-        mWrapper = (TextInputLayout) findViewById(R.id.editEx_wrapper);
+        ButterKnife.bind(this);
 
         // Re-generate an id for the EditText because when there are more than one
         // instances of this view in the same activity androids restore on orientation

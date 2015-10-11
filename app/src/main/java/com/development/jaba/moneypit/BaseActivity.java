@@ -15,6 +15,9 @@ import android.view.MenuItem;
 
 import com.development.jaba.utilities.SettingsHelper;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link AppCompatActivity} derived class that serves as a base
  * class for the activities. It handles some generic things all activities share like the
@@ -22,7 +25,8 @@ import com.development.jaba.utilities.SettingsHelper;
  */
 public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private Toolbar mToolbar;
+    @Bind(R.id.app_bar) Toolbar mToolbar;
+
     private SettingsHelper mSettings;
     private boolean mThemeChanged = false;
     private String mCurrentTheme = SettingsHelper.THEME_LIGHT;
@@ -78,9 +82,9 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // Build the activity.
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
+        ButterKnife.bind(this);
 
         // Setup the toolbar.
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             ActionBar ab = getSupportActionBar();

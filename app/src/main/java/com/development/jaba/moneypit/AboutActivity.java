@@ -8,8 +8,14 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class AboutActivity extends BaseActivity {
+
+    @Bind(R.id.version) TextView mVersion;
+    @Bind(R.id.body) TextView mBody;
 
     @Override
     protected int getLayoutResource() {
@@ -19,8 +25,7 @@ public class AboutActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        TextView version = (TextView) findViewById(R.id.version);
+        ButterKnife.bind(this);
 
         Context context = getApplicationContext(); // or activity.getApplicationContext()
         PackageManager packageManager = context.getPackageManager();
@@ -33,10 +38,8 @@ public class AboutActivity extends BaseActivity {
             Log.e("AboutActivity", e.getMessage());
         }
 
-        version.setText(myVersionName);
-
-        TextView body = (TextView) findViewById(R.id.body);
-        body.setMovementMethod(LinkMovementMethod.getInstance());
-        body.setText(Html.fromHtml(getString(R.string.about_body)));
+        mVersion.setText(myVersionName);
+        mBody.setMovementMethod(LinkMovementMethod.getInstance());
+        mBody.setText(Html.fromHtml(getString(R.string.about_body)));
     }
 }

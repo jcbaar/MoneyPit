@@ -19,11 +19,16 @@ import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.DriveBackupFragment;
 import com.development.jaba.utilities.UtilsHelper;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class MainDrawerActivity extends BaseActivity {
 
-    private DrawerLayout mDrawer;
-    private NavigationView mDrawerView;
+    @Bind(R.id.headerBackground) LinearLayout mHeader;
+    @Bind(R.id.drawer_layout) DrawerLayout mDrawer;
+    @Bind(R.id.navigation_drawer) NavigationView mDrawerView;
+
     private ActionBarDrawerToggle mToggle;
     private int mCheckedId = -1;
 
@@ -60,12 +65,11 @@ public class MainDrawerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LinearLayout hi = (LinearLayout) findViewById(R.id.headerBackground);
-        Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
-        UtilsHelper.setBackgroundDrawable(hi, drawable);
+        ButterKnife.bind(this);
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerView = (NavigationView) findViewById(R.id.navigation_drawer);
+        Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
+        UtilsHelper.setBackgroundDrawable(mHeader, drawable);
+
         mTitle = getTitle();
         mToggle = setupDrawerToggle();
         mDrawer.setDrawerListener(mToggle);

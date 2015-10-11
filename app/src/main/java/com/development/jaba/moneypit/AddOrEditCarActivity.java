@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static com.development.jaba.view.EditTextEx.BaseValidator;
 
 /**
@@ -48,16 +51,17 @@ public class AddOrEditCarActivity extends BaseActivity {
     private final static String CAPTURED_PHOTO_PATH_KEY = "mCurrentPhotoPath";
     private final static String CAPTURED_PHOTO_URI_KEY = "mCapturedImageURI";
 
-    private Spinner mDistanceUnits,
-            mVolumeUnits;
-
-    private RecyclingImageView mImage;
-
-    private EditTextEx mMake,
-            mModel,
-            mBuildYear,
-            mLicense,
-            mCurrency;
+    @Bind(R.id.carDistanceUnit) Spinner mDistanceUnits;
+    @Bind(R.id.carVolumeUnit) Spinner mVolumeUnits;
+    @Bind(R.id.imageView) RecyclingImageView mImage;
+    @Bind(R.id.carBrand) EditTextEx mMake;
+    @Bind(R.id.carModel) EditTextEx mModel;
+    @Bind(R.id.carBuildYear) EditTextEx mBuildYear;
+    @Bind(R.id.carLicense) EditTextEx mLicense;
+    @Bind(R.id.carCurrency) EditTextEx mCurrency;
+    @Bind(R.id.pictureRoll) ImageButton mPictureRoll;
+    @Bind(R.id.pictureCamera) ImageButton mPictureCamera;
+    @Bind(R.id.pictureDelete) ImageButton mPictureDelete;
 
     private MoneyPitDbContext context;
     private Car mCarToEdit;
@@ -92,6 +96,8 @@ public class AddOrEditCarActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ButterKnife.bind(this);
+
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car
         // entity.
@@ -106,26 +112,10 @@ public class AddOrEditCarActivity extends BaseActivity {
         // Instantiate a database context..
         context = new MoneyPitDbContext(this);
 
-        // Get the TextView objects..
-        mMake = (EditTextEx) findViewById(R.id.carBrand);
-        mModel = (EditTextEx) findViewById(R.id.carModel);
-        mBuildYear = (EditTextEx) findViewById(R.id.carBuildYear);
-        mLicense = (EditTextEx) findViewById(R.id.carLicense);
-        mCurrency = (EditTextEx) findViewById(R.id.carCurrency);
-        mImage = (RecyclingImageView) findViewById(R.id.imageView);
-
         // Color the image buttons.
-        ImageButton pictureRoll = (ImageButton) findViewById(R.id.pictureRoll);
-        ImageButton pictureCamera = (ImageButton) findViewById(R.id.pictureCamera);
-        ImageButton pictureDelete = (ImageButton) findViewById(R.id.pictureDelete);
-
-        setButtonImageColor(pictureRoll, R.drawable.ic_camera_roll_grey600_24dp);
-        setButtonImageColor(pictureCamera, R.drawable.ic_photo_camera_grey600_24dp);
-        setButtonImageColor(pictureDelete, R.drawable.ic_delete_grey600_24dp);
-
-        // And the Spinners.
-        mDistanceUnits = (Spinner) findViewById(R.id.carDistanceUnit);
-        mVolumeUnits = (Spinner) findViewById(R.id.carVolumeUnit);
+        setButtonImageColor(mPictureRoll, R.drawable.ic_camera_roll_grey600_24dp);
+        setButtonImageColor(mPictureCamera, R.drawable.ic_photo_camera_grey600_24dp);
+        setButtonImageColor(mPictureDelete, R.drawable.ic_delete_grey600_24dp);
 
         // Load up the contents of the Spinners.
         ArrayAdapter<CharSequence> distanceAdapter = ArrayAdapter.createFromResource(this, R.array.distance_units, R.layout.spinner_row_template);
@@ -193,7 +183,7 @@ public class AddOrEditCarActivity extends BaseActivity {
             mVolumeUnits.setSelection(savedInstanceState.getInt(Car.KEY_VOLUMEUNIT));
             mCarToEdit.setImageBytes(savedInstanceState.getByteArray(Car.KEY_PICTURE));
 
-            new GetCarImageHelper(this, mImage, mCarToEdit, false).execute();
+            new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
             if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
                 mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
             }
@@ -241,7 +231,7 @@ public class AddOrEditCarActivity extends BaseActivity {
         mDistanceUnits.setSelection(mCarToEdit.getDistanceUnit().getValue() - 1);
         mVolumeUnits.setSelection(mCarToEdit.getVolumeUnit().getValue() - 1);
 
-        new GetCarImageHelper(this, mImage, mCarToEdit, false).execute();
+        new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
     }
 
     /**
@@ -364,14 +354,14 @@ public class AddOrEditCarActivity extends BaseActivity {
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
                     mCarToEdit.setImage(this, selectedImage);
-                    new GetCarImageHelper(this, mImage, mCarToEdit, false).execute();
+                    new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
                 }
                 break;
 
             case REQUEST_TAKE_PHOTO:
                 if(resultCode == RESULT_OK) {
                     mCarToEdit.setImage(this, mCapturedImageURI);
-                    new GetCarImageHelper(this, mImage, mCarToEdit, false).execute();
+                    new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
                 }
                 break;
         }

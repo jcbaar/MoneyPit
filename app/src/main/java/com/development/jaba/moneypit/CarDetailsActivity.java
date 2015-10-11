@@ -29,16 +29,20 @@ import com.development.jaba.view.ViewPagerEx;
 import java.util.Date;
 import java.util.Locale;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class CarDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
     private Car mCarToShow;                     // The car we are currently showing the details for.
     private int mCurrentYear;                   // The year we are currently showing the details for.
-    SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
-    ViewPagerEx mViewPager;                     // ViewPager that serves as a host for the fragments.
-    MoneyPitDbContext mDbContext;               // Database context.
-    SettingsHelper mSettings;                   // Settings context.
-    TabLayout mSlidingTabLayout;                // Sliding tab that controls the ViewPager.
-    Spinner mYearSpinner;                       // Year selection spinner.
+    private SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
+    private MoneyPitDbContext mDbContext;               // Database context.
+    private SettingsHelper mSettings;                   // Settings context.
+
+    @Bind(R.id.pager) ViewPagerEx mViewPager;              // ViewPager that serves as a host for the fragments.
+    @Bind(R.id.sliding_tabs) TabLayout mSlidingTabLayout;  // Sliding tab that controls the ViewPager.
+    Spinner mYearSpinner;                                  // Year selection spinner.
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -104,11 +108,13 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         // Setup the spinner.
         LayoutInflater inflater = LayoutInflater.from(getToolbar().getContext());
         View layout = inflater.inflate(R.layout.year_spinner, null);
-        mYearSpinner = (Spinner) layout.findViewById(R.id.yearSpinner);
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.END;
         getToolbar().addView(layout, 0, layoutParams);
+        mYearSpinner = (Spinner) findViewById(R.id.yearSpinner);
         setupYears();
+
+        ButterKnife.bind(this);
 
         mYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -141,10 +147,8 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPagerEx) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.DEPTH));
-        mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 
         // Setup the page sliding functionality.
