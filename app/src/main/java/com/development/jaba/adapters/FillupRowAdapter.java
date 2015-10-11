@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * ArrayAdapter for displaying the fill-ups in the database in a ListView
  */
@@ -307,12 +310,36 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      */
     public class FillupRowViewHolder extends BaseViewHolder {
 
-        private final TextView mDate, mOdometer, mDistance,
-                mDays, mTotalCost, mVolume, mCost, mEconomy, mNoteContents;
-        private final ImageButton mMenuButton;
-        private final ImageView mLocation, mNote, mFull;
-        private final ImageView mMap;
-        private final LinearLayoutEx mExpandable;
+        @Bind(R.id.fillupDate)
+        TextView mDate;
+        @Bind(R.id.fillupOdometer)
+        TextView mOdometer;
+        @Bind(R.id.fillupDistance)
+        TextView mDistance;
+        @Bind(R.id.fillupSpan)
+        TextView mDays;
+        @Bind(R.id.fillupTotalCost)
+        TextView mTotalCost;
+        @Bind(R.id.fillupVolume)
+        TextView mVolume;
+        @Bind(R.id.fillupCost)
+        TextView mCost;
+        @Bind(R.id.fillupEconomy)
+        TextView mEconomy;
+        @Bind(R.id.noteContent)
+        TextView mNoteContents;
+        @Bind(R.id.headerMenu)
+        ImageButton mMenuButton;
+        @Bind(R.id.location)
+        ImageView mLocation;
+        @Bind(R.id.note)
+        ImageView mNote;
+        @Bind(R.id.full)
+        ImageView mFull;
+        @Bind(R.id.map)
+        ImageView mMap;
+        @Bind(R.id.animateView)
+        LinearLayoutEx mExpandable;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
@@ -323,22 +350,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
          */
         public FillupRowViewHolder(Context context, View itemView) {
             super(context, itemView);
-
-            mDate = (TextView) itemView.findViewById(R.id.fillupDate);
-            mOdometer = (TextView) itemView.findViewById(R.id.fillupOdometer);
-            mDistance = (TextView) itemView.findViewById(R.id.fillupDistance);
-            mDays = (TextView) itemView.findViewById(R.id.fillupSpan);
-            mTotalCost = (TextView) itemView.findViewById(R.id.fillupTotalCost);
-            mVolume = (TextView) itemView.findViewById(R.id.fillupVolume);
-            mCost = (TextView) itemView.findViewById(R.id.fillupCost);
-            mEconomy = (TextView) itemView.findViewById(R.id.fillupEconomy);
-            mMenuButton = (ImageButton) itemView.findViewById(R.id.headerMenu);
-            mLocation = (ImageView) itemView.findViewById(R.id.location);
-            mNote = (ImageView) itemView.findViewById(R.id.note);
-            mFull = (ImageView) itemView.findViewById(R.id.full);
-            mExpandable = (LinearLayoutEx) itemView.findViewById(R.id.animateView);
-            mNoteContents = (TextView) itemView.findViewById(R.id.noteContent);
-            mMap = (ImageView) itemView.findViewById(R.id.map);
+            ButterKnife.bind(this, itemView);
 
             // Attach a PopupMenu to the menu button.
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete));

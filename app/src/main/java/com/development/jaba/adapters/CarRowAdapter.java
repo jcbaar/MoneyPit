@@ -18,6 +18,9 @@ import com.development.jaba.view.RecyclingImageView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * {@link com.development.jaba.adapters.BaseRecyclerViewAdapter} derived class for displaying the entries
  * in the navigation drawer {@link android.support.v7.widget.RecyclerView}.
@@ -128,9 +131,16 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
      */
     public class CarRowViewHolder extends BaseViewHolder {
 
-        private final ImageButton mMenuButton;
-        private final RecyclingImageView mImage;
-        private final TextView mMake, mBuild, mAverage;
+        @Bind(R.id.headerMenu)
+        ImageButton mMenuButton;
+        @Bind(R.id.carPicture)
+        RecyclingImageView mImage;
+        @Bind(R.id.carMakeModel)
+        TextView mMake;
+        @Bind(R.id.carBuildYear)
+        TextView mBuild;
+        @Bind(R.id.carAverages)
+        TextView mAverage;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
@@ -141,11 +151,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
          */
         public CarRowViewHolder(Context context, View itemView) {
             super(context, itemView);
-            mMenuButton = (ImageButton) itemView.findViewById(R.id.headerMenu);
-            mImage = (RecyclingImageView) itemView.findViewById(R.id.carPicture);
-            mMake = (TextView) itemView.findViewById(R.id.carMakeModel);
-            mBuild = (TextView) itemView.findViewById(R.id.carBuildYear);
-            mAverage = (TextView) itemView.findViewById(R.id.carAverages);
+            ButterKnife.bind(this, itemView);
 
             // Attach a PopupMenu to the menu button.
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete_summary));
