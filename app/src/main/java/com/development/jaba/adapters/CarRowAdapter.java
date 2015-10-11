@@ -84,8 +84,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             vh.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
                     FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
                     FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
-        }
-        else {
+        } else {
             vh.getAverage().setText(R.string.no_data_to_average);
         }
     }
@@ -105,6 +104,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
 
     /**
      * Gets the {@link Car} entity from the given position.
+     *
      * @param position The position from which to get the {@link Car} entity.
      * @return The {@link Car} entity from the given position or null if a position was given that
      * is out of bounds.
@@ -118,6 +118,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
 
     /**
      * Gets the {@link Car} entity from the last clicked position.
+     *
      * @return The {@link Car} entity from the last clicked position or null if there is no last
      * clicked position or it was out of bounds.
      */
@@ -131,22 +132,17 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
      */
     public class CarRowViewHolder extends BaseViewHolder {
 
-        @Bind(R.id.headerMenu)
-        ImageButton mMenuButton;
-        @Bind(R.id.carPicture)
-        RecyclingImageView mImage;
-        @Bind(R.id.carMakeModel)
-        TextView mMake;
-        @Bind(R.id.carBuildYear)
-        TextView mBuild;
-        @Bind(R.id.carAverages)
-        TextView mAverage;
+        @Bind(R.id.headerMenu) ImageButton mMenuButton;
+        @Bind(R.id.carPicture) RecyclingImageView mImage;
+        @Bind(R.id.carMakeModel) TextView mMake;
+        @Bind(R.id.carBuildYear) TextView mBuild;
+        @Bind(R.id.carAverages) TextView mAverage;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
          * child {@link View} objects.
          *
-         * @param context The context.
+         * @param context  The context.
          * @param itemView The {@link View} which this instance will manage.
          */
         public CarRowViewHolder(Context context, View itemView) {

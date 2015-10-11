@@ -168,12 +168,12 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         //
         // Otherwise we hide the ImageView and navigate to item.
         PopupMenu menu = vh.getPopupMenu();
-        if(menu != null ) {
+        if (menu != null) {
             menu.getMenu().removeGroup(MENU_NAV);
         }
         boolean hasMap = item.getLatitude() != 0 || item.getLongitude() != 0;
         if (hasMap) {
-            if(menu != null) {
+            if (menu != null) {
                 menu.getMenu().add(MENU_NAV, MENU_NAV, MENU_NAV, R.string.navigate_to);
             }
             vh.getMap().setVisibility(View.VISIBLE);
@@ -310,36 +310,21 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      */
     public class FillupRowViewHolder extends BaseViewHolder {
 
-        @Bind(R.id.fillupDate)
-        TextView mDate;
-        @Bind(R.id.fillupOdometer)
-        TextView mOdometer;
-        @Bind(R.id.fillupDistance)
-        TextView mDistance;
-        @Bind(R.id.fillupSpan)
-        TextView mDays;
-        @Bind(R.id.fillupTotalCost)
-        TextView mTotalCost;
-        @Bind(R.id.fillupVolume)
-        TextView mVolume;
-        @Bind(R.id.fillupCost)
-        TextView mCost;
-        @Bind(R.id.fillupEconomy)
-        TextView mEconomy;
-        @Bind(R.id.noteContent)
-        TextView mNoteContents;
-        @Bind(R.id.headerMenu)
-        ImageButton mMenuButton;
-        @Bind(R.id.location)
-        ImageView mLocation;
-        @Bind(R.id.note)
-        ImageView mNote;
-        @Bind(R.id.full)
-        ImageView mFull;
-        @Bind(R.id.map)
-        ImageView mMap;
-        @Bind(R.id.animateView)
-        LinearLayoutEx mExpandable;
+        @Bind(R.id.fillupDate) TextView mDate;
+        @Bind(R.id.fillupOdometer) TextView mOdometer;
+        @Bind(R.id.fillupDistance) TextView mDistance;
+        @Bind(R.id.fillupSpan) TextView mDays;
+        @Bind(R.id.fillupTotalCost) TextView mTotalCost;
+        @Bind(R.id.fillupVolume) TextView mVolume;
+        @Bind(R.id.fillupCost) TextView mCost;
+        @Bind(R.id.fillupEconomy) TextView mEconomy;
+        @Bind(R.id.noteContent) TextView mNoteContents;
+        @Bind(R.id.headerMenu) ImageButton mMenuButton;
+        @Bind(R.id.location) ImageView mLocation;
+        @Bind(R.id.note) ImageView mNote;
+        @Bind(R.id.full) ImageView mFull;
+        @Bind(R.id.map) ImageView mMap;
+        @Bind(R.id.animateView) LinearLayoutEx mExpandable;
 
         /**
          * Constructor. Initializes an instance of the object and caches the

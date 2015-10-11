@@ -43,19 +43,12 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
     private final String PICKER = "DatePicker";
 
     // Bind the views.
-    @Bind(R.id.fillupDate)
-    Button mDate;
-    @Bind(R.id.fillupOdo)
-    EditTextEx mOdometer;
-    @Bind(R.id.fillupVolume)
-    EditTextEx mVolume;
-    @Bind(R.id.fillupPrice)
-    EditTextEx mPrice;
-    @Bind(R.id.fillupRemark)
-    EditTextEx mRemarks;
-    @Bind(R.id.fillupFullTank)
-    CheckedTextView mFullTank;
-
+    @Bind(R.id.fillupDate) Button mDate;
+    @Bind(R.id.fillupOdo) EditTextEx mOdometer;
+    @Bind(R.id.fillupVolume) EditTextEx mVolume;
+    @Bind(R.id.fillupPrice) EditTextEx mPrice;
+    @Bind(R.id.fillupRemark) EditTextEx mRemarks;
+    @Bind(R.id.fillupFullTank) CheckedTextView mFullTank;
 
     /**
      * Saves the values from the UI into a {@link android.os.Bundle}.
@@ -364,6 +357,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
 
     /**
      * Store the edited {@link Fillup} into the database.
+     *
      * @return true for success, false for failure.
      */
     private boolean addOrUpdateFillup() {
@@ -412,10 +406,10 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
      * Callback of the {@link DatePickerDialog} which is called when the
      * user has selected a date.
      *
-     * @param view The source {@link DatePickerDialog}.
-     * @param year The selected year.
+     * @param view        The source {@link DatePickerDialog}.
+     * @param year        The selected year.
      * @param monthOfYear The selected month.
-     * @param dayOfMonth The selected day of the month.
+     * @param dayOfMonth  The selected day of the month.
      */
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
