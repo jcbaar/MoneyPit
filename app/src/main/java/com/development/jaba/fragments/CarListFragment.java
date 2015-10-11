@@ -7,11 +7,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.CarRowAdapter;
@@ -25,8 +25,13 @@ import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.moneypit.TotalSummaryActivity;
 import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.view.RecyclerViewEx;
 
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Lists the Car entities from the database enabling editing of that list and the
@@ -40,7 +45,10 @@ public class CarListFragment extends Fragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
-    private FloatingActionButton mFab;               // The floating action button.
+
+    @Bind(R.id.listEmpty) TextView mEmptyView;        // The text to show when the list is empty.
+    @Bind(R.id.carList) RecyclerViewEx mCarList;     // The list of vehicles.
+    @Bind(R.id.addFab) FloatingActionButton mFab;    // The floating action button.
 
     /**
      * Static factory method. Creates a new instance of this fragment.
@@ -73,6 +81,7 @@ public class CarListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_drawer, container, false);
+        ButterKnife.bind(this, view);
 
         mContext = new MoneyPitDbContext(getActivity());
         mCars = mContext.getAllCars();
@@ -87,7 +96,7 @@ public class CarListFragment extends Fragment {
         }
 
         mCarAdapter = new CarRowAdapter(getActivity(), mCars);
-        mCarAdapter.setEmptyView(view.findViewById(R.id.listEmpty));
+        mCarAdapter.setEmptyView(mEmptyView);
         mCarAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
             @Override
             public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
@@ -142,19 +151,20 @@ public class CarListFragment extends Fragment {
             }
         });
 
-        RecyclerView carList = (RecyclerView) view.findViewById(R.id.carList);
-        carList.setAdapter(mCarAdapter);
-        carList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        carList.setHasFixedSize(true);
-
-        mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editCar(null, -1);
-            }
-        });
+        mCarList.setAdapter(mCarAdapter);
+        mCarList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCarList.setHasFixedSize(true);
         return view;
+    }
+
+    /**
+     * Adds a new {@link Car}
+     *
+     * @param v The view clicked on.
+     */
+    @OnClick(R.id.addFab)
+    public void onClick(View v) {
+        editCar(null, -1);
     }
 
     @Override

@@ -20,14 +20,17 @@ import com.github.mikephil.charting.utils.ValueFormatter;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * A {@link GraphFragment} subclass containing the distance-per-month
  * and economy-per-month graphs.
  */
 public class CarDetailsEconomyFragment extends GraphFragment {
 
-    private CombinedChart mDistancePerMonth,
-            mEconomyPerMonth;
+    @Bind(R.id.distancePerMonth) CombinedChart mDistancePerMonth;
+    @Bind(R.id.economyPerMonth) CombinedChart mEconomyPerMonth;
 
     /**
      * Called to create a new {@link View}.
@@ -42,9 +45,7 @@ public class CarDetailsEconomyFragment extends GraphFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_car_details_economy, container, false);
-
-        mDistancePerMonth = (CombinedChart) view.findViewById(R.id.distancePerMonth);
-        mEconomyPerMonth = (CombinedChart) view.findViewById(R.id.economyPerMonth);
+        ButterKnife.bind(this, view);
 
         setupChart(mDistancePerMonth, new ValueFormatter() {
             @Override

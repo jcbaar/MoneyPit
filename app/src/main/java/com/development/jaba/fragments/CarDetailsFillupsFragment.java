@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.FillupRowAdapter;
@@ -29,6 +30,10 @@ import com.development.jaba.view.RecyclerViewEx;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Fragment for displaying the details of a {@link Car}.
  */
@@ -39,9 +44,12 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
 
     private MoneyPitDbContext mContext;         // The MoneyPit database mContext.
     private FillupRowAdapter mFillupAdapter;    // Adapter for holding the Fill-up list.
-    private FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
     private OnDataChangedListener mCallback;    // Listener for data changes.
-    private RecyclerViewEx mFillupList;
+
+    @Bind(R.id.addFab) FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+    @Bind(R.id.fillupList) RecyclerViewEx mFillupList;
+    @Bind(R.id.fillupListEmpty) TextView mEmptyText;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,11 +78,12 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car_details_fillups, container, false);
+        ButterKnife.bind(this, view);
 
         mContext = new MoneyPitDbContext(getActivity());
         if (mCar != null) {
             mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null);
-            mFillupAdapter.setEmptyView(view.findViewById(R.id.fillupListEmpty));
+            mFillupAdapter.setEmptyView(mEmptyText);
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
 
                 @Override
@@ -139,23 +148,24 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 }
             });
 
-            mFillupList = (RecyclerViewEx) view.findViewById(R.id.fillupList);
             mFillupList.setAdapter(mFillupAdapter);
             mFillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
             mFillupList.setHasFixedSize(false);
-
-            mFab = (FloatingActionButton) view.findViewById(R.id.addFab);
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editFillup(mCar, null, -1);
-                }
-            });
 
             // Loadup the data from the database.
             new LoadDataTask().execute();
         }
         return view;
+    }
+
+    /**
+     * Adds a new {@link Fillup}.
+     *
+     * @param v The clicked {@link View}.
+     */
+    @OnClick(R.id.addFab)
+    public void onClick(View v) {
+        editFillup(mCar, null, -1);
     }
 
     /**

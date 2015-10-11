@@ -23,6 +23,9 @@ import com.development.jaba.view.RecyclingImageView;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * A {@link BaseDetailsFragment} subclass containing the summary information
  * of a car for a given period.
@@ -30,8 +33,11 @@ import java.util.List;
 public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
     private View mLayout;
-    private LinearLayout mData;
-    private TextView mNoData;
+    @Bind(R.id.summary_data) LinearLayout mData;
+    @Bind(R.id.summary_nodata) TextView mNoData;
+    @Bind(R.id.image) RecyclingImageView mCarImage;
+    @Bind(R.id.carLabel) TextView mCarLabel;
+    @Bind(R.id.labelLayout) LinearLayout mLabelLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,14 +53,11 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car_details_summary, container, false);
+        ButterKnife.bind(this, view);
         mLayout = view;
-        mData = (LinearLayout) view.findViewById(R.id.summary_data);
-        mNoData = (TextView) view.findViewById(R.id.summary_nodata);
 
         if (mCar != null) {
-            RecyclingImageView image = (RecyclingImageView) view.findViewById(R.id.image);
-
-            new GetCarImageHelper(getActivity(), image, mCar, true).execute();
+            new GetCarImageHelper(getActivity(), mCarImage, mCar, true).execute();
             summarize();
         }
         return view;
@@ -167,10 +170,8 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             if(!isAdded()) {
                 return;
             }
-            TextView label = (TextView) mLayout.findViewById(R.id.carLabel);
-            label.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
-            LinearLayout ll = (LinearLayout) mLayout.findViewById(R.id.labelLayout);
-            ll.setVisibility(View.VISIBLE);
+            mCarLabel.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
+            mLabelLayout.setVisibility(View.VISIBLE);
 
             if(result == null) {
                 mNoData.setVisibility(View.VISIBLE);

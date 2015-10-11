@@ -26,16 +26,23 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Fragment class for handling database backup and restore to Google Drive.
  */
 public class DriveBackupFragment extends BaseDriveFragment {
     private DriveFolder mBackupFolder;
-    private Button mBackup, mRestore, mAccount;
-    private Spinner mRestoreList;
-    private CircularProgressView mProgress;
-    private LinearLayout mContainer;
     private ArrayAdapter<RestoreFile> mAdapter;
+
+    @Bind(R.id.backup) Button mBackup;
+    @Bind(R.id.restore) Button mRestore;
+    @Bind(R.id.account) Button mAccount;
+    @Bind(R.id.restore_list) Spinner mRestoreList;
+    @Bind(R.id.progress) CircularProgressView mProgress;
+    @Bind(R.id.layoutContainer) LinearLayout mContainer;
 
     /**
      * Static factory method. Creates a new instance of a {@link com.development.jaba.fragments.DriveBackupFragment} class.
@@ -84,51 +91,49 @@ public class DriveBackupFragment extends BaseDriveFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_backup_restore, container, false);
+        ButterKnife.bind(this, view);
 
-        mContainer = (LinearLayout) view.findViewById(R.id.layoutContainer);
         mContainer.setVisibility(View.GONE);
-
-        mProgress = (CircularProgressView) view.findViewById(R.id.progress);
-        mProgress.start();
-
-        mRestoreList = (Spinner) view.findViewById(R.id.restore_list);
-        mBackup = (Button) view.findViewById(R.id.backup);
-        if (mBackup != null) {
-            mBackup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    backup();
-                }
-            });
-        }
-        mRestore = (Button) view.findViewById(R.id.restore);
-        if (mRestore != null) {
-            mRestore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.showYesNoDialog(getString(R.string.warning),
-                            Html.fromHtml(getString(R.string.restore_warning)),
-                            new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    super.onPositive(dialog);
-                                    restore();
-                                }
-                            }, getActivity());
-                }
-            });
-        }
-        mAccount = (Button) view.findViewById(R.id.account);
-        if (mAccount != null) {
-            mAccount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAccount.setEnabled(false);
-                    changeAccount();
-                }
-            });
-        }
         return view;
+    }
+
+    /**
+     * Perform a backup.
+     *
+     * @param v The {@link View} clicked on.
+     */
+    @OnClick(R.id.backup)
+    public void onBackup(View v) {
+        backup();
+    }
+
+    /**
+     * Perform a restore.
+     *
+     * @param v The {@link View} clicked on.
+     */
+    @OnClick(R.id.restore)
+    public void onRestore(View v) {
+        DialogHelper.showYesNoDialog(getString(R.string.warning),
+                Html.fromHtml(getString(R.string.restore_warning)),
+                new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        restore();
+                    }
+                }, getActivity());
+    }
+
+    /**
+     * Perform a account change.
+     *
+     * @param v The {@link View} clicked on.
+     */
+    @OnClick(R.id.account)
+    public void onAccount(View v) {
+        mAccount.setEnabled(false);
+        changeAccount();
     }
 
     /**
@@ -138,6 +143,9 @@ public class DriveBackupFragment extends BaseDriveFragment {
         new DriveBackupAsyncTask(getActivity(), getGoogleApiClient(), mBackupFolder).execute();
     }
 
+    /**
+     * Performs a database restore.
+     */
     private synchronized void restore() {
         if (mAdapter != null) {
             mAccount.setEnabled(false);
