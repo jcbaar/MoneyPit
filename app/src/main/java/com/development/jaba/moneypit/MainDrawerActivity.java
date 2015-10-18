@@ -13,7 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.view.View;
 
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.DriveBackupFragment;
@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 
 public class MainDrawerActivity extends BaseActivity {
 
-    @Bind(R.id.headerBackground) LinearLayout mHeader;
     @Bind(R.id.drawer_layout) DrawerLayout mDrawer;
     @Bind(R.id.navigation_drawer) NavigationView mDrawerView;
 
@@ -67,8 +66,15 @@ public class MainDrawerActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        // Well...Uhm. They changed the NavigationView header behaviour in the
+        // 23.1.0 version of the support libraries. We cannot @Bind() the header
+        // anymore...
+        //
+        // We simply do not declare the header in the layout but we inflate it here
+        // in code. Oh wel...
+        View header = mDrawerView.inflateHeaderView(R.layout.navigation_header);
         Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
-        UtilsHelper.setBackgroundDrawable(mHeader, drawable);
+        UtilsHelper.setBackgroundDrawable(header, drawable);
 
         mTitle = getTitle();
         mToggle = setupDrawerToggle();

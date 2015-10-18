@@ -210,9 +210,13 @@ public class BaseDriveFragment extends Fragment implements
      * Changes the account used for drive backup and restore.
      */
     public void changeAccount() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null) {
             mResolvingError = false;
-            mGoogleApiClient.clearDefaultAccountAndReconnect();
+            if (mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.clearDefaultAccountAndReconnect();
+            } else {
+                mGoogleApiClient.connect();
+            }
         }
     }
 

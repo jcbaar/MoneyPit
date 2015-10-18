@@ -27,7 +27,7 @@ public class CircularProgressDrawable extends Drawable
     private static final LinearInterpolator ANGLE_INTERPOLATOR = new LinearInterpolator();
     private static final DecelerateInterpolator SWEEP_INTERPOLATOR = new DecelerateInterpolator();
     private static final int ANGLE_ANIMATOR_DURATION = 2000;
-    private static final int SWEEP_ANIMATOR_DURATION = 600;
+    private static final int SWEEP_ANIMATOR_DURATION = 800;
     private static final int MIN_SWEEP_ANGLE = 30;
     private final RectF fBounds = new RectF();
 

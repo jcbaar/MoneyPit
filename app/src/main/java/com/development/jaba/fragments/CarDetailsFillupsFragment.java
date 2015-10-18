@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.adapters.FillupRowAdapter;
 import com.development.jaba.adapters.OnRecyclerItemClicked;
@@ -113,18 +115,19 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                         case 1:
                             DialogHelper.showYesNoDialog(String.format(getString(R.string.dialog_delete_car_title), FormattingHelper.toShortDate(mFillupAdapter.getLastClickedItem().getDate())),
                                     getText(R.string.dialog_delete_fillup_content),
-                                    new MaterialDialog.ButtonCallback() {
+                                    new MaterialDialog.SingleButtonCallback() {
                                         @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            super.onPositive(dialog);
-                                            Fillup selectedFillup = mFillupAdapter.getItem(position);
-                                            mContext.deleteFillup(selectedFillup);
+                                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                                            if (dialogAction == DialogAction.POSITIVE) {
+                                                Fillup selectedFillup = mFillupAdapter.getItem(position);
+                                                mContext.deleteFillup(selectedFillup);
 
-                                            new LoadDataTask().execute();
+                                                new LoadDataTask().execute();
 
-                                            // Notify the activity the data has changed.
-                                            if (mCallback != null) {
-                                                mCallback.onDataChanged(mCurrentYear);
+                                                // Notify the activity the data has changed.
+                                                if (mCallback != null) {
+                                                    mCallback.onDataChanged(mCurrentYear);
+                                                }
                                             }
                                         }
                                     },

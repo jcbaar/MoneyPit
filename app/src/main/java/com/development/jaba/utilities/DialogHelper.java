@@ -36,14 +36,14 @@ public class DialogHelper {
      * @param callback The callback to listen to dialog button clicks.
      * @param context  The context which is opening the dialog.
      */
-    public static void showYesNoDialog(CharSequence title, CharSequence message, MaterialDialog.ButtonCallback callback, Context context) {
+    public static void showYesNoDialog(CharSequence title, CharSequence message, MaterialDialog.SingleButtonCallback callback, Context context) {
         MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
 
         dialogBuilder.content(message);
         dialogBuilder.title(title);
         dialogBuilder.positiveText(context.getString(R.string.dialog_yes));
         dialogBuilder.negativeText(context.getString(R.string.dialog_no));
-        dialogBuilder.callback(callback);
+        dialogBuilder.onAny(callback);
         dialogBuilder.show();
     }
 }

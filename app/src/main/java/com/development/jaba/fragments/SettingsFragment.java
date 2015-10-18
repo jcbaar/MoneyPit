@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
@@ -46,23 +48,25 @@ public class SettingsFragment extends PreferenceFragment {
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    DialogHelper.showYesNoDialog(getString(R.string.warning), getString(R.string.empty_cache), new MaterialDialog.ButtonCallback() {
+                    DialogHelper.showYesNoDialog(getString(R.string.warning),
+                            getString(R.string.empty_cache),
+                            new MaterialDialog.SingleButtonCallback() {
                                 @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    super.onPositive(dialog);
+                                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                                    if (dialogAction == DialogAction.POSITIVE) {
+                                        File cache = new File(Environment.getExternalStorageDirectory() + "/MoneyPit/mapcache/");
+                                        String[] files = cache.list();
+                                        boolean ok = true;
+                                        for (String f : files) {
+                                            File file = new File(cache.getAbsolutePath() + "/" + f);
+                                            ok &= file.delete();
+                                        }
 
-                                    File cache = new File(Environment.getExternalStorageDirectory() + "/MoneyPit/mapcache/");
-                                    String[] files = cache.list();
-                                    boolean ok = true;
-                                    for (String f : files) {
-                                        File file = new File(cache.getAbsolutePath() + "/" + f);
-                                        ok &= file.delete();
-                                    }
-
-                                    if (ok) {
-                                        Toast.makeText(getActivity(), getString(R.string.cache_purged), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(getActivity(), getString(R.string.cache_purge_failed), Toast.LENGTH_SHORT).show();
+                                        if (ok) {
+                                            Toast.makeText(getActivity(), getString(R.string.cache_purged), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), getString(R.string.cache_purge_failed), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             },

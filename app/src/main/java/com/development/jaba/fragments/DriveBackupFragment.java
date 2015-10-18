@@ -2,6 +2,7 @@ package com.development.jaba.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.drive.DriveCheckBackupFolderAsyncTask;
 import com.development.jaba.drive.DriveCreateBackupAsyncTask;
@@ -22,6 +24,7 @@ import com.development.jaba.drive.RestoreFile;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.CircularProgressView;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
@@ -63,6 +66,19 @@ public class DriveBackupFragment extends BaseDriveFragment {
 
         // Check for the existence of the backup folder.
         new CheckBackupFolderAsyncTask(getActivity(), getGoogleApiClient()).execute();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (result.getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED) {
+            mContainer.setVisibility(View.VISIBLE);
+            mBackup.setEnabled(false);
+            mRestore.setEnabled(false);
+            mRestoreList.setEnabled(false);
+            mAccount.setEnabled(true);
+            mProgress.stop();
+        }
+        super.onConnectionFailed(result);
     }
 
     @Override
@@ -116,11 +132,12 @@ public class DriveBackupFragment extends BaseDriveFragment {
     public void onRestore(View v) {
         DialogHelper.showYesNoDialog(getString(R.string.warning),
                 Html.fromHtml(getString(R.string.restore_warning)),
-                new MaterialDialog.ButtonCallback() {
+                new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        restore();
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        if (dialogAction == DialogAction.POSITIVE) {
+                            restore();
+                        }
                     }
                 }, getActivity());
     }
@@ -214,6 +231,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
                     mAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_template_smalll, files);
                     mRestoreList.setAdapter(mAdapter);
                     mRestore.setEnabled(getResults().size() > 0);
+                    mRestoreList.setEnabled(getResults().size() > 0);
                 }
             }
         }
