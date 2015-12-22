@@ -1,5 +1,6 @@
 package com.development.jaba.moneypit;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -450,6 +451,7 @@ public class AddOrEditCarActivity extends BaseActivity {
      */
     protected File createImageFile() throws IOException {
         // Create an image file name
+        @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(

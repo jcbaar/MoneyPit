@@ -23,7 +23,7 @@ import com.development.jaba.drive.DriveRestoreBackupAsyncTask;
 import com.development.jaba.drive.RestoreFile;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
-import com.development.jaba.view.CircularProgressView;
+import com.development.jaba.view.MaterialProgressViewEx;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.DriveFolder;
@@ -44,7 +44,7 @@ public class DriveBackupFragment extends BaseDriveFragment {
     @Bind(R.id.restore) Button mRestore;
     @Bind(R.id.account) Button mAccount;
     @Bind(R.id.restore_list) Spinner mRestoreList;
-    @Bind(R.id.progress) CircularProgressView mProgress;
+    @Bind(R.id.progress) MaterialProgressViewEx mProgress;
     @Bind(R.id.layoutContainer) LinearLayout mContainer;
 
     /**

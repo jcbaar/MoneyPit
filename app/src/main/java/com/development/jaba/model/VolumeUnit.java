@@ -16,7 +16,7 @@ public enum VolumeUnit {
      * Constructor. Initializes an instance of the object.
      * @param value The integer value of the instance.
      */
-    private VolumeUnit(int value) {
+    VolumeUnit(int value) {
         _value = value;
     }
 

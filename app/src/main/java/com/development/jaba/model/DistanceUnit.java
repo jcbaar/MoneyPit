@@ -16,7 +16,7 @@ public enum DistanceUnit
      * Constructor. Initializes an instance of the object.
      * @param value The integer value of the instance.
      */
-    private DistanceUnit(int value) {
+    DistanceUnit(int value) {
         _value = value;
     }
 

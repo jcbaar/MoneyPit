@@ -212,4 +212,8 @@
         <item name="android:src">?attr/overflowButton</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

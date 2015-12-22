@@ -14,14 +14,9 @@
             android:id="@+id/app_bar"
             layout="@layout/app_bar" />
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/sliding_tabs"
-            style="@style/MoneyPitTabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/actionbar_elevation"
-            app:tabGravity="fill"
-            app:tabMode="scrollable" />
+        <include
+            layout="@layout/tab_bar"/>
+
     </android.support.design.widget.AppBarLayout>
 
     <com.development.jaba.view.ViewPagerEx

@@ -16,10 +16,8 @@
         <attr name="lleAnimationDuration" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="CircularProgressView">
-        <attr name="cpvColor" format="color" />
-        <attr name="cpvStartDelay" format="integer" />
-        <attr name="cvpThickness" format="dimension" />
+    <declare-styleable name="MaterialProgressViewEx">
+        <attr name="mpb_StartDelay" format="integer"/>
     </declare-styleable>
 
     <!-- Styled attributes -->

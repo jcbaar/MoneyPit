@@ -1,11 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context="com.development.jaba.moneypit.DriveBackupActivity"
-    android:fillViewport="true">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -76,7 +73,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/activity_vertical_margin">
 
                 <ImageView
                     android:theme="@style/TintedImage"
@@ -180,14 +178,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.development.jaba.view.CircularProgressView
+
+        <com.development.jaba.view.MaterialProgressViewEx
             android:id="@+id/progress"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="20dp"
-            app:cpvStartDelay="700"
-            app:cpvColor="?attr/colorPrimary"
-            app:cvpThickness="4dp"
-            android:layout_centerInParent="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="?attr/colorPrimary"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            app:mpb_StartDelay="700"
+            app:mpb_tintMode="src_atop"
+            app:mpb_progressStyle="circular"
+            style="@style/Widget.MaterialProgressBar.ProgressBar"/>
     </RelativeLayout>
 </ScrollView>

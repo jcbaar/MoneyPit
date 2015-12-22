@@ -156,6 +156,4 @@
     <string name="account_summary">When you tap on the button below you will be asked to select an account to use for backup and restore.
     If you choose an account for which you did not give permission before, permission will be asked first.</string>
     <string name="fillupDate">Date</string>
-
-
 </resources>

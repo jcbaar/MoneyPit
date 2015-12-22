@@ -41,4 +41,5 @@ dependencies {
     compile('com.afollestad.material-dialogs:commons:0.8.4.2@aar') {
         transitive = true
     }
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.4'
 }
