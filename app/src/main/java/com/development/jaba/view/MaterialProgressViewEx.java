@@ -54,12 +54,24 @@ public class MaterialProgressViewEx extends MaterialProgressBar {
                 setVisibility(View.VISIBLE);
             }
         };
-
+        clampDelay();
         setVisibility(View.GONE);
     }
 
+    /**
+     * Clamps the start delay time between 0 and 5000 ms.
+     */
+    private void clampDelay() {
+        if(mStartDelay < 0) mStartDelay = 0; else if (mStartDelay > 5000) mStartDelay = 5000;
+    }
+    /**
+     * Set's the delay time in milliseconds before the progress indicator actually becomes visible after
+     * the {@link #start()} method is called.
+     * @param delayInMs The delay time in milliseconds.
+     */
     public void setStartDelay(int delayInMs) {
         mStartDelay = delayInMs;
+        clampDelay();
     }
 
     /**

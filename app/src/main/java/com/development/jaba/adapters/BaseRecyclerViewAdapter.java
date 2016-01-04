@@ -11,7 +11,7 @@ import android.view.View;
  * @param <VH> The type of the {@link com.development.jaba.adapters.BaseViewHolder} derived type that will act
  *             as the {@link android.support.v7.widget.RecyclerView.ViewHolder} for this {@link android.support.v7.widget.RecyclerView.Adapter}.
  */
-public abstract class BaseRecyclerViewAdapter<VH> extends RecyclerView.Adapter
+public abstract class BaseRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>
         implements OnRecyclerItemClicked {
 
     private View mEmptyView;

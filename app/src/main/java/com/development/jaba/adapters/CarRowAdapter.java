@@ -68,24 +68,23 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
      * @param position The position to setup the data for.
      */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final CarRowViewHolder vh = (CarRowViewHolder) holder;
+    public void onBindViewHolder(CarRowViewHolder holder, int position) {
         final Car item = mData.get(position);
 
         // Replace the default picture if one is provided from the database.
-        new GetCarImageHelper(mContext, vh.getImage(), item, false).execute();
+        new GetCarImageHelper(mContext, holder.getImage(), item, false).execute();
 
         // Setup the View with the item data.
-        vh.getMake().setText(item.toString());
-        vh.getBuild().setText(String.valueOf(item.getLicensePlate()) + " (" + String.valueOf(item.getBuildYear()) + ")");
+        holder.getMake().setText(item.toString());
+        holder.getBuild().setText(String.valueOf(item.getLicensePlate()) + " (" + String.valueOf(item.getBuildYear()) + ")");
 
         CarAverage avg = item.getAverages();
         if (avg != null) {
-            vh.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
+            holder.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
                     FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
                     FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
         } else {
-            vh.getAverage().setText(R.string.no_data_to_average);
+            holder.getAverage().setText(R.string.no_data_to_average);
         }
     }
 

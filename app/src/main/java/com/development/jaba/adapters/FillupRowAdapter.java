@@ -130,21 +130,20 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      * @param position The position to setup the data for.
      */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final FillupRowViewHolder vh = (FillupRowViewHolder) holder;
+    public void onBindViewHolder(FillupRowViewHolder holder, final int position) {
         final Fillup item = mData.get(position);
 
-        vh.getDate().setText(FormattingHelper.toShortDate(item.getDate()));
-        vh.getOdometer().setText(FormattingHelper.toDistance(mCar, item.getOdometer()));
-        vh.getDistance().setText(FormattingHelper.toDistance(mCar, item.getDistance()));
-        vh.getDays().setText(FormattingHelper.toSpanInDays(item.getDaysSinceLastFillup()));
-        vh.getTotalCost().setText(FormattingHelper.toPrice(mCar, item.getTotalPrice()));
-        vh.getVolume().setText(FormattingHelper.toVolumeUnit(mCar, item.getVolume()));
-        vh.getCost().setText(FormattingHelper.toPricePerVolumeUnit(mCar, item.getPrice()));
-        vh.getEconomy().setText(FormattingHelper.toEconomy(mCar, item.getFuelConsumption()));
-        vh.getLocation().setVisibility(item.getLongitude() == 0 && item.getLatitude() == 0 ? View.INVISIBLE : View.VISIBLE);
-        vh.getNote().setVisibility(TextUtils.isEmpty(item.getNote()) ? View.INVISIBLE : View.VISIBLE);
-        vh.getNoteContent().setText(item.getNote());
+        holder.getDate().setText(FormattingHelper.toShortDate(item.getDate()));
+        holder.getOdometer().setText(FormattingHelper.toDistance(mCar, item.getOdometer()));
+        holder.getDistance().setText(FormattingHelper.toDistance(mCar, item.getDistance()));
+        holder.getDays().setText(FormattingHelper.toSpanInDays(item.getDaysSinceLastFillup()));
+        holder.getTotalCost().setText(FormattingHelper.toPrice(mCar, item.getTotalPrice()));
+        holder.getVolume().setText(FormattingHelper.toVolumeUnit(mCar, item.getVolume()));
+        holder.getCost().setText(FormattingHelper.toPricePerVolumeUnit(mCar, item.getPrice()));
+        holder.getEconomy().setText(FormattingHelper.toEconomy(mCar, item.getFuelConsumption()));
+        holder.getLocation().setVisibility(item.getLongitude() == 0 && item.getLatitude() == 0 ? View.INVISIBLE : View.VISIBLE);
+        holder.getNote().setVisibility(TextUtils.isEmpty(item.getNote()) ? View.INVISIBLE : View.VISIBLE);
+        holder.getNoteContent().setText(item.getNote());
 
         // When the fill-up is a partial fill-up we mark this by giving the fill-up
         // icon the accent color.
@@ -153,21 +152,21 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
             d.mutate().setColorFilter(ContextCompat.getColor(mContext, R.color.accentColor), mode);
         }
-        vh.getFull().setImageDrawable(d);
+        holder.getFull().setImageDrawable(d);
 
         // No note? No need to show the view then.
         boolean hasNote = !TextUtils.isEmpty(item.getNote());
         if (!hasNote) {
-            vh.getNoteContent().setVisibility(View.GONE);
+            holder.getNoteContent().setVisibility(View.GONE);
         } else {
-            vh.getNoteContent().setVisibility(View.VISIBLE);
+            holder.getNoteContent().setVisibility(View.VISIBLE);
         }
 
         // When the item to show has a lat/lon position we make the ImageView for the
         // map visible. Also we append the navigate to item to the popup menu.
         //
         // Otherwise we hide the ImageView and navigate to item.
-        PopupMenu menu = vh.getPopupMenu();
+        PopupMenu menu = holder.getPopupMenu();
         if (menu != null) {
             menu.getMenu().removeGroup(MENU_NAV);
         }
@@ -176,39 +175,39 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
             if (menu != null) {
                 menu.getMenu().add(MENU_NAV, MENU_NAV, MENU_NAV, R.string.navigate_to);
             }
-            vh.getMap().setVisibility(View.VISIBLE);
+            holder.getMap().setVisibility(View.VISIBLE);
         } else {
-            vh.getMap().setVisibility(View.GONE);
+            holder.getMap().setVisibility(View.GONE);
         }
 
         if (hasNote || hasMap) {
-            vh.getExpandable().setExpansionStateListener(new LinearLayoutEx.ExpansionStateListener() {
+            holder.getExpandable().setExpansionStateListener(new LinearLayoutEx.ExpansionStateListener() {
                 @Override
                 public void OnExpansionStateChanged(boolean isExpanded) {
                     onExpansionStateChanged(position, isExpanded);
                 }
             });
         } else {
-            vh.getExpandable().setExpansionStateListener(null);
+            holder.getExpandable().setExpansionStateListener(null);
         }
 
         // Forces the LinearLayoutEx to re-compute it's height necessary
         // to display all available information.
-        vh.getExpandable().recomputeHeight();
+        holder.getExpandable().recomputeHeight();
 
         // See if this is an "expanded" position. If it is we
         // need to expand it without animation.
         boolean wasExpanded = false;
         for (String i : mExpandedItems) {
             if (i.equals(String.valueOf(position))) {
-                vh.getExpandable().expandNoAnim();
+                holder.getExpandable().expandNoAnim();
                 wasExpanded = true;
 
                 // When we have a lat/lon we need to load the map from the internet or
                 // the local cache. Note that we only do this when this view is to be
                 // expanded.
                 if (hasMap) {
-                    showMap(vh.getMap(), item.getLatitude(), item.getLongitude());
+                    showMap(holder.getMap(), item.getLatitude(), item.getLongitude());
                 }
                 break;
             }
@@ -217,7 +216,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         // This was not an expanded position. Collapse it without
         // animation.
         if (!wasExpanded) {
-            vh.getExpandable().collapseNoAnim();
+            holder.getExpandable().collapseNoAnim();
         }
     }
 
