@@ -1,10 +1,16 @@
 package com.development.jaba.moneypit;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.development.jaba.database.MoneyPitDbContext;
@@ -23,6 +30,8 @@ import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.SettingsHelper;
+import com.development.jaba.utilities.UtilsHelper;
+import com.development.jaba.view.MaterialProgressViewEx;
 import com.development.jaba.view.PageTransformerEx;
 import com.development.jaba.view.ViewPagerEx;
 
@@ -31,50 +40,30 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class CarDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
+public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
-    private Car mCarToShow;                     // The car we are currently showing the details for.
-    private int mCurrentYear;                   // The year we are currently showing the details for.
-    private SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
-    private MoneyPitDbContext mDbContext;               // Database context.
-    private SettingsHelper mSettings;                   // Settings context.
-
+    @SuppressWarnings("unused")
+    @Bind(R.id.image) ImageView mCarImage;
+    @SuppressWarnings("unused")
     @Bind(R.id.pager) ViewPagerEx mViewPager;              // ViewPager that serves as a host for the fragments.
+    @SuppressWarnings("unused")
     @Bind(R.id.sliding_tabs) TabLayout mSlidingTabLayout;  // Sliding tab that controls the ViewPager.
-    Spinner mYearSpinner;                                  // Year selection spinner.
+    @SuppressWarnings("unused")
+    @Bind(R.id.addFab) FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+
+    private SettingsHelper mSettings;
+    private Car mCarToShow;
+    private int mCurrentYear;
+    private MoneyPitDbContext mDbContext;
+    private Spinner mYearSpinner;
+    private SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    /**
-     * Makes sure the {@link com.development.jaba.moneypit.BaseActivity} knows which layout to inflate.
-     * @return The resource ID of the layout to inflate.
-     */
-    protected int getLayoutResource() {
-        return R.layout.activity_car_details;
-    }
-
-    /**
-     * Reads the last selected year for this car from the settings. If none was
-     * saved yet return the current year.
-     * @return The selected year or the current year.
-     */
-    protected int getCarYearFromPrefs() {
-        String key = mCarToShow.toString() + "_year";
-        return mSettings.getIntegerValue(key, DateHelper.getYearFromDate(new Date()));
-    }
-
-    /**
-     * Saves the currently selected year for the car to the
-     * settings.
-     */
-    protected void saveCarYearToPrefs() {
-        String key = mCarToShow.toString() + "_year";
-        mSettings.setIntegerValue(key, mCurrentYear);
     }
 
     @Override
@@ -98,8 +87,22 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
             mCurrentYear = getCarYearFromPrefs();
         }
 
+        Bitmap carImage = null;
         if(mCarToShow != null) {
             setTitle(mCarToShow.toString());
+            carImage = mCarToShow.getImage();
+            if(carImage != null) {
+                mCarImage.setImageBitmap(carImage);
+            }
+        }
+
+        // Ideally I would collapse the ImageView and prevent the nested scrolling from
+        // resizing the AppBarLayout without affecting other layout behaviours when there
+        // is no vehicle image. Since I have yet to find a way to do that I will simply
+        // load a tinted header background image instead...
+        if(carImage == null) {
+            Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
+            UtilsHelper.setBackgroundDrawable(mCarImage, drawable);
         }
 
         // Check if there is any data available.
@@ -151,8 +154,71 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.DEPTH));
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(mViewPager.getSwipeEnabled() && position == 0) {
+                    mFab.show();
+                }
+                else {
+                    mFab.hide();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         // Setup the page sliding functionality.
         checkSlidingAvailability();
+
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_vehicle_details;
+    }
+
+    /**
+     * Passes the FAB click to the first fragment (the fill up list).
+     *
+     */
+    @SuppressWarnings("unused")
+    @OnClick(R.id.addFab)
+    public void onClick() {
+        BaseDetailsFragment b = mSectionsPagerAdapter.getFragmentAt(0);
+        if(b != null) {
+            b.onFabClicked();
+        }
+//        editFillup(mCar, null, -1);
+    }
+
+    /**
+     * Reads the last selected year for this car from the settings. If none was
+     * saved yet return the current year.
+     * @return The selected year or the current year.
+     */
+    private int getCarYearFromPrefs() {
+        if(mCarToShow != null) {
+            String key = mCarToShow.toString() + "_year";
+            return mSettings.getIntegerValue(key, DateHelper.getYearFromDate(new Date()));
+        }
+        return 0;
+    }
+
+    /**
+     * Saves the currently selected year for the car to the
+     * settings.
+     */
+    private void saveCarYearToPrefs() {
+        String key = mCarToShow.toString() + "_year";
+        mSettings.setIntegerValue(key, mCurrentYear);
     }
 
     /**
@@ -193,6 +259,22 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         }
 
         mViewPager.setSwipeEnabled(hasData);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
@@ -265,7 +347,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
          *
          * @param position The position for which to get the {@link com.development.jaba.fragments.BaseDetailsFragment}.
          * @return The {@link com.development.jaba.fragments.BaseDetailsFragment} instance or null of it is not valid or
-         * the poisition is out of bounds.
+         * the position is out of bounds.
          */
         public BaseDetailsFragment getFragmentAt(int position) {
             if (position >= 0 && position < NUM_PAGES) {
@@ -276,7 +358,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
 
         /**
          * Called each time the {@link android.support.v4.view.ViewPager} want's to get to a {@link android.support.v4.app.Fragment}
-         * instance. We use this to manage the instances for this {@link com.development.jaba.moneypit.CarDetailsActivity.SectionsPagerAdapter}.
+         * instance. We use this to manage the instances for this {@link com.development.jaba.moneypit.VehicleDetailsActivity.SectionsPagerAdapter}.
          *
          * @param container The {@link android.view.ViewGroup}.
          * @param position  The position to get the instance for.
@@ -310,7 +392,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
          * Called to actually instantiate a new {@link com.development.jaba.fragments.BaseDetailsFragment} for the
          * {@link android.support.v4.view.ViewPager}.
          *
-         * @param position The position for which an instance hase to be created.
+         * @param position The position for which an instance has to be created.
          * @return The instance of the {@link com.development.jaba.fragments.BaseDetailsFragment} derived class.
          */
         @Override
@@ -329,7 +411,7 @@ public class CarDetailsActivity extends BaseActivity implements CarDetailsFillup
         }
 
         /**
-         * Gets the number of pages in this {@link com.development.jaba.moneypit.CarDetailsActivity.SectionsPagerAdapter}.
+         * Gets the number of pages in this {@link com.development.jaba.moneypit.VehicleDetailsActivity.SectionsPagerAdapter}.
          *
          * @return The page count.
          */

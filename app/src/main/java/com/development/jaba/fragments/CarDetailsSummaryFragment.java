@@ -1,5 +1,6 @@
 package com.development.jaba.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,8 +18,6 @@ import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
-import com.development.jaba.utilities.GetCarImageHelper;
-import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Date;
 import java.util.List;
@@ -33,10 +32,13 @@ import butterknife.ButterKnife;
 public class CarDetailsSummaryFragment extends BaseDetailsFragment {
 
     private View mLayout;
+    @SuppressWarnings("unused")
     @Bind(R.id.summary_data) LinearLayout mData;
+    @SuppressWarnings("unused")
     @Bind(R.id.summary_nodata) TextView mNoData;
-    @Bind(R.id.image) RecyclingImageView mCarImage;
+    @SuppressWarnings("unused")
     @Bind(R.id.carLabel) TextView mCarLabel;
+    @SuppressWarnings("unused")
     @Bind(R.id.labelLayout) LinearLayout mLabelLayout;
 
     @Override
@@ -55,17 +57,19 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
         View view = inflater.inflate(R.layout.fragment_car_details_summary, container, false);
         ButterKnife.bind(this, view);
         mLayout = view;
-
-        if (mCar != null) {
-            new GetCarImageHelper(getActivity(), mCarImage, mCar, true).execute();
-            summarize();
-        }
+        summarize();
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        summarize();
+    }
+
+    @Override
+    public void setCar(Car car) {
+        super.setCar(car);
         summarize();
     }
 
@@ -78,9 +82,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
     @Override
     public void onYearSelected(int year) {
         super.onYearSelected(year);
-        if (mCar != null) {
-            summarize();
-        }
+        summarize();
     }
 
     /**
@@ -88,7 +90,9 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
      * process the data.
      */
     private void summarize() {
-        new SummaryTask().execute();
+        if(mCar != null) {
+            new SummaryTask().execute();
+        }
     }
 
     /**
@@ -164,6 +168,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
          *
          * @param result The {@link com.development.jaba.model.CarSummary}.
          */
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(CarSummary result) {
 

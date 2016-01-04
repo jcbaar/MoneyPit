@@ -15,14 +15,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/settings_margin">
 
-            <com.development.jaba.view.RecyclingImageView
-                android:id="@+id/image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:scaleType="center"
-                android:src="@drawable/nopicture" />
-
             <LinearLayout
                 android:id="@+id/labelLayout"
                 android:layout_width="wrap_content"

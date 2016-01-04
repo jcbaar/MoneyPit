@@ -2,13 +2,14 @@ package com.development.jaba.fragments;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.development.jaba.moneypit.BaseActivity;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DialogHelper;
 
@@ -17,12 +18,13 @@ import java.io.File;
 /**
  * A simple fragment for editing the application settings.
  */
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     /**
      * Static factory method. Creates a new instance of this fragment.
      * @return The created SettingsFragment.
      */
+    @SuppressWarnings("unused")
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
     }
@@ -33,14 +35,8 @@ public class SettingsFragment extends PreferenceFragment {
     public SettingsFragment() {
     }
 
-    /**
-     * Called when the fragment is created. Here the preferences
-     * screen from the resources is added to the fragment.
-     * @param savedInstanceState Saved instance data.
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.preferences);
 
         Preference pref = findPreference("emptyMapCache");
@@ -74,6 +70,23 @@ public class SettingsFragment extends PreferenceFragment {
                     return true;
                 }
             });
+
+            // This is a pity... The MaterialDialogs library does support a bunch of preference dialogs
+            // but they are not derived from android.support.v7.preference.Preference. This will not
+            // work properly with support preferences so we need to do this ourselves.
+            //
+            // The reason for not using the "normal" ListPreference is that it does not theme properly.
+            // The buttons will not used the theme accent colors.
+            pref = findPreference("selected_theme");
+            if (pref != null) {
+                pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        DialogHelper.showThemePreferencesDialog((BaseActivity)getActivity());
+                        return false;
+                    }
+                });
+            }
         }
     }
 }

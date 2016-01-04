@@ -22,10 +22,10 @@ import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.AddOrEditCarActivity;
-import com.development.jaba.moneypit.CarDetailsActivity;
 import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.moneypit.TotalSummaryActivity;
+import com.development.jaba.moneypit.VehicleDetailsActivity;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.view.RecyclerViewEx;
 
@@ -48,8 +48,11 @@ public class CarListFragment extends Fragment {
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
 
+    @SuppressWarnings("unused")
     @Bind(R.id.listEmpty) TextView mEmptyView;        // The text to show when the list is empty.
+    @SuppressWarnings("unused")
     @Bind(R.id.carList) RecyclerViewEx mCarList;     // The list of vehicles.
+    @SuppressWarnings("unused")
     @Bind(R.id.addFab) FloatingActionButton mFab;    // The floating action button.
 
     /**
@@ -88,8 +91,8 @@ public class CarListFragment extends Fragment {
         mContext = new MoneyPitDbContext(getActivity());
         mCars = mContext.getAllCars();
 
-        List<CarAverage> avgs = mContext.getCarAverages();
-        for (CarAverage avg : avgs) {
+        List<CarAverage> averages = mContext.getCarAverages();
+        for (CarAverage avg : averages) {
             for (Car car : mCars) {
                 if (car.getId() == avg.getCarId()) {
                     car.setAverages(avg);
@@ -163,10 +166,10 @@ public class CarListFragment extends Fragment {
     /**
      * Adds a new {@link Car}
      *
-     * @param v The view clicked on.
      */
+    @SuppressWarnings("unused")
     @OnClick(R.id.addFab)
-    public void onClick(View v) {
+    public void onClick() {
         editCar(null, -1);
     }
 
@@ -189,7 +192,7 @@ public class CarListFragment extends Fragment {
      * @param car The {@link Car} which to show in the details page.
      */
     private void showCarDetails(Car car) {
-        Intent carDetails = new Intent(getActivity(), CarDetailsActivity.class);
+        Intent carDetails = new Intent(getActivity(), VehicleDetailsActivity.class);
         if (car != null) {
             carDetails.putExtra(Keys.EK_CAR, car);
         }

@@ -12,8 +12,8 @@ import com.development.jaba.moneypit.Keys;
  */
 public class BaseDetailsFragment extends Fragment {
 
-    public Car mCar;
-    public int mCurrentYear = 0;
+    protected Car mCar;
+    protected int mCurrentYear = 0;
 
     /**
      * Default empty constructor
@@ -28,14 +28,17 @@ public class BaseDetailsFragment extends Fragment {
      * @param c The class to instantiate.
      * @return The created fragment.
      */
+    @SuppressWarnings("TryWithIdenticalCatches")
     public static BaseDetailsFragment newInstance(Car carToShow, Class<?> c) {
 
         BaseDetailsFragment fragment = null;
         try {
             fragment = (BaseDetailsFragment) c.newInstance();
-        } catch (java.lang.InstantiationException e) {
+        }
+        catch (java.lang.InstantiationException e) {
             Log.e("BaseDetailsFragment", e.getMessage());
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             Log.e("BaseDetailsFragment", e.getMessage());
         }
         if (fragment != null) {
@@ -58,7 +61,7 @@ public class BaseDetailsFragment extends Fragment {
     }
 
     /**
-     * This is overridden in sub classes to inform the fragment the user selected
+     * This should be overridden in sub classes to be informed when the user selected
      * another year of data to display.
      *
      * @param year The year the user has selected.
@@ -68,9 +71,24 @@ public class BaseDetailsFragment extends Fragment {
     }
 
     /**
-     * This is overridden in sub classes to inform the fragment the containing data
+     * This should be overridden in sub classes to be informed the containing data
      * has changed.
      */
     public void onDataChanged() {
+    }
+
+    /**
+     * This should be overridden in sub classes to be informed the {@link android.support.design.widget.FloatingActionButton}
+     * button, which is located in the parent activity) was clicked.
+     */
+    public void onFabClicked() {
+    }
+
+    /**
+     * This should be overridden in sub classes to be informed when the {@link Car} entity is changed.
+     * @param car The new {@link Car} entity (can be null).
+     */
+    public void setCar(Car car) {
+        mCar = car;
     }
 }

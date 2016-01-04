@@ -13,11 +13,11 @@ public class SettingsHelper {
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
             PREF_ALLOW_LOCATION = "allow_location",
-            PREF_THEME = "selected_theme";
+            PREF_THEME = "app_theme";
 
-    public final static String THEME_LIGHT = "light",
-            THEME_DARK = "dark",
-            THEME_BLACK = "black";
+    public final static int THEME_LIGHT = 0,
+            THEME_DARK = 1,
+            THEME_BLACK = 2;
 
     /**
      * {@link SharedPreferences} reference.
@@ -40,7 +40,7 @@ public class SettingsHelper {
             mPreferences.edit().putBoolean(PREF_ALLOW_LOCATION, false).apply();
         }
         if (!mPreferences.contains(PREF_THEME)) {
-            mPreferences.edit().putString(PREF_THEME, THEME_LIGHT).apply();
+            mPreferences.edit().putInt(PREF_THEME, THEME_LIGHT).apply();
         }
     }
 
@@ -56,10 +56,9 @@ public class SettingsHelper {
      * Gets the given boolean value from the preferences.
      *
      * @param key          The key under which the value is stored.
-     * @param defaultValue The default value if it is not present in the preferences.
      * @return The boolean value or it's default if not set yet..
      */
-    public boolean getBooleanValue(String key, boolean defaultValue) {
+    public boolean getBooleanValue(String key) {
         return mPreferences.getBoolean(key, false);
     }
 
@@ -69,6 +68,7 @@ public class SettingsHelper {
      * @param key   The key under which the value is saved.
      * @param value The boolean value to save to the preferences.
      */
+    @SuppressWarnings("unused")
     public void setBooleanValue(String key, boolean value) {
         mPreferences.edit().putBoolean(key, value).apply();
     }
@@ -101,6 +101,7 @@ public class SettingsHelper {
      * @param defaultValue The default value if it is not present in the preferences.
      * @return The string value or it's default if not set yet..
      */
+    @SuppressWarnings("unused")
     public String getStringValue(String key, String defaultValue) {
         return mPreferences.getString(key, defaultValue);
     }
@@ -111,6 +112,7 @@ public class SettingsHelper {
      * @param key   The key under which the value is saved.
      * @param value The String value to save to the preferences.
      */
+    @SuppressWarnings("unused")
     public void setStringValue(String key, String value) {
         mPreferences.edit().putString(key, value).apply();
     }

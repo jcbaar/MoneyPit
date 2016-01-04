@@ -3,7 +3,6 @@ package com.development.jaba.moneypit;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -25,11 +24,12 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    @SuppressWarnings("unused")
     @Bind(R.id.app_bar) Toolbar mToolbar;
 
     private SettingsHelper mSettings;
     private boolean mThemeChanged = false;
-    private String mCurrentTheme = SettingsHelper.THEME_LIGHT;
+    private int mCurrentTheme = SettingsHelper.THEME_LIGHT;
     private int mColorPrimary,
             mColorPrimaryDark,
             mColorAccent;
@@ -45,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // switch to that theme now. The light theme is the default.
         mSettings = new SettingsHelper(this);
         mSettings.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        mCurrentTheme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
+        mCurrentTheme = mSettings.getIntegerValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
         switch (mCurrentTheme) {
             case SettingsHelper.THEME_BLACK:
                 setTheme(R.style.AppThemeBlack);
@@ -93,14 +93,6 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
                 ab.setHomeButtonEnabled(true);
             }
         }
-
-        // On Lollipop and and higher we want a "transparent" status bar for the
-        // navigation drawer. On the other activities we set the primaryColorDark.
-        // This is an ugly solution but for now it works...
-        if (this.getClass() != MainDrawerActivity.class &&
-                Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(mColorPrimaryDark);
-        }
     }
 
     /**
@@ -126,7 +118,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
     }
 
     /**
-     * Sub-classes must aoverride this to supply the correct layout ID.
+     * Sub-classes must override this to supply the correct layout ID.
      *
      * @return The layout ID to inflate as content view.
      */
@@ -164,6 +156,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
      *
      * @return The primary dark color of the current theme.
      */
+    @SuppressWarnings("unused")
     public int getColorPrimaryDark() {
         return mColorPrimaryDark;
     }
@@ -173,6 +166,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
      *
      * @return The accent color of the current theme.
      */
+    @SuppressWarnings("unused")
     public int getColorAccent() {
         return mColorAccent;
     }
@@ -182,7 +176,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
      * @return True if we are running the light theme. False if not.
      */
     public boolean usingLightTheme() {
-        return mCurrentTheme.equals(SettingsHelper.THEME_LIGHT);
+        return mCurrentTheme == SettingsHelper.THEME_LIGHT;
     }
 
     /**
@@ -241,8 +235,8 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         // Was it the theme that changed?
         if (key.equals(SettingsHelper.PREF_THEME)) {
             // Paranoia? Make sure the setting actually did change.
-            String theme = mSettings.getStringValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
-            if (!theme.equals(mCurrentTheme)) {
+            int theme = mSettings.getIntegerValue(SettingsHelper.PREF_THEME, SettingsHelper.THEME_LIGHT);
+            if (theme != mCurrentTheme) {
                 // If this is the SettingsActivity we reload now. Otherwise we
                 // mark the activity for reload after resume or start.
                 if (getClass() == SettingsActivity.class) {

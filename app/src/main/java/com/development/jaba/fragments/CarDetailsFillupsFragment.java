@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,7 +33,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Fragment for displaying the details of a {@link Car}.
@@ -48,10 +46,10 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     private FillupRowAdapter mFillupAdapter;    // Adapter for holding the Fill-up list.
     private OnDataChangedListener mCallback;    // Listener for data changes.
 
-    @Bind(R.id.addFab) FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+    @SuppressWarnings("unused")
     @Bind(R.id.fillupList) RecyclerViewEx mFillupList;
+    @SuppressWarnings("unused")
     @Bind(R.id.fillupListEmpty) TextView mEmptyText;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,19 +59,6 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
             mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        // When we became visible we need to make sure the
-        // FAB is also visible.
-        if (isVisibleToUser) {
-            if (mFab != null && !mFab.isShown()) {
-                mFab.show();
-            }
         }
     }
 
@@ -92,8 +77,6 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
                 public void onExpansionStateChanged(int position, boolean isExpanded) {
                     if (isExpanded) {
                         mFillupList.smoothScrollToPosition(position);
-                    } else {
-                        mFab.show();
                     }
                 }
 
@@ -155,19 +138,15 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
             mFillupList.setLayoutManager(new LinearLayoutManager(getActivity()));
             mFillupList.setHasFixedSize(false);
 
-            // Loadup the data from the database.
+            // Load the data from the database.
             new LoadDataTask().execute();
         }
         return view;
     }
 
-    /**
-     * Adds a new {@link Fillup}.
-     *
-     * @param v The clicked {@link View}.
-     */
-    @OnClick(R.id.addFab)
-    public void onClick(View v) {
+    @Override
+    public void onFabClicked() {
+        super.onFabClicked();
         editFillup(mCar, null, -1);
     }
 

@@ -158,7 +158,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
             setTitle(getString(R.string.title_create_fillup));
 
             // If settings tell us to, estimate the odometer setting.
-            if (getSettings().getBooleanValue(SettingsHelper.PREF_ESTIMATE_ODOMETER, true)) {
+            if (getSettings().getBooleanValue(SettingsHelper.PREF_ESTIMATE_ODOMETER)) {
                 Fillup before = mSurroundingFillups.getBefore();
                 if (before != null) {
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
@@ -168,7 +168,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
 
             // When allowed to do so we try to also record the
             // location of the fill-up.
-            if (getSettings().getBooleanValue(SettingsHelper.PREF_ALLOW_LOCATION, false)) {
+            if (getSettings().getBooleanValue(SettingsHelper.PREF_ALLOW_LOCATION)) {
                 mLocHelp = new LocationTracker(this);
                 mLocHelp.startLocationTracking();
             }

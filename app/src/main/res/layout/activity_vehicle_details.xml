@@ -1,12 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:id="@+id/coordinator"
-    tools:context="com.development.jaba.moneypit.TotalSummaryActivity">
+    tools:context="com.development.jaba.moneypit.VehicleDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -21,9 +21,8 @@
             android:layout_height="@dimen/app_bar_height"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:elevation="@dimen/actionbar_elevation"
-            app:expandedTitleMarginEnd="94dp"
             app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="94dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
@@ -39,26 +38,33 @@
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@null"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
+
+        <include
+            layout="@layout/tab_bar" />
+
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:id="@+id/content"
-        android:name="com.development.jaba.fragments.CarDetailsSummaryFragment"
+    <com.development.jaba.view.ViewPagerEx
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:tag="com.development.jaba.fragments.CarDetailsSummaryFragment"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!--    <LinearLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
+    </com.development.jaba.view.ViewPagerEx>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_action_add"
+        app:layout_anchor="@+id/pager"
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_behavior="com.development.jaba.behaviors.FabBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

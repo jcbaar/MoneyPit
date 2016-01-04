@@ -1,15 +1,28 @@
 package com.development.jaba.moneypit;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.ViewCompat;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.development.jaba.fragments.BaseDetailsFragment;
-import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
+import com.development.jaba.utilities.UtilsHelper;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
- * Simple settings activity. Loads up the {@link com.development.jaba.fragments.SettingsFragment}.
+ * Simple summary activity. Presents the user with a total summary of a specified
+ * {@link Car}
  */
 public class TotalSummaryActivity extends BaseActivity {
+
+    @SuppressWarnings("unused")
+    @Bind(R.id.image) ImageView image;
 
     private Car mCar;
 
@@ -36,8 +49,27 @@ public class TotalSummaryActivity extends BaseActivity {
                 mCar = (Car) b.getSerializable(Keys.EK_CAR);
             }
         }
-        BaseDetailsFragment fragment = CarDetailsSummaryFragment.newInstance(mCar, CarDetailsSummaryFragment.class);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
+
+        // Setup the fragment with the car to summarize.
+        BaseDetailsFragment fragment = (BaseDetailsFragment)getSupportFragmentManager().findFragmentById(R.id.content);
+        fragment.setCar(mCar);
+
+        // Bind the views and setup the rest of the UI.
+        ButterKnife.bind(this);
+
+        Bitmap im = mCar.getImage();
+        if(im != null) {
+            image.setImageBitmap(mCar.getImage());
+        }
+        else {
+            // Ideally I would collapse the ImageView and prevent the nested scrolling from
+            // resizing the AppBarLayout without affecting other layout behaviours when there
+            // is no vehicle image. Since I have yet to find a way to do that I will simply
+            // load a tinted header background image instead...
+            Drawable drawable = UtilsHelper.getTintedDrawable(this, R.drawable.background_header, getColorPrimary());
+            UtilsHelper.setBackgroundDrawable(image, drawable);
+        }
+        setTitle(mCar.toString());
     }
 
     @Override

@@ -33,4 +33,8 @@ public class ViewPagerEx extends ViewPager {
     public void setSwipeEnabled(boolean enabled) {
         this.mSwipeEnabled = enabled;
     }
+
+    public boolean getSwipeEnabled() {
+        return this.mSwipeEnabled;
+    }
 }
