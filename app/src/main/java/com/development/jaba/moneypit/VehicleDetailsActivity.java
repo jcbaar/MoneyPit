@@ -151,7 +151,7 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
 
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.DEPTH));
+        mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.ROLL));
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

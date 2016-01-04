@@ -28,7 +28,12 @@ public class PageTransformerEx implements ViewPager.PageTransformer {
         /**
          * Overlaps the pages.
          */
-        DEPTH
+        DEPTH,
+
+        /**
+         * Roll's the pages.
+         */
+        ROLL
     }
 
     private TransformType mTransType;
@@ -75,7 +80,10 @@ public class PageTransformerEx implements ViewPager.PageTransformer {
                 depth(view, position);
                 break;
             }
-
+            case ROLL: {
+                roll(view, position);
+                break;
+            }
             // https://github.com/ToxicBakery/ViewPagerTransforms/blob/master/library/src/main/java/com/ToxicBakery/viewpager/transforms/TabletTransformer.java
             case ROTATE: {
                 final float rotation = (position < 0 ? 30f : -30f) * Math.abs(position);
@@ -171,17 +179,62 @@ public class PageTransformerEx implements ViewPager.PageTransformer {
 
         } else if (position <= 0) { // [-1,0]
             // Use the default slide transition when moving to the left page
-            view.setAlpha(1);
+            view.setAlpha(1 + position);
             view.setTranslationX(0);
-            view.setScaleX(1);
-            view.setScaleY(1);
+            // Scale the page down (between MIN_SCALE and 1)
+            float scaleFactor = MIN_SCALE_DEPTH
+                    + (1 - MIN_SCALE_DEPTH) * (1 - Math.abs(position));
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+
+            /*            view.setScaleX(1);
+            view.setScaleY(1);*/
 
         } else if (position <= 1) { // (0,1]
             // Fade the page out.
             view.setAlpha(1 - position);
 
             // Counteract the default slide transition
-            view.setTranslationX(pageWidth * -position);
+            view.setTranslationX(0);//pageWidth * -position);
+
+            // Scale the page down (between MIN_SCALE and 1)
+            float scaleFactor = MIN_SCALE_DEPTH
+                    + (1 - MIN_SCALE_DEPTH) * (1 - Math.abs(position));
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+
+        } else { // (1,+Infinity]
+            // This page is way off-screen to the right.
+            view.setAlpha(0);
+        }
+    }
+
+    /**
+     * Executes the ROLL transformation for a given position.
+     *
+     * @param view     The {@link View} to transform.
+     * @param position The position of the transform.
+     */
+    public void roll(View view, float position) {
+        int pageWidth = view.getWidth();
+
+        if (position < -1) { // [-Infinity,-1)
+            // This page is way off-screen to the left.
+            view.setAlpha(0);
+
+        } else if (position <= 0) { // [-1,0]
+            // Use the default slide transition when moving to the left page
+            view.setAlpha(1 + position);
+            view.setTranslationX(0);
+            // Scale the page down (between MIN_SCALE and 1)
+            float scaleFactor = MIN_SCALE_DEPTH
+                    + (1 - MIN_SCALE_DEPTH) * (1 - Math.abs(position));
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+        } else if (position <= 1) { // (0,1]
+            // Fade the page out.
+            view.setAlpha(1 - position);
+            view.setTranslationX(0);
 
             // Scale the page down (between MIN_SCALE and 1)
             float scaleFactor = MIN_SCALE_DEPTH
