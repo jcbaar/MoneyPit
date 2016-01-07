@@ -27,7 +27,6 @@ import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
-import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.PageTransformerEx;
 import com.development.jaba.view.ViewPagerEx;
@@ -39,36 +38,45 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Activity showing the detail of a specific vehicle.
+ */
 public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFillupsFragment.OnDataChangedListener {
 
+    // Views bound using ButterKnife.
     @SuppressWarnings("unused")
-    @Bind(R.id.image) ImageView mCarImage;
+    @Bind(R.id.image) ImageView mCarImage;                 // Shows the image of the car or, when there is no image, a simple tinted material design image.
     @SuppressWarnings("unused")
     @Bind(R.id.pager) ViewPagerEx mViewPager;              // ViewPager that serves as a host for the fragments.
     @SuppressWarnings("unused")
     @Bind(R.id.sliding_tabs) TabLayout mSlidingTabLayout;  // Sliding tab that controls the ViewPager.
     @SuppressWarnings("unused")
-    @Bind(R.id.addFab) FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+    @Bind(R.id.addFab) FloatingActionButton mFab;           // The FloatingActionButton for quick add access.
 
-    private SettingsHelper mSettings;
-    private Car mCarToShow;
-    private int mCurrentYear;
-    private MoneyPitDbContext mDbContext;
-    private Spinner mYearSpinner;
-    private SectionsPagerAdapter mSectionsPagerAdapter; // ViewPager adapter for serving up the fragments.
+    private Car mCarToShow;                                 // The vehicle we are showing the details for.
+    private int mCurrentYear;                               // Currently selected year.
+    private MoneyPitDbContext mDbContext;                   // Database context.
+    private Spinner mYearSpinner;                           // Instance of the year selection spinner.
+    private SectionsPagerAdapter mSectionsPagerAdapter;     // ViewPager adapter for serving up the detail fragments.
+    private ViewPager.OnPageChangeListener mListener;       // Listener for page changing events.
 
+    /**
+     * Saves the state information of the activity.
+     * @param savedInstanceState The {@link Bundle} in which the activity state is saved.
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(Keys.EK_CURRENTYEAR, mCurrentYear);
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /**
+     * Creates the activity.
+     * @param savedInstanceState The {@link Bundle} with state information or null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Create settings helper instance.
-        mSettings = new SettingsHelper(this);
 
         // Extract the Car instance
         Bundle b = getIntent().getExtras();
@@ -77,13 +85,15 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
         }
 
         // By default we show the current year. If a year was selected previously
-        // for this car we use that.
+        // for this vehicle we use that.
         if (savedInstanceState != null) {
             mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
         } else {
             mCurrentYear = getCarYearFromPrefs();
         }
 
+        // Show the vehicle image. If no vehicle image is present we use a tinted
+        // material design image instead.
         Bitmap carImage = null;
         if(mCarToShow != null) {
             setTitle(mCarToShow.toString());
@@ -102,12 +112,12 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
             UtilsHelper.setBackgroundDrawable(mCarImage, drawable);
         }
 
-        // Check if there is any data available.
+        // Instantiate a database context.
         mDbContext = new MoneyPitDbContext(this);
 
-        // Setup the spinner.
+        // Setup the year selection spinner.
         LayoutInflater inflater = LayoutInflater.from(getToolbar().getContext());
-        View layout = inflater.inflate(R.layout.year_spinner, null);
+        View layout = inflater.inflate(R.layout.year_spinner, mSlidingTabLayout, false);
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.END;
         getToolbar().addView(layout, 0, layoutParams);
@@ -121,7 +131,7 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int year = Integer.parseInt(mYearSpinner.getSelectedItem().toString());
 
-                // Broadcast the year selection to all fragments. They need to know what year
+                // Broadcast the year selection to all available fragments. They need to know what year
                 // was selected so they they can update their contents.
                 for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
                     BaseDetailsFragment fragment = mSectionsPagerAdapter.getFragmentAt(i);
@@ -151,12 +161,21 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
         mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.ROLL));
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        // Setup the page change listener for the ViewPager.
+        mListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
+            /**
+             * We only want the {@link FloatingActionButton} available when we are on the first
+             * {@link Fragment} and there is data present for the selected year. The other fragments do
+             * not show the {@link FloatingActionButton}. Ideally the {@link FloatingActionButton} would
+             * be part of that {@link Fragment} but that would make it unreachable for the
+             * {@link android.support.design.widget.CoordinatorLayout}.
+             * @param position The position of the currently selected {@link Fragment}.
+             */
             @Override
             public void onPageSelected(int position) {
                 if(mViewPager.getSwipeEnabled() && position == 0) {
@@ -171,20 +190,25 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
-        // Setup the page sliding functionality.
-        checkSlidingAvailability();
+        };
 
+        // Setup the page sliding functionality. The page sliding will be unavailable
+        // when there is no data for the selected year.
+        checkSlidingAvailability();
     }
 
+
+    /**
+     * Gets the layout to inflate for this {@link android.app.Activity}
+     * @return The resource ID of the layout to inflate.
+     */
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_vehicle_details;
     }
 
     /**
-     * Passes the FAB click to the first fragment (the fill up list).
-     *
+     * Passes the {@link FloatingActionButton} click to the first fragment (the fill up list).
      */
     @SuppressWarnings("unused")
     @OnClick(R.id.addFab)
@@ -193,7 +217,6 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
         if(b != null) {
             b.onFabClicked();
         }
-//        editFillup(mCar, null, -1);
     }
 
     /**
@@ -204,7 +227,7 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
     private int getCarYearFromPrefs() {
         if(mCarToShow != null) {
             String key = mCarToShow.toString() + "_year";
-            return mSettings.getIntegerValue(key, DateHelper.getYearFromDate(new Date()));
+            return getSettings().getIntegerValue(key, DateHelper.getYearFromDate(new Date()));
         }
         return 0;
     }
@@ -215,12 +238,13 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
      */
     private void saveCarYearToPrefs() {
         String key = mCarToShow.toString() + "_year";
-        mSettings.setIntegerValue(key, mCurrentYear);
+        getSettings().setIntegerValue(key, mCurrentYear);
     }
 
     /**
      * Setup the items in the year spinner. The range will be from the "oldest" entry
      * in the car it's fill-up list until the current year.
+     * TODO: Perhaps years that have no data should be filtered from the selectable years (with the exception of the current year of course)?
      */
     private void setupYears() {
         Integer start = mDbContext.getOldestDataYear(mCarToShow.getId()),
@@ -256,22 +280,12 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
         }
 
         mViewPager.setSwipeEnabled(hasData);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        if(!hasData) {
+            mViewPager.removeOnPageChangeListener(mListener);
+        }
+        else {
+            mViewPager.addOnPageChangeListener(mListener);
+        }
         mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
