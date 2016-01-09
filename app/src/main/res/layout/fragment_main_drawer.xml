@@ -1,9 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.development.jaba.moneypit.MainDrawerActivity$PlaceholderFragment">
+    android:layout_height="match_parent">
 
     <com.development.jaba.view.RecyclerViewEx
         android:id="@+id/carList"
@@ -32,5 +30,5 @@
         android:src="@drawable/ic_action_add"
         app:layout_anchor="@id/carList"
         app:layout_anchorGravity="bottom|right|end"
-        app:layout_behavior="com.development.jaba.behaviors.FabBehavior" />
+        app:layout_behavior="com.development.jaba.behaviors.ZoomFabBehavior" />
 </android.support.design.widget.CoordinatorLayout>

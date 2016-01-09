@@ -25,6 +25,8 @@
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="false"
                 android:src="@drawable/nopicture" />
 
             <LinearLayout

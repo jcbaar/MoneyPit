@@ -19,20 +19,19 @@ import com.development.jaba.view.RecyclerViewEx;
  * A {@link android.support.design.widget.FloatingActionButton.Behavior} derived class build exactly
  * from the example at https://guides.codepath.com/android/Floating-Action-Buttons
  */
-public class FabBehavior extends FloatingActionButton.Behavior {
+public class ZoomFabBehavior extends FloatingActionButton.Behavior {
 
     private static final android.view.animation.Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private boolean mIsAnimatingOut = false;
 
-    public FabBehavior(Context context, AttributeSet attrs) {
+    public ZoomFabBehavior(Context context, AttributeSet attrs) {
         super();
     }
 
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child,
                                View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed,
-                dyUnconsumed);
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
 
         if (target instanceof RecyclerViewEx) {
             if (dyConsumed > 0 && !this.mIsAnimatingOut && child.getVisibility() == View.VISIBLE) {
@@ -62,30 +61,31 @@ public class FabBehavior extends FloatingActionButton.Behavior {
                     .setInterpolator(INTERPOLATOR).withLayer()
                     .setListener(new ViewPropertyAnimatorListener() {
                         public void onAnimationStart(View view) {
-                            FabBehavior.this.mIsAnimatingOut = true;
+                            ZoomFabBehavior.this.mIsAnimatingOut = true;
                         }
 
                         public void onAnimationCancel(View view) {
-                            FabBehavior.this.mIsAnimatingOut = false;
+                            ZoomFabBehavior.this.mIsAnimatingOut = false;
                         }
 
                         public void onAnimationEnd(View view) {
-                            FabBehavior.this.mIsAnimatingOut = false;
+                            ZoomFabBehavior.this.mIsAnimatingOut = false;
                             view.setVisibility(View.GONE);
                         }
                     })
                     .start();
-        } else {
+        }
+        else {
             Animation anim = AnimationUtils.loadAnimation(button.getContext(), R.anim.design_fab_out);
             anim.setInterpolator(INTERPOLATOR);
             anim.setDuration(200L);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 public void onAnimationStart(Animation animation) {
-                    FabBehavior.this.mIsAnimatingOut = true;
+                    ZoomFabBehavior.this.mIsAnimatingOut = true;
                 }
 
                 public void onAnimationEnd(Animation animation) {
-                    FabBehavior.this.mIsAnimatingOut = false;
+                    ZoomFabBehavior.this.mIsAnimatingOut = false;
                     button.setVisibility(View.GONE);
                 }
 
@@ -102,10 +102,16 @@ public class FabBehavior extends FloatingActionButton.Behavior {
     private void animateIn(FloatingActionButton button) {
         button.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= 14) {
-            ViewCompat.animate(button).scaleX(1.0F).scaleY(1.0F).alpha(1.0F)
-                    .setInterpolator(INTERPOLATOR).withLayer().setListener(null)
+            ViewCompat.animate(button)
+                    .scaleX(1.0F)
+                    .scaleY(1.0F)
+                    .alpha(1.0F)
+                    .setInterpolator(INTERPOLATOR)
+                    .withLayer()
+                    .setListener(null)
                     .start();
-        } else {
+        }
+        else {
             Animation anim = AnimationUtils.loadAnimation(button.getContext(), R.anim.design_fab_in);
             anim.setDuration(200L);
             anim.setInterpolator(INTERPOLATOR);

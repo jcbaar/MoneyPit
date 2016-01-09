@@ -58,7 +58,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <include layout="@layout/tab_bar" />
+            <android.support.design.widget.TabLayout
+                style="@style/MoneyPitTabLayout"
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:tabGravity="fill"
+                app:tabMode="scrollable"/>
 
             <com.development.jaba.view.ViewPagerEx
                 android:id="@+id/pager"
@@ -78,6 +84,6 @@
         android:src="@drawable/ic_action_add"
         app:layout_anchor="@+id/pager"
         app:layout_anchorGravity="bottom|right|end"
-        app:layout_behavior="com.development.jaba.behaviors.FabBehavior" />
+        app:layout_behavior="com.development.jaba.behaviors.ZoomFabBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>
