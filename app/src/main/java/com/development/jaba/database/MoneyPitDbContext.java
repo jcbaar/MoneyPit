@@ -29,7 +29,7 @@ import java.util.List;
 public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     //region Private fields
-    private static final int DATABASE_VERSION = 1;              // Database version.
+    private static final int DATABASE_VERSION = 2;              // Database version.
     public static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
@@ -118,8 +118,24 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /*
-            Perform upgrade logic here.
+            From version 1:
+            Add indexes.
          */
+        if(oldVersion == 1) {
+            try {
+                db.beginTransaction();
+                db.execSQL("CREATE INDEX carToFillup ON Fillup(CarId)");
+                db.setTransactionSuccessful();
+            }
+            catch (SQLiteException ex) {
+                Log.e("onUpgrade", ex.getMessage());
+                DialogHelper.showMessageDialog(mContext.getString(R.string.dialog_error_title), mContext.getString(R.string.model_create_failed), mContext);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
+            } finally {
+                db.endTransaction();
+            }
+        }
     }
     //endregion
 
