@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,11 +145,14 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
         holder.getNoteContent().setText(item.getNote());
 
         // When the fill-up is a partial fill-up we mark this by giving the fill-up
-        // icon the accent color.
+        // icon the accent color and hiding the economy view.
         Drawable d = ContextCompat.getDrawable(mContext, R.drawable.ic_local_gas_station_grey600_24dp);
         if (!item.getFullTank()) {
             PorterDuff.Mode mode = PorterDuff.Mode.SRC_ATOP;
             d.mutate().setColorFilter(ContextCompat.getColor(mContext, R.color.accentColor), mode);
+            holder.getEconomy().setVisibility(View.GONE);
+        } else {
+            holder.getEconomy().setVisibility(View.VISIBLE);
         }
         holder.getFull().setImageDrawable(d);
 

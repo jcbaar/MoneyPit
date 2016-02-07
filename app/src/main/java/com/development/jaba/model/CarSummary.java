@@ -64,9 +64,10 @@ public class CarSummary {
             TotalFuelCost += f.getTotalPrice();
             TotalVolume += f.getVolume();
 
-            // Determine the best and worst fuel economy.
+            // Determine the best and worst fuel economy. Fuel economy is only
+            // calculated over the full fill-ups.
             economy = f.getFuelConsumption();
-            if (economy > 0) {
+            if (economy > 0 && f.getFullTank()) {
                 if (economy > maxEcon) {
                     BestEconomyFillup.Value = economy;
                     BestEconomyFillup.Date = f.getDate();

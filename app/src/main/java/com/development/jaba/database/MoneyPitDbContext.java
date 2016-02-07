@@ -12,7 +12,6 @@ import com.development.jaba.model.Car;
 import com.development.jaba.model.CarAverage;
 import com.development.jaba.model.Fillup;
 import com.development.jaba.model.SurroundingFillups;
-import com.development.jaba.moneypit.BuildConfig;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
@@ -475,12 +474,20 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 "Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
                 "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
                 "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
-                "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer))) / Volume AS Economy, " +
+                // Fuel economy is computed between full fill-ups. The partial fill-ups are only used to compute
+                // the total fuel volume. This is then used to compute the total fuel economy between
+                // the two full fill-ups.
+                //
+                // The computed fuel economy of partial fill-ups is incorrect and therefore hidden from
+                // the UI and not used for averages.
+                "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer))) / " +
+                "(SELECT TOTAL(Volume) FROM Fillup WHERE Date <= T1.Date AND Date > (SELECT Date FROM Fillup WHERE Date < T1.Date And CarId= ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1)) AS Economy, " +
                 "Price * Volume AS TotalPrice " +
                 "FROM Fillup AS T1 " +
                 "WHERE (CarId = ?) AND (? = '0' OR ? = CAST(strftime('%Y', Date) AS INT)) " +
                 "ORDER BY Date DESC";
         String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(carId),
                 String.valueOf(carId),
                 String.valueOf(carId),
                 String.valueOf(carId),
@@ -664,7 +671,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public List<BarEntry> getEconomyPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
                 "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
