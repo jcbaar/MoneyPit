@@ -1,5 +1,6 @@
 package com.development.jaba.moneypit;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -98,6 +99,15 @@ public class AddOrEditCarActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
+
+        int cam = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA),
+                sd = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        // Make sure we can use the camera.
+        mPictureCamera.setVisibility(cam == PackageManager.PERMISSION_GRANTED && sd == PackageManager.PERMISSION_GRANTED ?
+                View.VISIBLE : View.GONE);
 
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car

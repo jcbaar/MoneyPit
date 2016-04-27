@@ -28,7 +28,7 @@ import java.util.List;
 public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     //region Private fields
-    private static final int DATABASE_VERSION = 2;              // Database version.
+    private static final int DATABASE_VERSION = 3;              // Database version.
     public static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
@@ -120,10 +120,16 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             From version 1:
             Add indexes.
          */
-        if(oldVersion == 1) {
+        if (oldVersion >= 1) {
             try {
                 db.beginTransaction();
-                db.execSQL("CREATE INDEX carToFillup ON Fillup(CarId)");
+                if (oldVersion == 1) {
+                    db.execSQL("CREATE INDEX carToFillup ON Fillup(CarId)");
+                    oldVersion = 2;
+                }
+                if (oldVersion == 2) {
+                    db.execSQL("CREATE INDEX dateOfFillup ON Fillup(Date)");
+                }
                 db.setTransactionSuccessful();
             }
             catch (SQLiteException ex) {
@@ -481,12 +487,13 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 // The computed fuel economy of partial fill-ups is incorrect and therefore hidden from
                 // the UI and not used for averages.
                 "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer))) / " +
-                "(SELECT TOTAL(Volume) FROM Fillup WHERE Date <= T1.Date AND Date > (SELECT Date FROM Fillup WHERE Date < T1.Date And CarId= ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1)) AS Economy, " +
+                "(SELECT TOTAL(Volume) FROM Fillup WHERE Date <= T1.Date AND CarId = ? AND Date > (SELECT Date FROM Fillup WHERE Date < T1.Date And CarId = ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1)) AS Economy, " +
                 "Price * Volume AS TotalPrice " +
                 "FROM Fillup AS T1 " +
                 "WHERE (CarId = ?) AND (? = '0' OR ? = CAST(strftime('%Y', Date) AS INT)) " +
                 "ORDER BY Date DESC";
         String[] args = new String[]{String.valueOf(carId),
+                String.valueOf(carId),
                 String.valueOf(carId),
                 String.valueOf(carId),
                 String.valueOf(carId),
