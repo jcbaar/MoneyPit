@@ -1,11 +1,11 @@
 package com.development.jaba.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.development.jaba.model.Car;
@@ -13,7 +13,6 @@ import com.development.jaba.model.CarAverage;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.GetCarImageHelper;
-import com.development.jaba.view.RecyclingImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -132,7 +131,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
     public class CarRowViewHolder extends BaseViewHolder {
 
         @Bind(R.id.headerMenu) ImageButton mMenuButton;
-        @Bind(R.id.carPicture) RecyclingImageView mImage;
+        @Bind(R.id.carPicture) ImageView mImage;
         @Bind(R.id.carMakeModel) TextView mMake;
         @Bind(R.id.carBuildYear) TextView mBuild;
         @Bind(R.id.carAverages) TextView mAverage;
@@ -152,7 +151,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             setMenuView(mMenuButton, mContext.getResources().getStringArray(R.array.edit_delete_summary));
         }
 
-        public RecyclingImageView getImage() {
+        public ImageView getImage() {
             return mImage;
         }
 

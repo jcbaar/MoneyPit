@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.development.jaba.model.Car;
 import com.development.jaba.moneypit.R;
@@ -16,7 +17,7 @@ import com.development.jaba.view.RecyclingImageView;
  */
 public class GetCarImageHelper extends AsyncTask<Void, Void, Bitmap> {
 
-    private final RecyclingImageView mImageView;
+    private final ImageView mImageView;
     private final Car mCar;
     private final Context mContext;
     private boolean mMakeInvisible;
@@ -25,11 +26,11 @@ public class GetCarImageHelper extends AsyncTask<Void, Void, Bitmap> {
      * Constructor. Creates an instance of the object.
      *
      * @param context       The {@link Context}.
-     * @param imageView     The {@link RecyclingImageView} in which to load the image.
+     * @param imageView     The {@link ImageView} in which to load the image.
      * @param car           The {@link Car} from which to get the image.
      * @param makeInvisible True to make the {@link RecyclingImageView} invisible when no image is available.
      */
-    public GetCarImageHelper(Context context, RecyclingImageView imageView, Car car, boolean makeInvisible) {
+    public GetCarImageHelper(Context context, ImageView imageView, Car car, boolean makeInvisible) {
         mCar = car;
         mImageView = imageView;
         mContext = context;

@@ -203,7 +203,7 @@
         <item name="android:textColor">@color/primary_text_default_material_dark</item>
         <item name="android:paddingLeft">@dimen/abc_dropdownitem_text_padding_left</item>
         <item name="android:paddingRight">@dimen/abc_dropdownitem_text_padding_right</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">19sp</item>
         <item name="android:textAppearance">
             @style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse
         </item>
