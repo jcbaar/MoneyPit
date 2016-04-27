@@ -28,7 +28,7 @@ import java.util.List;
 public class MoneyPitDbContext extends SQLiteOpenHelper {
 
     //region Private fields
-    private static final int DATABASE_VERSION = 3;              // Database version.
+    private static final int DATABASE_VERSION = 4;              // Database version.
     public static final String DATABASE_NAME = "MoneyPit.db3"; // Database filename.
     private static final String TABLE_CAR = "Car";              // Car entity table name.
     private static final String TABLE_FILLUP = "Fillup";        // Fillup entity table name.
@@ -129,6 +129,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 }
                 if (oldVersion == 2) {
                     db.execSQL("CREATE INDEX dateOfFillup ON Fillup(Date)");
+                }
+                if (oldVersion == 3) {
+                    db.execSQL("CREATE INDEX odoOfFillup ON Fillup(Odometer)");
+                    db.execSQL("CREATE INDEX volOfFillup ON Fillup(Volume)");
                 }
                 db.setTransactionSuccessful();
             }
@@ -476,29 +480,30 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public List<Fillup> getFillupsOfCar(int carId, int year) {
         List<Fillup> result = new LinkedList<>();
-        String query = "SELECT *, " +
-                "Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
-                "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
-                "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Fillup WHERE Date < T1.Date AND CarId = ? ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
+        String query =
+                "SELECT *, " +
+                        "Odometer - (IFNULL((SELECT Odometer FROM Filtered WHERE Date < T1.Date ORDER BY Date DESC LIMIT 1), Odometer)) AS Distance, " +
+                        "CASE WHEN (SELECT CAST(strftime('%s', Date) AS INT) FROM Filtered WHERE Date < T1.Date ORDER BY Date DESC LIMIT 1) IS NULL THEN 0 ELSE " +
+                        "(CAST(strftime('%s', Date) AS INT) - (SELECT CAST(strftime('%s', Date) AS INT) FROM Filtered WHERE Date < T1.Date ORDER BY Date DESC LIMIT 1)) / 86400 END AS Days, " +
                 // Fuel economy is computed between full fill-ups. The partial fill-ups are only used to compute
                 // the total fuel volume. This is then used to compute the total fuel economy between
                 // the two full fill-ups.
                 //
                 // The computed fuel economy of partial fill-ups is incorrect and therefore hidden from
                 // the UI and not used for averages.
-                "(Odometer - (IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer))) / " +
-                "(SELECT TOTAL(Volume) FROM Fillup WHERE Date <= T1.Date AND CarId = ? AND Date > (SELECT Date FROM Fillup WHERE Date < T1.Date And CarId = ? AND FullTank = 1 ORDER BY Date DESC LIMIT 1)) AS Economy, " +
+                        "(Odometer - (IFNULL((SELECT Odometer FROM Filtered WHERE Date < T1.Date AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer))) / " +
+                        "(SELECT TOTAL(Volume) FROM Filtered WHERE Date <= T1.Date AND Date > (SELECT Date FROM Filtered WHERE Date < T1.Date AND FullTank = 1 ORDER BY Date DESC LIMIT 1)) AS Economy, " +
                 "Price * Volume AS TotalPrice " +
-                "FROM Fillup AS T1 " +
-                "WHERE (CarId = ?) AND (? = '0' OR ? = CAST(strftime('%Y', Date) AS INT)) " +
+                        "FROM Filtered AS T1 " +
+                        "WHERE (? = '0' OR ? = CAST(strftime('%Y', Date) AS INT)) " +
                 "ORDER BY Date DESC";
-        String[] args = new String[]{String.valueOf(carId),
-                String.valueOf(carId),
-                String.valueOf(carId),
-                String.valueOf(carId),
-                String.valueOf(carId),
-                String.valueOf(carId),
-                String.valueOf(carId),
+        String[] args = new String[]{//String.valueOf(carId),
+//                String.valueOf(carId),
+//                String.valueOf(carId),
+//                String.valueOf(carId),
+//                String.valueOf(carId),
+//                String.valueOf(carId),
+//                String.valueOf(carId),
                 String.valueOf(year),
                 String.valueOf(year)};
 
@@ -507,6 +512,22 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
 
         try {
             db = mDbManager.openDatabase();
+
+            // First we are going to limit the data set to the sorted list of fillups
+            // of the given car.
+            db.execSQL("DROP TABLE IF EXISTS Filtered;");
+            db.execSQL("CREATE TEMPORARY TABLE Filtered AS " +
+                    "WITH FT_CTE AS ( " +
+                    "SELECT * FROM Fillup " +
+                    "WHERE CarId = ? " +
+                    "ORDER BY DATE DESC" +
+                    ") SELECT * FROM FT_CTE; ", new String[]{String.valueOf(carId)});
+
+            // Make sure the temporary table has a index on the Date column to maximise
+            // performance.
+            db.execSQL("CREATE INDEX dateIdx ON Filtered(Date);");
+
+            // Execute the query on the filtered and sorted data set.
             cursor = db.rawQuery(query, args);
 
             if (cursor.moveToFirst()) {
@@ -518,6 +539,9 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
             }
             cursor.close();
             cursor = null;
+
+            // Drop the temporary table.
+            db.execSQL("DROP TABLE IF EXISTS Filtered;");
             return result;
         } catch (SQLiteException ex) {
             Log.e("getFillupByCar", ex.getMessage());
