@@ -702,7 +702,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      */
     public List<BarEntry> getEconomyPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
-                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 AND FullTank = 1 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
+                "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
                 "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
                 "GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
