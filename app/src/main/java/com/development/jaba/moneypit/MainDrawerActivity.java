@@ -78,7 +78,7 @@ public class MainDrawerActivity extends BaseActivity {
 
         mTitle = getTitle();
         mToggle = setupDrawerToggle();
-        mDrawer.setDrawerListener(mToggle);
+        mDrawer.addDrawerListener(mToggle);
         setupDrawerContent(mDrawerView);
 
         // Do we have a previously checked navigation drawer item?
