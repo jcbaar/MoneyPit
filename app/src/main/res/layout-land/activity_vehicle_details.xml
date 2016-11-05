@@ -66,6 +66,17 @@
                 app:tabGravity="fill"
                 app:tabMode="scrollable"/>
 
+            <TextView
+                style="@style/MoneyPitTabLayout"
+                android:id="@+id/no_info"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:text="@string/no_info"
+                android:textColor="?attr/actionBarTextColor"
+                android:visibility="gone"/>
+
             <com.development.jaba.view.ViewPagerEx
                 android:id="@+id/pager"
                 android:layout_width="match_parent"

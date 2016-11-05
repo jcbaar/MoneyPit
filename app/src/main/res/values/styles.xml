@@ -13,7 +13,7 @@
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="dividerColor">@color/dividerColorLight</item>
         <item name="listCardBackground">@drawable/list_card_states</item>
-        <item name="listCardBackgroundColor">@color/listCardBackground</item>
+        <item name="listCardBackgroundColor">@color/cardview_light_background</item>
         <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelected</item>
         <item name="listCardPrimaryTextColor">@color/listCardText</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryText</item>
@@ -51,7 +51,7 @@
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="dividerColor">@color/dividerColorDark</item>
         <item name="listCardBackground">@drawable/list_card_states_dark</item>
-        <item name="listCardBackgroundColor">@color/listCardBackgroundDark</item>
+        <item name="listCardBackgroundColor">@color/cardview_dark_background</item>
         <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelectedDark</item>
         <item name="listCardPrimaryTextColor">@color/listCardTextDark</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryTextDark</item>
@@ -142,7 +142,7 @@
 
     <style name="ListPrimaryText">
         <item name="android:textColor">?attr/listCardPrimaryTextColor</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_gravity">left|center_vertical</item>
         <item name="android:ellipsize">end</item>
@@ -162,7 +162,7 @@
     <style name="ListTertiaryText">
         <item name="android:textColor">?attr/listCardSecondaryTextColor</item>
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:ellipsize">end</item>
         <item name="android:focusable">false</item>
@@ -223,7 +223,8 @@
         <item name="android:layout_gravity">right</item>
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
         <item name="android:src">?attr/overflowButton</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
@@ -231,4 +232,5 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

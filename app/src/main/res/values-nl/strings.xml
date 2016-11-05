@@ -51,6 +51,8 @@
     <string name="estimate_odo_summary">Wanneer deze optie aan staat wordt de kilometer teller instelling ingeschat bij het invoeren van een nieuwe tankbeurt.</string>
     <string name="export_import_pictures_summary">Wanneer aangevinkt zal dit bij het importeren en exporteren van informatie ook de foto\'s meenemen.</string>
     <string name="car_list_averages">Gem. %1$s, %2$s per tankbeurt.</string>
+    <string name="car_list_average_price">Gemiddelde brandstof prijs: %1$s</string>
+    <string name="car_list_average_volume">Gemiddelde tankbeurt: %1$s</string>
     <string name="dialog_yes">Ja</string>
     <string name="dialog_no">Nee</string>
     <string name="dialog_close">Sluiten</string>
@@ -155,5 +157,6 @@
     <string name="account_summary">Wanneer u op de onderstaande knop tikt wordt u gevraagd een account te kiezen welke gebruikt moet worden voor
         backup en herstel. Als u een account kiest waarvoor u nog niet eerder toestemming heeft gegeven wordt eerst om toestemming gevraagd.</string>
     <string name="fillupDate">Datum</string>
+    <string name="no_info">Er is geen data in deze periode.</string>
 
 </resources>

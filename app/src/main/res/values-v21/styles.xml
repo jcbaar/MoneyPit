@@ -29,4 +29,5 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
     </style>
+
 </resources>

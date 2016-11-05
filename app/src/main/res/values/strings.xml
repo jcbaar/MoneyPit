@@ -51,6 +51,8 @@
     <string name="estimate_odo_summary">When this option is turned on the odometer setting will be estimated when entering a new fill-up.</string>
     <string name="export_import_pictures_summary">When checked this will include the images when importing and exporting vehicles.</string>
     <string name="car_list_averages">Avg. %1$s, %2$s per fill-up.</string>
+    <string name="car_list_average_price">Average fuel price: %1$s</string>
+    <string name="car_list_average_volume">Average fill-up: %1$s</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="dialog_close">Close</string>
@@ -157,4 +159,5 @@
     If you choose an account for which you did not give permission before, permission will be asked first.</string>
     <string name="fillupDate">Date</string>
     <string name="title_activity_vehicle_details">VehicleDetailsActivity</string>
+    <string name="no_info">There is no data in this period.</string>
 </resources>

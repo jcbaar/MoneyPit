@@ -3,6 +3,7 @@ package com.development.jaba.adapters;
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -145,7 +146,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         }
 
         if (mPopupMenu == null) {
-            mPopupMenu = new PopupMenu(mContext, mMenuView);
+            mPopupMenu = new PopupMenu(mContext, mMenuView, Gravity.RIGHT);
 
             // Do we load the menus from the string array?
             if(menuId == 0) {

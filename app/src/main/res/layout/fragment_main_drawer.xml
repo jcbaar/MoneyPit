@@ -7,7 +7,10 @@
         android:id="@+id/carList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        app:rveItemPaddingLeft="8dp"
+        app:rveItemPaddingRight="8dp"
+        app:rveItemPaddingTop="8dp"/>
 
     <TextView
         android:id="@+id/listEmpty"

@@ -53,6 +53,19 @@
                 app:tabGravity="fill"
                 app:tabMode="scrollable" />
 
+            <TextView
+                android:id="@+id/no_info"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="bottom"
+                android:background="@null"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:text="@string/no_info"
+                android:textSize="14sp"
+                android:textColor="?attr/actionBarTextColor"
+                android:visibility="gone"/>
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>

@@ -14,6 +14,7 @@ import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.GetCarImageHelper;
 
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,11 +80,14 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
 
         CarAverage avg = item.getAverages();
         if (avg != null) {
-            holder.getAverage().setText(String.format(mContext.getResources().getString(R.string.car_list_averages),
-                    FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit()),
+            holder.getAveragePrice().setText(String.format(mContext.getResources().getString(R.string.car_list_average_price),
+                    FormattingHelper.toPricePerVolumeUnit(item, avg.getAveragePricePerVolumeUnit())));
+            holder.getAverageVolume().setVisibility(View.VISIBLE);
+            holder.getAverageVolume().setText(String.format(mContext.getResources().getString(R.string.car_list_average_volume),
                     FormattingHelper.toVolumeUnit(item, avg.getAverageVolumePerFillup())));
         } else {
-            holder.getAverage().setText(R.string.no_data_to_average);
+            holder.getAveragePrice().setText(R.string.no_data_to_average);
+            holder.getAverageVolume().setVisibility(View.GONE);
         }
     }
 
@@ -134,7 +138,8 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         @Bind(R.id.carPicture) ImageView mImage;
         @Bind(R.id.carMakeModel) TextView mMake;
         @Bind(R.id.carBuildYear) TextView mBuild;
-        @Bind(R.id.carAverages) TextView mAverage;
+        @Bind(R.id.carAveragePrice) TextView mAveragePrice;
+        @Bind(R.id.carAverageFillup) TextView mAverageFillup;
 
         /**
          * Constructor. Initializes an instance of the object and caches the
@@ -163,8 +168,12 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
             return mBuild;
         }
 
-        public TextView getAverage() {
-            return mAverage;
+        public TextView getAveragePrice() {
+            return mAveragePrice;
+        }
+
+        public TextView getAverageVolume() {
+            return mAverageFillup;
         }
     }
 }
