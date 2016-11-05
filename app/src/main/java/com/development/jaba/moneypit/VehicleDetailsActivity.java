@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.fragments.BaseDetailsFragment;
@@ -51,7 +52,9 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
     @SuppressWarnings("unused")
     @Bind(R.id.sliding_tabs) TabLayout mSlidingTabLayout;  // Sliding tab that controls the ViewPager.
     @SuppressWarnings("unused")
-    @Bind(R.id.addFab) FloatingActionButton mFab;           // The FloatingActionButton for quick add access.
+    @Bind(R.id.addFab) FloatingActionButton mFab;          // The FloatingActionButton for quick add access.
+    @SuppressWarnings("unused")
+    @Bind(R.id.no_info) TextView mNoInfo;                  // Indication that no data is available..
 
     private Car mCarToShow;                                 // The vehicle we are showing the details for.
     private int mCurrentYear;                               // Currently selected year.
@@ -286,6 +289,7 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
         else {
             mViewPager.addOnPageChangeListener(mListener);
         }
+        mNoInfo.setVisibility(hasData ? View.GONE : View.VISIBLE);
         mSlidingTabLayout.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
