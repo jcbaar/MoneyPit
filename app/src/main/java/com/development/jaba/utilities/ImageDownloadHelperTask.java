@@ -1,10 +1,15 @@
 package com.development.jaba.utilities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
+import com.development.jaba.moneypit.MoneyPitApp;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,8 +58,10 @@ public class ImageDownloadHelperTask extends AsyncTask<String, Void, Bitmap> {
 
         // Only download when we do not have a local copy
         // cached.
-        if (cachedFileExists()) {
-            return loadFileFromCache();
+        if ( ContextCompat.checkSelfPermission(MoneyPitApp.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (cachedFileExists()) {
+                return loadFileFromCache();
+            }
         }
 
         // We do not have it cached. Download it from the given
@@ -77,11 +84,13 @@ public class ImageDownloadHelperTask extends AsyncTask<String, Void, Bitmap> {
         }
 
         // Save the downloaded image into our local file cache.
-        if (image != null) {
-            try {
-                cacheFile(image);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, e.getMessage());
+        if ( ContextCompat.checkSelfPermission(MoneyPitApp.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (image != null) {
+                try {
+                    cacheFile(image);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, e.getMessage());
+                }
             }
         }
         return image;
