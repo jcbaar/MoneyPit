@@ -2,6 +2,7 @@ package com.development.jaba.moneypit;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,6 +24,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.DistanceUnit;
@@ -28,6 +33,7 @@ import com.development.jaba.model.VolumeUnit;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.GetCarImageHelper;
+import com.development.jaba.utilities.PermissionHelper;
 import com.development.jaba.view.EditTextEx;
 import com.development.jaba.view.RecyclingImageView;
 
@@ -47,6 +53,7 @@ import static com.development.jaba.view.EditTextEx.BaseValidator;
  */
 public class AddOrEditCarActivity extends BaseActivity {
 
+    private final static int REQUEST_CAMERA_PERMISSION = 0;
     private final static int REQUEST_GET_PICTURE = 1;
     private final static int REQUEST_TAKE_PHOTO = 2;
 
@@ -89,6 +96,61 @@ public class AddOrEditCarActivity extends BaseActivity {
     }
 
     /**
+     * Handle the result of the permission request.
+     *
+     * @param requestCode The callback code.
+     * @param permissions The requested permission(s).
+     * @param grantResults The result for each requested permission.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (PermissionHelper.verifyPermissions(grantResults)) {
+                mPictureCamera.setVisibility(View.VISIBLE);
+            } else {
+                mPictureCamera.setVisibility(View.GONE);
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    /**
+     * Requests for the permission to use the camera and permission to save the picture.
+     */
+    private void requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            // Tell the user why we need the requested permissions.
+            DialogHelper.showCallbackMessageDialog(getString(R.string.permission),
+                    getString(R.string.camera_permission),
+                    new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            ActivityCompat.requestPermissions(AddOrEditCarActivity.this,
+                                    new String[] {
+                                            Manifest.permission.CAMERA,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                    },
+                                    REQUEST_CAMERA_PERMISSION);
+                        }
+                    }, this);
+        }
+        else {
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, new String[] {
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    /**
      * Called when the Activity is starting.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down
@@ -100,14 +162,21 @@ public class AddOrEditCarActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-        int cam = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA),
-                sd = ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         // Make sure we can use the camera.
-        mPictureCamera.setVisibility(cam == PackageManager.PERMISSION_GRANTED && sd == PackageManager.PERMISSION_GRANTED ?
-                View.VISIBLE : View.GONE);
+        mPictureCamera.setVisibility(View.GONE);
+
+        int cam = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA);
+        int sd = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        // Request the permissions.
+        if (cam != PackageManager.PERMISSION_GRANTED || sd != PackageManager.PERMISSION_GRANTED) {
+            requestCameraPermission();
+        }
+        else {
+            mPictureCamera.setVisibility(View.VISIBLE);
+        }
 
         // Extract the Car instance if this Activity is called to edit
         // an existing Car entity. Otherwise we instantiate a new Car

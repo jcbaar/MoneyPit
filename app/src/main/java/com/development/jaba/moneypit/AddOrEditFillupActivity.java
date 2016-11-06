@@ -1,9 +1,14 @@
 package com.development.jaba.moneypit;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.development.jaba.database.MoneyPitDbContext;
 import com.development.jaba.model.Car;
 import com.development.jaba.model.Fillup;
@@ -19,6 +26,7 @@ import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.LocationHelper;
+import com.development.jaba.utilities.PermissionHelper;
 import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.EditTextEx;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -31,6 +39,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddOrEditFillupActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+
+    private final static int REQUEST_LOCATION_PERMISSION = 0;
 
     private MoneyPitDbContext mContext;
     private Fillup mFillupToEdit;
@@ -103,6 +113,59 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
         if (dpd != null) dpd.setOnDateSetListener(this);
     }
 
+    /**
+     * Handle the result of the permission request.
+     *
+     * @param requestCode The callback code.
+     * @param permissions The requested permission(s).
+     * @param grantResults The result for each requested permission.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (PermissionHelper.verifyPermissions(grantResults)) {
+                mLocHelp = new LocationTracker(this);
+                mLocHelp.startLocationTracking();
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    /**
+     * Requests for the permission to use the location services.
+     */
+    private void requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            // Tell the user why we need the requested permissions.
+            DialogHelper.showCallbackMessageDialog(getString(R.string.permission),
+                    getString(R.string.location_permission),
+                    new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            ActivityCompat.requestPermissions(AddOrEditFillupActivity.this,
+                                    new String[] {
+                                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                                            Manifest.permission.ACCESS_FINE_LOCATION
+                                    },
+                                    REQUEST_LOCATION_PERMISSION);
+                        }
+                    }, this);
+        }
+        else {
+            // Location permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, new String[] {
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    REQUEST_LOCATION_PERMISSION);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +173,20 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
 
         // Bind views.
         ButterKnife.bind(this);
+
+        int l1 = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int l2 = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Request the permissions.
+        if (l1 != PackageManager.PERMISSION_GRANTED || l2 != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
+        }
+        else {
+            mLocHelp = new LocationTracker(this);
+            mLocHelp.startLocationTracking();
+        }
 
         // Instantiate a database context..
         mContext = new MoneyPitDbContext(this);
@@ -164,13 +241,6 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
                     mOdometer.setText(String.valueOf(Math.round(before.getOdometer() + mFillupToEdit.getOdometer())));
                 }
-            }
-
-            // When allowed to do so we try to also record the
-            // location of the fill-up.
-            if (getSettings().getBooleanValue(SettingsHelper.PREF_ALLOW_LOCATION)) {
-                mLocHelp = new LocationTracker(this);
-                mLocHelp.startLocationTracking();
             }
         }
 

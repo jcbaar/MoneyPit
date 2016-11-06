@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference pref = findPreference("emptyMapCache");
 
         if (pref != null) {
-            if ( ContextCompat.checkSelfPermission(MoneyPitApp.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if ( ContextCompat.checkSelfPermission(MoneyPitApp.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 pref.setEnabled(false);
             }
             else {

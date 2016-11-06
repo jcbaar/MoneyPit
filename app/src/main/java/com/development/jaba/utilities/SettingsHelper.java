@@ -12,7 +12,6 @@ public class SettingsHelper {
      * Preferences keys.
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
-            PREF_ALLOW_LOCATION = "allow_location",
             PREF_THEME = "app_theme";
 
     public final static int THEME_LIGHT = 0,
@@ -35,9 +34,6 @@ public class SettingsHelper {
         // Setup defaults when they do not yet exist.
         if (!mPreferences.contains(PREF_ESTIMATE_ODOMETER)) {
             mPreferences.edit().putBoolean(PREF_ESTIMATE_ODOMETER, true).apply();
-        }
-        if (!mPreferences.contains(PREF_ALLOW_LOCATION)) {
-            mPreferences.edit().putBoolean(PREF_ALLOW_LOCATION, false).apply();
         }
         if (!mPreferences.contains(PREF_THEME)) {
             mPreferences.edit().putInt(PREF_THEME, THEME_LIGHT).apply();
