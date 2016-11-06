@@ -9,9 +9,14 @@
         If you have questions, suggestions, comments or a bug to report please send us an
         &lt;a href="mailto:jabadevelopment@gmail.com"&gt;email&lt;/a&gt;.
         &lt;br/&gt;&lt;br/&gt;
-        MoneyPit has been build with the help of the following components:&lt;br/&gt;&lt;br/&gt;
+        MoneyPit has been build with the help of the following components and services:&lt;br/&gt;&lt;br/&gt;
+        &lt;a href="https://developers.google.com/android/guides/overview"&gt;Google Play Services&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="https://developer.android.com/topic/libraries/support-library/index.html"&gt;Android Support Library&lt;/a&gt;&lt;br/&gt;
         &lt;a href="https://github.com/afollestad/material-dialogs"&gt;Material Design Dialogs&lt;/a&gt;&lt;br/&gt;
         &lt;a href="https://github.com/PhilJay/MPAndroidChart"&gt;MPAndroidChart&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="http://jakewharton.github.io/butterknife/"&gt;ButterKnife&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="https://github.com/wdullaer/MaterialDateTimePicker"&gt;MaterialDateTimePicker&lt;/a&gt;&lt;br/&gt;
+        &lt;a href="https://github.com/DreaminginCodeZH/MaterialProgressBar"&gt;MaterialProgressBar&lt;/a&gt;&lt;br/&gt;
     </string>
 
 </resources>
