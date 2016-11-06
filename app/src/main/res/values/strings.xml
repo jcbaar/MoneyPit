@@ -163,4 +163,7 @@
     <string name="permission">Permission&#8230;</string>
     <string name="camera_permission">We would like permission to use your camera so that you can take a nice picture of your vehicle to go with the data. We would also like permission to save that picture to your storage.</string>
     <string name="location_permission">We would like permission to store the location of this fill-up so that we can show you where it was when you look back at the data.</string>
+    <string name="summary_fillups">tankbeurten:</string>
+    <string name="summary_cost_per_fillup">cost per fill-up:</string>
+    <string name="summary_distance_per_fillup">distance per fill-up:</string>
 </resources>

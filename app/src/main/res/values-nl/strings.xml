@@ -161,5 +161,8 @@
     <string name="permission">Toestemming&#8230;</string>
     <string name="camera_permission">We vragen uw toestemming om uw camera te mogen gebruiken zodat u een mooie foto van uw voertuig kunt maken bij uw data. We vragen ook uw toestemming om deze foto te mogen opslaan.</string>
     <string name="location_permission">We vragen uw toestemming om de lokatie van de tankbeurt te mogen opslaan zodat we deze aan u kunnen tonen wanneer u de informatie terug kijkt.</string>
+    <string name="summary_fillups">tankbeurten:</string>
+    <string name="summary_cost_per_fillup">kosten per tankbeurt:</string>
+    <string name="summary_distance_per_fillup">afstand per tankbeurt:</string>
 
 </resources>

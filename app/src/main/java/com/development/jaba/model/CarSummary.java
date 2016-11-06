@@ -10,6 +10,7 @@ import java.util.List;
  * fixed range of fill up information.
  */
 public class CarSummary {
+    public int Fillups;
     public double AverageFuelEconomy;
     public double AverageFuelCostPerVolumeUnit;
     public double AverageFuelCostPerDistanceUnit;
@@ -17,6 +18,9 @@ public class CarSummary {
     public double TotalDistance;
     public double TotalVolume;
     public double AverageCostPerMonth;
+    public double AverageCostPerFillup;
+    public double AverageDistancePerFillup;
+
     public DatedValue MostExpensiveFillup;
     public DatedValue LeastExpensiveFillup;
     public DatedValue BestEconomyFillup;
@@ -33,6 +37,7 @@ public class CarSummary {
     public void setup(List<Fillup> data) {
 
         // Start of by resetting everything.
+        Fillups = data.size();
         TotalDistance = 0;
         TotalFuelCost = 0;
         TotalVolume = 0;
@@ -48,13 +53,17 @@ public class CarSummary {
         AverageFuelCostPerVolumeUnit = 0;
         AverageFuelCostPerDistanceUnit = 0;
         AverageCostPerMonth = 0;
+        AverageCostPerFillup = 0;
+        AverageDistancePerFillup = 0;
 
         HashMap<String, Double> sum = new HashMap<>();
 
         double maxEcon = 0, minEcon = Double.MAX_VALUE, economy;
         double maxPrice = 0, minPrice = Double.MAX_VALUE, price;
         double totEcon = 0;
-        int numTotEcon = 0;
+        double totalFillup = 0;
+        double totalDistance = 0;
+        int numTotEcon = 0, numTotal = 0;
 
         // Iterate the fill-ups and summarize the information.
         for (Fillup f : data) {
@@ -63,6 +72,14 @@ public class CarSummary {
             TotalDistance += f.getDistance();
             TotalFuelCost += f.getTotalPrice();
             TotalVolume += f.getVolume();
+
+            // Determine the average cost and distance of a fill-up. This is only
+            // calculated over the full fill-ups.
+            if(f.getFullTank() == true) {
+                totalFillup += f.getTotalPrice();
+                totalDistance += f.getDistance();
+                numTotal++;
+            }
 
             // Determine the best and worst fuel economy. Fuel economy is only
             // calculated over the full fill-ups.
@@ -130,6 +147,8 @@ public class CarSummary {
         }
 
         // Compute the averages.
+        AverageCostPerFillup = totalFillup / numTotal;
+        AverageDistancePerFillup = totalDistance / numTotal;
         AverageCostPerMonth = total / sum.size();
         AverageFuelEconomy = totEcon / numTotEcon;
         AverageFuelCostPerVolumeUnit = TotalFuelCost / TotalVolume;

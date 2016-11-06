@@ -190,12 +190,15 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             setData(R.id.distance, R.string.summary_distance_total, FormattingHelper.toDistance(mCar, result.TotalDistance));
             setData(R.id.fuel, R.string.summary_cost_total, FormattingHelper.toPrice(mCar, result.TotalFuelCost));
             setData(R.id.volume, R.string.summary_volume_total, FormattingHelper.toVolumeUnit(mCar, result.TotalVolume));
+            setData(R.id.fillups, getString(R.string.summary_fillups), Integer.toString(result.Fillups));
 
             setHeader(R.id.headerAvg, R.string.summary_averages);
             setData(R.id.economy, R.string.summary_economy_average, FormattingHelper.toEconomy(mCar, result.AverageFuelEconomy));
             setData(R.id.costMonth, R.string.summary_cost_average, FormattingHelper.toPrice(mCar, result.AverageCostPerMonth));
             setData(R.id.costDistance, getString(R.string.summary_cost_per) + " " + mCar.getDistanceUnit().toString().toLowerCase() + ": ", FormattingHelper.toPrice(mCar, result.AverageFuelCostPerDistanceUnit));
             setData(R.id.costVolume, getString(R.string.summary_cost_per) + " " + mCar.getVolumeUnit().toString().toLowerCase() + ": ", FormattingHelper.toPrice(mCar, result.AverageFuelCostPerVolumeUnit));
+            setData(R.id.costFillup, getString(R.string.summary_cost_per_fillup), FormattingHelper.toPrice(mCar, result.AverageCostPerFillup));
+            setData(R.id.distanceFillup, getString(R.string.summary_distance_per_fillup), FormattingHelper.toDistance(mCar, result.AverageDistancePerFillup));
 
             setHeader(R.id.summary, R.string.summary_summary);
             setData(R.id.expensiveMonth, R.string.summary_most_expensive_month, FormattingHelper.toPrice(mCar, result.MostExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(result.MostExpensiveMonth.Date) + ")");

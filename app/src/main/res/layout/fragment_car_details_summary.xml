@@ -68,6 +68,10 @@
                 android:id="@+id/volume"
                 layout="@layout/fragment_car_details_summary_data" />
 
+            <include
+                android:id="@+id/fillups"
+                layout="@layout/fragment_car_details_summary_data" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_margin" />
@@ -90,6 +94,14 @@
 
             <include
                 android:id="@+id/costVolume"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <include
+                android:id="@+id/costFillup"
+                layout="@layout/fragment_car_details_summary_data" />
+
+            <include
+                android:id="@+id/distanceFillup"
                 layout="@layout/fragment_car_details_summary_data" />
 
             <Space
