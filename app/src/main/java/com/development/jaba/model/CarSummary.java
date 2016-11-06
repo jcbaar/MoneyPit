@@ -20,6 +20,7 @@ public class CarSummary {
     public double AverageCostPerMonth;
     public double AverageCostPerFillup;
     public double AverageDistancePerFillup;
+    public double AverageFillup;
 
     public DatedValue MostExpensiveFillup;
     public DatedValue LeastExpensiveFillup;
@@ -55,6 +56,7 @@ public class CarSummary {
         AverageCostPerMonth = 0;
         AverageCostPerFillup = 0;
         AverageDistancePerFillup = 0;
+        AverageFillup = 0;
 
         HashMap<String, Double> sum = new HashMap<>();
 
@@ -63,6 +65,7 @@ public class CarSummary {
         double totEcon = 0;
         double totalFillup = 0;
         double totalDistance = 0;
+        double totalVolume = 0;
         int numTotEcon = 0, numTotal = 0;
 
         // Iterate the fill-ups and summarize the information.
@@ -78,6 +81,7 @@ public class CarSummary {
             if(f.getFullTank() == true) {
                 totalFillup += f.getTotalPrice();
                 totalDistance += f.getDistance();
+                totalVolume += f.getVolume();
                 numTotal++;
             }
 
@@ -147,6 +151,7 @@ public class CarSummary {
         }
 
         // Compute the averages.
+        AverageFillup = totalVolume / numTotal;
         AverageCostPerFillup = totalFillup / numTotal;
         AverageDistancePerFillup = totalDistance / numTotal;
         AverageCostPerMonth = total / sum.size();

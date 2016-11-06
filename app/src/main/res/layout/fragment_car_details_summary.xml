@@ -104,6 +104,10 @@
                 android:id="@+id/distanceFillup"
                 layout="@layout/fragment_car_details_summary_data" />
 
+            <include
+                android:id="@+id/volumeFillup"
+                layout="@layout/fragment_car_details_summary_data" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_margin" />

@@ -166,4 +166,5 @@
     <string name="summary_fillups">tankbeurten:</string>
     <string name="summary_cost_per_fillup">cost per fill-up:</string>
     <string name="summary_distance_per_fillup">distance per fill-up:</string>
+    <string name="summary_volume_per_fillup">amount per fill-up:</string>
 </resources>

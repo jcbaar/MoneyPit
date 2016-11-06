@@ -199,6 +199,7 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
             setData(R.id.costVolume, getString(R.string.summary_cost_per) + " " + mCar.getVolumeUnit().toString().toLowerCase() + ": ", FormattingHelper.toPrice(mCar, result.AverageFuelCostPerVolumeUnit));
             setData(R.id.costFillup, getString(R.string.summary_cost_per_fillup), FormattingHelper.toPrice(mCar, result.AverageCostPerFillup));
             setData(R.id.distanceFillup, getString(R.string.summary_distance_per_fillup), FormattingHelper.toDistance(mCar, result.AverageDistancePerFillup));
+            setData(R.id.volumeFillup, getString(R.string.summary_volume_per_fillup), FormattingHelper.toVolumeUnit(mCar, result.AverageFillup));
 
             setHeader(R.id.summary, R.string.summary_summary);
             setData(R.id.expensiveMonth, R.string.summary_most_expensive_month, FormattingHelper.toPrice(mCar, result.MostExpensiveMonth.Value) + " (" + DateHelper.toMonthYearString(result.MostExpensiveMonth.Date) + ")");
