@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ public class AboutActivity extends BaseActivity {
         return R.layout.activity_about;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,13 @@ public class AboutActivity extends BaseActivity {
 
         mVersion.setText(myVersionName);
         mBody.setMovementMethod(LinkMovementMethod.getInstance());
-        mBody.setText(Html.fromHtml(getString(R.string.about_body)));
+
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(getString(R.string.about_body),Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(getString(R.string.about_body));
+        }
+        mBody.setText(result);
     }
 }
