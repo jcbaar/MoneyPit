@@ -87,7 +87,7 @@
     <string name="dialog_error_title">Error</string>
     <string name="license_error">There is already a vehicle in the database with this license plate. The license plate of a new vehicle must be unique.</string>
     <string name="no_data_to_average">There is no data to average.</string>
-    <string name="graph_cost_per_month">fuel cost for %1$s %2$s:</string>
+    <string name="graph_cost_per_month">fuel cost for %1$s %2$d:</string>
     <string name="graph_cost_per_distance_per_month">fuel costs per %1$s, per month for %2$s %3$d:</string>
     <string name="graph_distance_per_month">driven distance for %1$s %2$d:</string>
     <string name="graph_economy_per_month">average fuel economy for %1$s %2$d:</string>

@@ -16,6 +16,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            style="@style/ListTertiaryText"
+            android:id="@+id/distancePerMonthLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/graph_distance"/>
+
         <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/distancePerMonth"
             android:layout_width="match_parent"
@@ -25,6 +32,13 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
+
+        <TextView
+            style="@style/ListTertiaryText"
+            android:id="@+id/economyPerMonthLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/graph_economy"/>
 
         <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/economyPerMonth"

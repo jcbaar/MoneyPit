@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.StyleableRes;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -64,14 +65,18 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         mColorPrimaryDark = ContextCompat.getColor(this, R.color.primaryColorDark);
         mColorAccent = ContextCompat.getColor(this, R.color.accentColor);
 
+        @StyleableRes int primary = 0;
+        @StyleableRes int primaryDark = 1;
+        @StyleableRes int accent = 2;
+
         // Get out our attributes.
         if (attrs != null) {
             TypedArray a = getTheme().obtainStyledAttributes(attrs);
 
             try {
-                mColorPrimary = a.getColor(0, mColorPrimary);
-                mColorPrimaryDark = a.getColor(1, mColorPrimaryDark);
-                mColorAccent = a.getColor(2, mColorAccent);
+                mColorPrimary = a.getColor(primary, mColorPrimary);
+                mColorPrimaryDark = a.getColor(primaryDark, mColorPrimaryDark);
+                mColorAccent = a.getColor(accent, mColorAccent);
             } catch (Exception e) {
                 Log.e("CreateMainActivity", "Unable to load attributes");
             } finally {

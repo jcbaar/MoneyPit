@@ -650,7 +650,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param carId The id of the car the information is read for.
      * @param year  The year the data should belong to.
      */
-    public List<BarEntry> getFuelCostPerMonth(int carId, int year) {
+    public ArrayList<BarEntry> getFuelCostPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price * Volume) FROM Fillup WHERE CarId = ? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ? GROUP BY CAST(strftime('%m', Date) AS INT)";
         String[] args = new String[]{String.valueOf(carId),
                 String.valueOf(year)};
@@ -664,7 +664,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param carId The id of the car the information is read for.
      * @param year  The year the data should belong to.
      */
-    public List<BarEntry> getFuelCostPerKilometerPerMonth(int carId, int year) {
+    public ArrayList<BarEntry> getFuelCostPerKilometerPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), SUM(Price*Volume) / " +
                 "SUM(Odometer - (SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
@@ -682,7 +682,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param carId The id of the car the information is read for.
      * @param year  The year the data should belong to.
      */
-    public List<BarEntry> getDistancePerMonth(int carId, int year) {
+    public ArrayList<BarEntry> getDistancePerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
                 "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) " +
                 "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
@@ -700,7 +700,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param carId The id of the car the information is read for.
      * @param year  The year the data should belong to.
      */
-    public List<BarEntry> getEconomyPerMonth(int carId, int year) {
+    public ArrayList<BarEntry> getEconomyPerMonth(int carId, int year) {
         String query = "SELECT CAST(strftime('%m', Date) AS INT), " +
                 "SUM(Odometer - IFNULL((SELECT Odometer FROM Fillup WHERE Date < T1.Date AND CarId = ? AND Volume <> 0 ORDER BY Date DESC LIMIT 1), Odometer)) / SUM(Volume)" +
                 "FROM Fillup AS T1 WHERE CarId=? AND Volume <> 0 AND CAST(strftime('%Y', Date) AS INT) = ?" +
@@ -719,11 +719,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
      * @param args  The query arguments.
      * @return An array of 12 {@link BarEntry} objects containing the information.
      */
-    public List<BarEntry> getGraphDataPoints(String query, String[] args) {
-        List<BarEntry> result = new ArrayList<>();
+    public ArrayList<BarEntry> getGraphDataPoints(String query, String[] args) {
+        ArrayList<BarEntry> result = new ArrayList<>();
         for (int m = 0; m < 12; m++) {
-            BarEntry e = new BarEntry(0, m);
-            e.setXIndex(m);
+            BarEntry e = new BarEntry(m, 0);
             result.add(e);
         }
 
@@ -737,14 +736,10 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 do {
                     int m = cursor.getInt(0) - 1;
                     if (m >= 0) {
-                        result.get(m).setVal(cursor.getFloat(1));
+                        result.get(m).setY(cursor.getFloat(1));
                     }
                 } while (cursor.moveToNext());
             }
-
-            cursor.close();
-            cursor = null;
-            return result;
         } catch (SQLiteException ex) {
             Log.e("getGraphDataPoints", ex.getMessage());
             return result;
@@ -753,6 +748,7 @@ public class MoneyPitDbContext extends SQLiteOpenHelper {
                 cursor.close();
             }
             mDbManager.closeDatabase();
+            return result;
         }
     }
 

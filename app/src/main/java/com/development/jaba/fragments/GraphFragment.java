@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.StyleableRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.development.jaba.moneypit.Keys;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -22,7 +24,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,22 +37,11 @@ import java.util.List;
  */
 public class GraphFragment extends BaseDetailsFragment {
 
-    protected List<String> mMonths; // Month names to show on the X-axis.
     MoneyPitDbContext mDbContext; // Database context.
 
     private int mTextColor = 0,
             mBackgroundColor = 0,
             mBarColor = 0;
-    /**
-     * Gets the list of month names.
-     * @return The {@link List<String>} containing the month names.
-     */
-    public List<String> getMonths() {
-        if(mMonths == null) {
-            mMonths = Arrays.asList(getResources().getStringArray(R.array.months));
-        }
-        return mMonths;
-    }
 
     /**
      * Gets the {@link MoneyPitDbContext}.
@@ -66,9 +57,9 @@ public class GraphFragment extends BaseDetailsFragment {
     /**
      * Sets up the {@link CombinedChart}.
      * @param chart The {@link CombinedChart} to setup.
-     * @param formatter The {@link ValueFormatter} used to format the values of the chart.
+     * @param formatter The {@link IAxisValueFormatter} used to format the values of the chart.
      */
-    public void setupChart(CombinedChart chart, ValueFormatter formatter) {
+    public void setupChart(CombinedChart chart, IAxisValueFormatter formatter) {
 
         Context context = getContext();
 
@@ -76,14 +67,19 @@ public class GraphFragment extends BaseDetailsFragment {
         mTextColor = ContextCompat.getColor(context, android.R.color.primary_text_light);
         mBackgroundColor = ContextCompat.getColor(context, android.R.color.background_light);
         mBarColor = ContextCompat.getColor(context, R.color.primaryColor);
+
+        @StyleableRes int textColor = 0;
+        @StyleableRes int backColor = 1;
+        @StyleableRes int barColor = 2;
+
         // Get out our attributes.
         if (attrs != null) {
             TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs);
 
             try {
-                mTextColor = a.getColor(0, mTextColor);
-                mBackgroundColor = a.getColor(1, mBackgroundColor);
-                mBarColor = a.getColor(2, mBarColor);
+                mTextColor = a.getColor(textColor, mTextColor);
+                mBackgroundColor = a.getColor(backColor, mBackgroundColor);
+                mBarColor = a.getColor(barColor, mBarColor);
             } catch (Exception e) {
                 Log.e("setupChart", "Unable to load attributes");
             } finally {
@@ -94,6 +90,7 @@ public class GraphFragment extends BaseDetailsFragment {
         chart.setDescription(null);
         chart.setDrawValueAboveBar(true);
         chart.setPinchZoom(false);
+        chart.setClickable(false);
         chart.setScaleXEnabled(false);
         chart.setScaleYEnabled(false);
         chart.getAxisRight().setEnabled(false);
@@ -104,15 +101,18 @@ public class GraphFragment extends BaseDetailsFragment {
         XAxis xa = chart.getXAxis();
         xa.setPosition(XAxis.XAxisPosition.BOTTOM);
         xa.setDrawGridLines(false);
-        xa.setSpaceBetweenLabels(2);
-        xa.setLabelsToSkip(0);
+        xa.setLabelCount(12);
         xa.setTextColor(mTextColor);
+        xa.setGranularity(1);
+        xa.setSpaceMin(1);
+        xa.setValueFormatter(new MonthFormatter());
 
         YAxis ya = chart.getAxisLeft();
         ya.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         ya.setDrawGridLines(false);
         ya.setValueFormatter(formatter);
         ya.setTextColor(mTextColor);
+        ya.setSpaceMin(0);
     }
 
     /**
@@ -121,7 +121,7 @@ public class GraphFragment extends BaseDetailsFragment {
      * @param values The values to display in the chart.
      * @param legendResId The legend text resource id.
      */
-    public void setupChartData(CombinedChart chart, List<BarEntry> values, int legendResId) {
+    public void setupChartData(CombinedChart chart, ArrayList<BarEntry> values, int legendResId) {
         if (mCurrentYear == 0) {
             mCurrentYear = DateHelper.getYearFromDate(new Date());
         }
@@ -141,7 +141,7 @@ public class GraphFragment extends BaseDetailsFragment {
             bd.addDataSet(bds);
 
             // Setup both the BarChart data and the LineChart data.
-            CombinedData cd = new CombinedData(getMonths());
+            CombinedData cd = new CombinedData();
             cd.setData(bd);
             cd.setData(getAverageSet(values));
 
@@ -157,15 +157,15 @@ public class GraphFragment extends BaseDetailsFragment {
      * @param data The {@link List<BarEntry>} containing the data to average.
      * @return The {@link LineData} with the averages.
      */
-    LineData getAverageSet(List<BarEntry> data) {
+    LineData getAverageSet(ArrayList<BarEntry> data) {
         LineData ld = new LineData();
-        List<Entry> avgData = new ArrayList<>();
+        ArrayList<Entry> avgData = new ArrayList<>();
 
         float total = 0, num = 0;
         for(BarEntry bd : data) {
             // We only average when there actually is data.
-            if(bd.getVal() != 0) {
-                total += bd.getVal();
+            if(bd.getY() != 0) {
+                total += bd.getY();
                 num++;
             }
         }
@@ -173,7 +173,7 @@ public class GraphFragment extends BaseDetailsFragment {
         // Build the average set.
         float avg = total / num;
         for (BarEntry db : data) {
-            Entry e = new Entry(avg, db.getXIndex());
+            Entry e = new Entry(db.getX(), avg);
             avgData.add(e);
         }
 
@@ -199,6 +199,32 @@ public class GraphFragment extends BaseDetailsFragment {
                 mCar = (Car) savedInstanceState.getSerializable(Keys.EK_CAR);
             }
             mCurrentYear = savedInstanceState.getInt(Keys.EK_CURRENTYEAR);
+        }
+    }
+
+    /**
+     * Class implementing the {@link IAxisValueFormatter} interface for showing the month axis.
+     */
+    public class MonthFormatter implements IAxisValueFormatter {
+
+        List<String> mMonths; // Month names to show on the X-axis.
+
+        public MonthFormatter() {
+            mMonths = Arrays.asList(getResources().getStringArray(R.array.months));
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            int month = (int)value;
+            if(month >= 0 && month < 12) {
+                return mMonths.get(month);
+            }
+            return "";
+        }
+
+        @Override
+        public int getDecimalDigits() {
+            return 0;
         }
     }
 }

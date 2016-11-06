@@ -11,12 +11,14 @@ import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.FormattingHelper;
 import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ValueFormatter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,19 +49,8 @@ public class CarDetailsEconomyFragment extends GraphFragment {
         View view = inflater.inflate(R.layout.fragment_car_details_economy, container, false);
         ButterKnife.bind(this, view);
 
-        setupChart(mDistancePerMonth, new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return FormattingHelper.toDistance(mCar, value) + " ";
-            }
-        });
-
-        setupChart(mEconomyPerMonth, new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return FormattingHelper.toEconomy(mCar, value) + " ";
-            }
-        });
+        setupChart(mDistancePerMonth, new DistanceFormatter());
+        setupChart(mEconomyPerMonth, new EconomyFormatter());
 
         setupBarsAndAverages();
         return view;
@@ -79,19 +70,19 @@ public class CarDetailsEconomyFragment extends GraphFragment {
 
         MoneyPitDbContext db = getDbContext();
         if (db != null && mCar != null) {
-            List<BarEntry> dataDM = db.getDistancePerMonth(mCar.getId(), mCurrentYear);
-            List<BarEntry> dataEM = db.getEconomyPerMonth(mCar.getId(), mCurrentYear);
+            ArrayList<BarEntry> dataDM = db.getDistancePerMonth(mCar.getId(), mCurrentYear);
+            ArrayList<BarEntry> dataEM = db.getEconomyPerMonth(mCar.getId(), mCurrentYear);
 
             setupChartData(mDistancePerMonth, dataDM, R.string.graph_distance_legend);
             setupChartData(mEconomyPerMonth, dataEM, R.string.graph_economy_legend);
 
             mDistancePerMonth.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
-                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                    if (e.getVal() != 0 && dataSetIndex == 0) {
-                        Snackbar.make(mDistancePerMonth, String.format(getResources().getString(R.string.graph_distance_per_month), DateHelper.toMonthNameString(e.getXIndex()), mCurrentYear) +
+                public void onValueSelected(Entry e, Highlight h) {
+                    if (e instanceof BarEntry && e.getX() >= 0 && e.getX() <= 11 && e.getY() != 0) {
+                        Snackbar.make(mDistancePerMonth, String.format(getResources().getString(R.string.graph_distance_per_month), DateHelper.toMonthNameString((int)e.getX()), mCurrentYear) +
                                 " " +
-                                FormattingHelper.toDistance(mCar, e.getVal()), Snackbar.LENGTH_LONG).show();
+                                FormattingHelper.toDistance(mCar, e.getY()), Snackbar.LENGTH_LONG).show();
                     }
                 }
 
@@ -103,11 +94,11 @@ public class CarDetailsEconomyFragment extends GraphFragment {
 
             mEconomyPerMonth.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
-                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                    if(e.getVal() != 0 && dataSetIndex == 0) {
-                        Snackbar.make(mEconomyPerMonth, String.format(getResources().getString(R.string.graph_economy_per_month), DateHelper.toMonthNameString(e.getXIndex()), mCurrentYear) +
+                public void onValueSelected(Entry e, Highlight h) {
+                    if(e instanceof BarEntry && e.getX() >= 0 && e.getX() <= 11 && e.getY() != 0) {
+                        Snackbar.make(mEconomyPerMonth, String.format(getResources().getString(R.string.graph_economy_per_month), DateHelper.toMonthNameString((int)e.getX()), mCurrentYear) +
                                 " " +
-                                FormattingHelper.toEconomy(mCar, e.getVal()), Snackbar.LENGTH_LONG).show();
+                                FormattingHelper.toEconomy(mCar, e.getY()), Snackbar.LENGTH_LONG).show();
                     }
                 }
 
@@ -138,5 +129,43 @@ public class CarDetailsEconomyFragment extends GraphFragment {
     public void onDataChanged() {
         super.onDataChanged();
         setupBarsAndAverages();
+    }
+
+    /**
+     * Class implementing the {@link IAxisValueFormatter} interface for showing the distance axis.
+     */
+    public class DistanceFormatter implements IAxisValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            if(value != 0) {
+                return FormattingHelper.toDistance(mCar, value) + " ";
+            }
+            return "";
+        }
+
+        @Override
+        public int getDecimalDigits() {
+            return 2;
+        }
+    }
+
+    /**
+     * Class implementing the {@link IAxisValueFormatter} interface for showing the economy axis.
+     */
+    public class EconomyFormatter implements IAxisValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            if(value != 0) {
+                return FormattingHelper.toEconomy(mCar, value) + " ";
+            }
+            return "";
+        }
+
+        @Override
+        public int getDecimalDigits() {
+            return 2;
+        }
     }
 }

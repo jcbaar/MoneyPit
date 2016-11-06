@@ -3,6 +3,7 @@ package com.development.jaba.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.StyleableRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -82,6 +83,8 @@ public class EditTextEx extends LinearLayout {
 
         mCharCount.setTextColor(ContextCompat.getColor(context, R.color.accentColor));
 
+        @StyleableRes int inputType = 1;
+
         // Get the attributes.
         if (attrs != null) {
             int[] attrIntArray = new int[]{android.R.attr.maxLength, android.R.attr.inputType};
@@ -96,7 +99,7 @@ public class EditTextEx extends LinearLayout {
                 mErrorColor = c.getColor(R.styleable.EditTextEx_eteErrorColor, Color.argb(200, 255, 0, 0));
 
                 // Make sure we pass on the correct input type to the EditText.
-                mEditor.setInputType(a.getInteger(1, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS ));
+                mEditor.setInputType(a.getInteger(inputType, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS ));
             } catch (Exception e) {
                 Log.e("EditTextEx", "Unable to load attributes");
             } finally {
