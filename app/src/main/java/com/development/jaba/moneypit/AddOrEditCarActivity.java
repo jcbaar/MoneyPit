@@ -392,7 +392,7 @@ public class AddOrEditCarActivity extends BaseActivity {
                 } else {
                     getParent().setResult(RESULT_OK, result);
                 }
-                finish();
+                ActivityCompat.finishAfterTransition(this);
             } else {
                 DialogHelper.showMessageDialog(getString(R.string.dialog_error_title), getString(R.string.error_saving_car), this);
             }

@@ -113,6 +113,8 @@
     <string name="location_settings">Location and maps</string>
     <string name="allow_location">Allow recording of location</string>
     <string name="allow_location_summary">With this option turned on the location of every fill-up is recorded into the database.</string>
+    <string name="transitions">Show animated transitions</string>
+    <string name="transitions_summary">Shows nice animated transitions when navigating from one screen to another. Turn off this option on slower devices to increase performance or if you simply do not want to see the transitions.</string>
     <string name="no_location_provider">There is no location provider available. The location will not be recorded.</string>
     <string name="misc_settings">Miscellaneous</string>
     <string name="clear_map_cache">Erase the local map cache</string>

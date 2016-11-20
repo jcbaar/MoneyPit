@@ -28,6 +28,7 @@ import com.development.jaba.fragments.CarDetailsFillupsFragment;
 import com.development.jaba.fragments.CarDetailsSummaryFragment;
 import com.development.jaba.model.Car;
 import com.development.jaba.utilities.DateHelper;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.PageTransformerEx;
 import com.development.jaba.view.ViewPagerEx;
@@ -161,7 +162,9 @@ public class VehicleDetailsActivity extends BaseActivity implements CarDetailsFi
 
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.ROLL));
+        if(getSettings().getBooleanValue(SettingsHelper.PREF_TRANSITIONS, true)) {
+            mViewPager.setPageTransformer(true, new PageTransformerEx(PageTransformerEx.TransformType.ROLL));
+        }
         mSlidingTabLayout.setupWithViewPager(mViewPager);
 
         // Setup the page change listener for the ViewPager.

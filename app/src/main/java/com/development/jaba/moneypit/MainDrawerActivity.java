@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,6 +20,7 @@ import android.view.View;
 
 import com.development.jaba.fragments.CarListFragment;
 import com.development.jaba.fragments.DriveBackupFragment;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.utilities.UtilsHelper;
 
 import butterknife.Bind;
@@ -113,7 +117,7 @@ public class MainDrawerActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         selectDrawerItem(menuItem);
                         return true;
                     }
@@ -153,9 +157,11 @@ public class MainDrawerActivity extends BaseActivity {
         }
 
         // Insert the fragment by replacing any existing fragment
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        if(getSettings().getBooleanValue(SettingsHelper.PREF_TRANSITIONS, true)) {
+            trans.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
+        trans.replace(R.id.container, fragment).commit();
 
         // Highlight the selected item, update the title, and close the drawer
 
@@ -196,7 +202,7 @@ public class MainDrawerActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                ActivityCompat.finishAfterTransition(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);

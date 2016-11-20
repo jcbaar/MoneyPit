@@ -113,6 +113,8 @@
     <string name="location_settings">Lokatie en kaarten</string>
     <string name="allow_location">Lokatie mag worden vastgelegd</string>
     <string name="allow_location_summary">Wanneer deze optie aan staat zal de lokatie van elke tankbeurt in de database worden opgeslagen.</string>
+    <string name="transitions">Toon geanimeerde overgangen</string>
+    <string name="transitions_summary">Toont mooie geanimeerde overgangen wanneer er naar een ander scherm wordt genavigeerd. Schakel deze optie uit om de snelheid te verbeteren op langzamere apparaten of als u de geanimeerde overgangen niet wilt zien.</string>
     <string name="no_location_provider">Er is geen lokatie beschikbaar. De lokatie zal niet worden opgeslagen.</string>
     <string name="misc_settings">Overige</string>
     <string name="clear_map_cache">Het lokale kaart geheugen legen</string>

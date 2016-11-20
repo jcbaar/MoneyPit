@@ -12,6 +12,11 @@
             android:key="estimate_odometer"
             android:title="@string/estimate_odo"
             android:summary="@string/estimate_odo_summary"/>
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="transitions"
+            android:title="@string/transitions"
+            android:summary="@string/transitions_summary"/>
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory android:title="@string/location_settings">
         <android.support.v7.preference.Preference

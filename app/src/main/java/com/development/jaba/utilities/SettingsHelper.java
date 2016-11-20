@@ -12,7 +12,8 @@ public class SettingsHelper {
      * Preferences keys.
      */
     public final static String PREF_ESTIMATE_ODOMETER = "estimate_odometer",
-            PREF_THEME = "app_theme";
+            PREF_THEME = "app_theme",
+            PREF_TRANSITIONS = "transitions";
 
     public final static int THEME_LIGHT = 0,
             THEME_DARK = 1,
@@ -52,10 +53,11 @@ public class SettingsHelper {
      * Gets the given boolean value from the preferences.
      *
      * @param key          The key under which the value is stored.
+     * @param defaultValue The default value if it is not present in the preferences.
      * @return The boolean value or it's default if not set yet..
      */
-    public boolean getBooleanValue(String key) {
-        return mPreferences.getBoolean(key, false);
+    public boolean getBooleanValue(String key, boolean defaultValue) {
+        return mPreferences.getBoolean(key, defaultValue);
     }
 
     /**

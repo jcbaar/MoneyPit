@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.StyleableRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -116,7 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 NavUtils.navigateUpTo(this, intent);
             } else {
-                finish();
+                ActivityCompat.finishAfterTransition(this);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -220,7 +221,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SharedPr
         //
         // recreate();
         Class<?> cls = getClass();
-        finish();
+        ActivityCompat.finishAfterTransition(this);
         Intent intent = new Intent(this, cls);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

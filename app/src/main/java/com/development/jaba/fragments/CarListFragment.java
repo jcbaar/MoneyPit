@@ -29,6 +29,7 @@ import com.development.jaba.moneypit.R;
 import com.development.jaba.moneypit.TotalSummaryActivity;
 import com.development.jaba.moneypit.VehicleDetailsActivity;
 import com.development.jaba.utilities.DialogHelper;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.RecyclerViewEx;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class CarListFragment extends Fragment {
     private MoneyPitDbContext mContext;              // The MoneyPit database mContext.
     private CarRowAdapter mCarAdapter;               // Adapter for holding the Car list.
     private List<Car> mCars;                         // The list of Car entities from the database.
+    private SettingsHelper mSettings;                // For reading app settings.
 
     @SuppressWarnings("unused")
     @Bind(R.id.listEmpty) TextView mEmptyView;        // The text to show when the list is empty.
@@ -75,6 +77,7 @@ public class CarListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mSettings = new SettingsHelper(getContext());
     }
 
     /**
@@ -195,7 +198,7 @@ public class CarListFragment extends Fragment {
      */
     private Bundle getSceneBundle(int position) {
         Bundle trans = null;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if(mSettings.getBooleanValue(SettingsHelper.PREF_TRANSITIONS, true) && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             CarRowAdapter.CarRowViewHolder vh = (CarRowAdapter.CarRowViewHolder) mCarList.findViewHolderForLayoutPosition(position);
             if(vh != null) {
 

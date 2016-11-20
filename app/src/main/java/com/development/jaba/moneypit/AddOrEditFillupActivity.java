@@ -235,7 +235,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
             setTitle(getString(R.string.title_create_fillup));
 
             // If settings tell us to, estimate the odometer setting.
-            if (getSettings().getBooleanValue(SettingsHelper.PREF_ESTIMATE_ODOMETER)) {
+            if (getSettings().getBooleanValue(SettingsHelper.PREF_ESTIMATE_ODOMETER, true)) {
                 Fillup before = mSurroundingFillups.getBefore();
                 if (before != null) {
                     mFillupToEdit.setOdometer(mContext.getEstimatedOdometer(mCar.getId()));
@@ -419,7 +419,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
             } else {
                 getParent().setResult(RESULT_CANCELED);
             }
-            finish();
+            ActivityCompat.finishAfterTransition(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -464,7 +464,7 @@ public class AddOrEditFillupActivity extends BaseActivity implements DatePickerD
                 } else {
                     getParent().setResult(RESULT_OK, result);
                 }
-                finish();
+                ActivityCompat.finishAfterTransition(this);
             } else {
                 DialogHelper.showMessageDialog(getString(R.string.dialog_error_title), getString(R.string.error_saving_fillup), this);
             }
