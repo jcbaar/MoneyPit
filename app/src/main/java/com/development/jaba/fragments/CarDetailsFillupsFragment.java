@@ -27,6 +27,7 @@ import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.FormattingHelper;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.view.RecyclerViewEx;
 
 import java.util.List;
@@ -69,14 +70,20 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
 
         mContext = new MoneyPitDbContext(getActivity());
         if (mCar != null) {
-            mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null);
+            final SettingsHelper settings = new SettingsHelper(getContext());
+            mFillupAdapter = new FillupRowAdapter(getActivity(), mCar, null, settings);
             mFillupAdapter.setEmptyView(mEmptyText);
             mFillupAdapter.setOnRecyclerItemClicked(new OnRecyclerItemClicked() {
 
                 @Override
                 public void onExpansionStateChanged(int position, boolean isExpanded) {
                     if (isExpanded) {
-                        mFillupList.smoothScrollToPosition(position);
+                        if(settings.getBooleanValue(SettingsHelper.PREF_TRANSITIONS, true)) {
+                            mFillupList.scrollToPosition(position);
+                        }
+                        else {
+                            mFillupList.smoothScrollToPosition(position);
+                        }
                     }
                 }
 

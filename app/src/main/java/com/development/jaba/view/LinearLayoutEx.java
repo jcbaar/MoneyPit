@@ -23,7 +23,8 @@ import com.development.jaba.moneypit.R;
  */
 public class LinearLayoutEx extends LinearLayout {
 
-    private ValueAnimator mAnimator;
+    private ValueAnimator mAnimatorExpand;
+    private ValueAnimator mAnimatorCollapse;
     private int mDuration;
     private int mMeasuredHeight = 0;
     private ExpansionStateListener mEsListener;
@@ -70,7 +71,7 @@ public class LinearLayoutEx extends LinearLayout {
      * Sets up the {@link android.animation.ValueAnimator} for expanding the layout
      * vertically.
      */
-    private void setupAnimator() {
+    private void setupAnimators() {
 
         // We need to restrict the layout to the current width of the screen so
         // that it will correctly calculate the necessary height for the contents.
@@ -84,10 +85,10 @@ public class LinearLayoutEx extends LinearLayout {
         final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         measure(widthSpec, heightSpec);
 
-        // Setup the animator.
+        // Setup the animators.
         mMeasuredHeight = getMeasuredHeight();
-        mAnimator = ViewHeightAnimator(0, mMeasuredHeight);
-        mAnimator.addListener(new Animator.AnimatorListener() {
+        mAnimatorExpand = ViewHeightAnimator(0, mMeasuredHeight);
+        mAnimatorExpand.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
@@ -110,93 +111,9 @@ public class LinearLayoutEx extends LinearLayout {
 
             }
         });
-    }
 
-    /**
-     * Attaches the {@link android.view.ViewTreeObserver.OnPreDrawListener} to the {@link View}. When
-     * this event occurs we can correctly setup the {@link android.animation.ValueAnimator} since at
-     * this point we know the correct layout height.
-     */
-    public void attachPreDrawListener() {
-        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                getViewTreeObserver().removeOnPreDrawListener(this);
-                setVisibility(View.GONE);
-                setupAnimator();
-                return true;
-            }
-        });
-    }
-
-    /**
-     * Recomputes the total height necessary to show all information.
-     */
-    public void recomputeHeight() {
-        setVisibility(View.GONE);
-        setupAnimator();
-    }
-
-    /**
-     * Gets the 'expanded' state.
-     *
-     * @return True if the layout is expanded. False it it is not.
-     */
-    public boolean isExpanded() {
-        return getVisibility() == View.VISIBLE;
-    }
-
-    /**
-     * Toggle the expansion state of the layout.
-     */
-    public void toggle() {
-        if (isExpanded()) {
-            collapse();
-        } else {
-            expand();
-        }
-    }
-
-    /**
-     * Expands the layout if it is not yet expanded.
-     */
-    public void expand() {
-        if (getVisibility() == View.VISIBLE) {
-            return;
-        }
-        setVisibility(View.VISIBLE);
-        mAnimator.setDuration(mDuration);
-        mAnimator.start();
-    }
-
-    /**
-     * Expands the layout if it is not yet expanded. It expands the
-     * layout without any animation.
-     */
-    public void expandNoAnim() {
-        if (getVisibility() == View.VISIBLE) {
-            return;
-        }
-        setVisibility(View.VISIBLE);
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        layoutParams.height = mMeasuredHeight;
-        setLayoutParams(layoutParams);
-        if (mEsListener != null) {
-            mEsListener.OnExpansionStateChanged(true);
-        }
-    }
-
-    /**
-     * Collapses the layout if it is not yet collapsed.
-     */
-    public void collapse() {
-        if (getVisibility() == View.GONE) {
-            return;
-        }
-
-        int finalHeight = getHeight();
-        ValueAnimator animator = ViewHeightAnimator(finalHeight, 0);
-        animator.addListener(new Animator.AnimatorListener() {
+        mAnimatorCollapse = ViewHeightAnimator(mMeasuredHeight, 0);
+        mAnimatorCollapse.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 // At the end of the collapse animation we set out visibility to GONE.
@@ -218,7 +135,99 @@ public class LinearLayoutEx extends LinearLayout {
             public void onAnimationRepeat(Animator animator) {
             }
         });
-        animator.start();
+    }
+
+    /**
+     * Attaches the {@link android.view.ViewTreeObserver.OnPreDrawListener} to the {@link View}. When
+     * this event occurs we can correctly setup the {@link android.animation.ValueAnimator} since at
+     * this point we know the correct layout height.
+     */
+    public void attachPreDrawListener() {
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                setVisibility(View.GONE);
+                setupAnimators();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Recomputes the total height necessary to show all information.
+     */
+    public void recomputeHeight() {
+        setVisibility(View.GONE);
+        setupAnimators();
+    }
+
+    /**
+     * Gets the 'expanded' state.
+     *
+     * @return True if the layout is expanded. False it it is not.
+     */
+    public boolean isExpanded() {
+        return getVisibility() == View.VISIBLE;
+    }
+
+    /**
+     * Toggle the expansion state of the layout without animation.
+     */
+    public void toggleNoAnim() {
+        if(isExpanded()) {
+            collapseNoAnim();
+        }
+        else {
+            expandNoAnim();
+        }
+    }
+
+    /**
+     * Toggle the expansion state of the layout.
+     */
+    public void toggle() {
+        if (isExpanded()) {
+            collapse();
+        } else {
+            expand();
+        }
+    }
+
+    /**
+     * Expands the layout if it is not yet expanded.
+     */
+    public void expand() {
+        if (getVisibility() == View.VISIBLE) {
+            return;
+        }
+        setVisibility(View.VISIBLE);
+        mAnimatorExpand.setDuration(mDuration);
+        mAnimatorExpand.start();
+    }
+
+    /**
+     * Expands the layout if it is not yet expanded. It expands the
+     * layout without any animation.
+     */
+    public void expandNoAnim() {
+        if (getVisibility() == View.VISIBLE) {
+            return;
+        }
+        setVisibility(View.VISIBLE);
+        mAnimatorExpand.setDuration(0);
+        mAnimatorExpand.start();
+    }
+
+    /**
+     * Collapses the layout if it is not yet collapsed.
+     */
+    public void collapse() {
+        if (getVisibility() == View.GONE) {
+            return;
+        }
+        mAnimatorCollapse.setDuration(mDuration);
+        mAnimatorCollapse.start();
     }
 
     /**
@@ -229,15 +238,9 @@ public class LinearLayoutEx extends LinearLayout {
         if (getVisibility() == View.GONE) {
             return;
         }
-        setVisibility(View.GONE);
-
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        layoutParams.height = 0;
-        setLayoutParams(layoutParams);
-        if (mEsListener != null) {
-            mEsListener.OnExpansionStateChanged(false);
-        }
-    }
+        mAnimatorCollapse.setDuration(0);
+        mAnimatorCollapse.start();
+   }
 
     /**
      * Create the {@link android.animation.ValueAnimator} for showing or hiding the

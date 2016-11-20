@@ -21,6 +21,7 @@ import com.development.jaba.model.Fillup;
 import com.development.jaba.moneypit.R;
 import com.development.jaba.utilities.FormattingHelper;
 import com.development.jaba.utilities.ImageDownloadHelperTask;
+import com.development.jaba.utilities.SettingsHelper;
 import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.LinearLayoutEx;
 
@@ -43,6 +44,7 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
     private List<Fillup> mData = Collections.emptyList();
     private final Context mContext;
     private final Vector<String> mExpandedItems;
+    private final SettingsHelper mSettings;
 
     //region Construction
 
@@ -53,12 +55,13 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
      * @param car     The car the data is linked to.
      * @param values  The data set which is managed by this adapter.
      */
-    public FillupRowAdapter(Context context, Car car, List<Fillup> values) {
+    public FillupRowAdapter(Context context, Car car, List<Fillup> values, SettingsHelper settings) {
         mExpandedItems = new Vector<>();
         mInflater = LayoutInflater.from(context);
         mCar = car;
         mData = values;
         mContext = context;
+        mSettings = settings;
     }
     //endregion
 
@@ -298,7 +301,12 @@ public class FillupRowAdapter extends BaseRecyclerViewAdapter<FillupRowAdapter.F
                         mExpandedItems.remove(String.valueOf(position));
                     }
                     lle.requestLayout();
-                    lle.toggle();
+                    if(mSettings.getBooleanValue(SettingsHelper.PREF_TRANSITIONS, true)) {
+                        lle.toggle();
+                    }
+                    else {
+                        lle.toggleNoAnim();
+                    }
                 }
             }
         }
