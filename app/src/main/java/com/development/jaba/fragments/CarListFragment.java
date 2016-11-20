@@ -1,6 +1,7 @@
 package com.development.jaba.fragments;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,7 +108,7 @@ public class CarListFragment extends Fragment {
             @Override
             public boolean onRecyclerItemClicked(View view, int position, boolean isLongClick) {
                 if (!isLongClick) {
-                    showCarDetails(mCarAdapter.getItem(position));
+                    showCarDetails(mCarAdapter.getItem(position), position);
                 }
                 return false;
             }
@@ -142,8 +144,8 @@ public class CarListFragment extends Fragment {
                         Intent summary = new Intent(getActivity(), TotalSummaryActivity.class);
                         Car selectedCar = mCarAdapter.getItem(position);
                         summary.putExtra(Keys.EK_CAR, selectedCar);
-                        startActivity(summary);
-                        break;
+                        ActivityCompat.startActivity(getActivity(), summary, getSceneBundle(position));
+                        return true;
 
                     default:
                         break;
@@ -187,16 +189,34 @@ public class CarListFragment extends Fragment {
     }
 
     /**
+     * Returns a scene transition bundle which will animate the car picture.
+     * @param position The position of the item in the {@link RecyclerViewEx} to animate.
+     * @return The scene animation {@link Bundle} or null when running lower than Lollipop.
+     */
+    private Bundle getSceneBundle(int position) {
+        Bundle trans = null;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            CarRowAdapter.CarRowViewHolder vh = (CarRowAdapter.CarRowViewHolder) mCarList.findViewHolderForLayoutPosition(position);
+            if(vh != null) {
+
+                trans = ActivityOptions.makeSceneTransitionAnimation(getActivity(), vh.getImage(), "carImage").toBundle();
+            }
+        }
+        return trans;
+    }
+
+    /**
      * Open up the {@link Car} details activity for the given car.
      *
      * @param car The {@link Car} which to show in the details page.
+     * @param position The position of the {@link RecyclerViewEx} to show.
      */
-    private void showCarDetails(Car car) {
+    private void showCarDetails(Car car, int position) {
         Intent carDetails = new Intent(getActivity(), VehicleDetailsActivity.class);
         if (car != null) {
             carDetails.putExtra(Keys.EK_CAR, car);
         }
-        ActivityCompat.startActivity(getActivity(), carDetails, null/*ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle()*/);
+        ActivityCompat.startActivity(getActivity(), carDetails, getSceneBundle(position));
     }
 
     /**
@@ -211,7 +231,7 @@ public class CarListFragment extends Fragment {
             editCar.putExtra(Keys.EK_CAR, car);
             editCar.putExtra(Keys.EK_VIEWPOSITION, position);
         }
-        startActivityForResult(editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR);
+        ActivityCompat.startActivityForResult(getActivity(), editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR, getSceneBundle(position));
     }
 
     /**

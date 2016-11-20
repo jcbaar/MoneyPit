@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     app:cardBackgroundColor="?attr/listCardBackgroundColor"
     app:cardCornerRadius="6dp"
     android:foreground="?android:attr/selectableItemBackground"
@@ -35,7 +34,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="false"
                     android:src="@drawable/nopicture"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_gravity="center_vertical"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
