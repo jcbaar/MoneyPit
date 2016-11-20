@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -50,7 +51,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
     @SuppressWarnings("unused")
     @Bind(R.id.fillupList) RecyclerViewEx mFillupList;
     @SuppressWarnings("unused")
-    @Bind(R.id.fillupListEmpty) TextView mEmptyText;
+    @Bind(R.id.fillupListEmpty) LinearLayout mEmptyText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

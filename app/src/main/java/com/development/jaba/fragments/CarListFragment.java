@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -53,7 +54,7 @@ public class CarListFragment extends Fragment {
     private SettingsHelper mSettings;                // For reading app settings.
 
     @SuppressWarnings("unused")
-    @Bind(R.id.listEmpty) TextView mEmptyView;        // The text to show when the list is empty.
+    @Bind(R.id.listEmpty) LinearLayout mEmptyView;   // The view to show when the list is empty.
     @SuppressWarnings("unused")
     @Bind(R.id.carList) RecyclerViewEx mCarList;     // The list of vehicles.
     @SuppressWarnings("unused")
