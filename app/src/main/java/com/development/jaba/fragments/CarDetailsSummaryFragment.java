@@ -176,7 +176,6 @@ public class CarDetailsSummaryFragment extends BaseDetailsFragment {
                 return;
             }
             mCarLabel.setText(mCar.getLicensePlate() + " (" + mCar.getBuildYear() + "), " + FormattingHelper.toShortDate(mOldest) + " " + getString(R.string.upto) + " " + FormattingHelper.toShortDate(mNewest));
-            mLabelLayout.setVisibility(View.VISIBLE);
 
             if(result == null) {
                 mNoData.setVisibility(View.VISIBLE);
