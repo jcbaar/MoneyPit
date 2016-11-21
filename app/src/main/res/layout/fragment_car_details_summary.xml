@@ -25,7 +25,7 @@
                 android:background="@drawable/car_summary_header"
                 android:orientation="vertical"
                 android:padding="8dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/carLabel"
