@@ -235,7 +235,7 @@ public class CarListFragment extends Fragment {
             editCar.putExtra(Keys.EK_CAR, car);
             editCar.putExtra(Keys.EK_VIEWPOSITION, position);
         }
-        ActivityCompat.startActivityForResult(getActivity(), editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR, getSceneBundle(position));
+        getActivity().startActivityFromFragment(this, editCar, car == null ? REQUEST_ADD_CAR : REQUEST_EDIT_CAR, getSceneBundle(position));
     }
 
     /**

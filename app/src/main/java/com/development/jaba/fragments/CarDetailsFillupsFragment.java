@@ -179,7 +179,7 @@ public class CarDetailsFillupsFragment extends BaseDetailsFragment {
             editFillup.putExtra(Keys.EK_FILLUP, fillup);
             editFillup.putExtra(Keys.EK_VIEWPOSITION, position);
         }
-        startActivityForResult(editFillup, fillup == null ? REQUEST_ADD_FILLUP : REQUEST_EDIT_FILLUP);
+        getActivity().startActivityFromFragment(this, editFillup, fillup == null ? REQUEST_ADD_FILLUP : REQUEST_EDIT_FILLUP);
     }
 
     @Override
