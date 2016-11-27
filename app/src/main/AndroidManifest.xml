@@ -38,14 +38,14 @@
         <activity
             android:name=".AddOrEditCarActivity"
             android:label="@string/title_activity_add_or_edit_car"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".VehicleDetailsActivity"
             android:label="@string/title_activity_vehicle_details" />
         <activity
             android:name=".AddOrEditFillupActivity"
             android:label="@string/title_activity_add_or_edit_fillup"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />

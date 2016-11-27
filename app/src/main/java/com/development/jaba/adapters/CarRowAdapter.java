@@ -1,6 +1,7 @@
 package com.development.jaba.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,7 @@ public class CarRowAdapter extends BaseRecyclerViewAdapter<CarRowAdapter.CarRowV
         final Car item = mData.get(position);
 
         // Replace the default picture if one is provided from the database.
-        new GetCarImageHelper(mContext, holder.getImage(), item, false).execute();
+        new GetCarImageHelper(mContext, holder.getImage(), item, ContextCompat.getColor(mContext, R.color.primaryColor), false).execute();
 
         // Setup the View with the item data.
         holder.getMake().setText(item.toString());

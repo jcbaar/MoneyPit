@@ -6,9 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,11 +19,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -34,6 +38,7 @@ import com.development.jaba.utilities.DateHelper;
 import com.development.jaba.utilities.DialogHelper;
 import com.development.jaba.utilities.GetCarImageHelper;
 import com.development.jaba.utilities.PermissionHelper;
+import com.development.jaba.utilities.UtilsHelper;
 import com.development.jaba.view.EditTextEx;
 import com.development.jaba.view.RecyclingImageView;
 
@@ -62,7 +67,7 @@ public class AddOrEditCarActivity extends BaseActivity {
 
     @Bind(R.id.carDistanceUnit) Spinner mDistanceUnits;
     @Bind(R.id.carVolumeUnit) Spinner mVolumeUnits;
-    @Bind(R.id.imageView) RecyclingImageView mImage;
+    @Bind(R.id.imageView) ImageView mImage;
     @Bind(R.id.carBrand) EditTextEx mMake;
     @Bind(R.id.carModel) EditTextEx mModel;
     @Bind(R.id.carBuildYear) EditTextEx mBuildYear;
@@ -228,6 +233,7 @@ public class AddOrEditCarActivity extends BaseActivity {
             setTitle(getString(R.string.title_edit_car));
         } else {
             setTitle(getString(R.string.title_create_car));
+            new GetCarImageHelper(this, mImage, mCarToEdit, getColorPrimary(), false).execute();
         }
     }
 
@@ -263,7 +269,7 @@ public class AddOrEditCarActivity extends BaseActivity {
             mVolumeUnits.setSelection(savedInstanceState.getInt(Car.KEY_VOLUMEUNIT));
             mCarToEdit.setImageBytes(savedInstanceState.getByteArray(Car.KEY_PICTURE));
 
-            new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
+            new GetCarImageHelper(this, mImage, mCarToEdit, getColorPrimary(), false).execute();
             if (savedInstanceState.containsKey(CAPTURED_PHOTO_PATH_KEY)) {
                 mCurrentPhotoPath = savedInstanceState.getString(CAPTURED_PHOTO_PATH_KEY);
             }
@@ -311,7 +317,7 @@ public class AddOrEditCarActivity extends BaseActivity {
         mDistanceUnits.setSelection(mCarToEdit.getDistanceUnit().getValue() - 1);
         mVolumeUnits.setSelection(mCarToEdit.getVolumeUnit().getValue() - 1);
 
-        new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
+        new GetCarImageHelper(this, mImage, mCarToEdit, getColorPrimary(), false, false).execute();
     }
 
     /**
@@ -434,14 +440,14 @@ public class AddOrEditCarActivity extends BaseActivity {
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
                     mCarToEdit.setImage(this, selectedImage);
-                    new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
+                    new GetCarImageHelper(this, mImage, mCarToEdit, getColorPrimary(), false).execute();
                 }
                 break;
 
             case REQUEST_TAKE_PHOTO:
                 if(resultCode == RESULT_OK) {
                     mCarToEdit.setImage(this, mCapturedImageURI);
-                    new GetCarImageHelper(this, mImage, mCarToEdit, true).execute();
+                    new GetCarImageHelper(this, mImage, mCarToEdit, getColorPrimary(), false).execute();
                 }
                 break;
         }

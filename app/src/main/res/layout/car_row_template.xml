@@ -33,7 +33,7 @@
                     android:scaleType="centerCrop"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="false"
-                    android:src="@drawable/nopicture"
+                    android:src="@drawable/ic_loadfail"
                     android:layout_gravity="center_vertical"/>
 
                 <LinearLayout
