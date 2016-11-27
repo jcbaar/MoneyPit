@@ -17,6 +17,8 @@
         <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelected</item>
         <item name="listCardPrimaryTextColor">@color/listCardText</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryText</item>
+        <item name="emptyBackground">@color/emptyBackLight</item>
+        <item name="emptyImage">@drawable/empty</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_light</item>
         <item name="chartBackgroundColor">@color/background_material_light</item>
         <item name="overflowButton">@drawable/card_menu_button_overflow_material</item>
@@ -55,6 +57,8 @@
         <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelectedDark</item>
         <item name="listCardPrimaryTextColor">@color/listCardTextDark</item>
         <item name="listCardSecondaryTextColor">@color/listCardSecondaryTextDark</item>
+        <item name="emptyBackground">@color/emptyBackDark</item>
+        <item name="emptyImage">@drawable/empty_dark</item>
         <item name="chartAxisTextColor">@color/primary_text_default_material_dark</item>
         <item name="chartBackgroundColor">@color/background_material_dark</item>
         <item name="overflowButton">@drawable/card_menu_button_overflow_material_dark</item>
@@ -89,6 +93,8 @@
         <item name="listCardBackgroundSelectedColor">@color/listCardBackgroundSelectedBlack</item>
         <item name="chartBackgroundColor">@android:color/black</item>
         <item name="dividerColor">@color/dividerColorBlack</item>
+        <item name="emptyBackground">@color/emptyBackBlack</item>
+        <item name="emptyImage">@drawable/empty_dark</item>
     </style>
     <!-- *** DARK THEME END ***************************************************************** -->
 

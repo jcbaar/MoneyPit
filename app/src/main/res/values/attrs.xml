@@ -31,6 +31,9 @@
     <attr name="listCardPrimaryTextColor" format="color" />
     <attr name="listCardSecondaryTextColor" format="color" />
 
+    <attr name="emptyBackground" format="color"/>
+    <attr name="emptyImage" format="reference"/>
+
     <attr name="yearSpinnerBackgroundColor" format="color" />
     <attr name="yearSpinnerTextColor" format="color" />
 

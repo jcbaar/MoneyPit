@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listEmpty"
-        android:background="@color/primaryColorLight"
+        android:background="?attr/emptyBackground"
         android:orientation="vertical"
         android:visibility="gone">
         <LinearLayout
@@ -25,12 +25,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center_vertical">
+
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="196dp"
+                android:layout_height="130dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/empty"
-                android:scaleType="fitCenter"/>
+                android:background="?attr/emptyImage"
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,6 +40,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
+                android:gravity="center"
                 android:text="@string/no_cars" />
         </LinearLayout>
     </LinearLayout>

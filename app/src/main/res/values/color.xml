@@ -22,6 +22,10 @@
     <color name="listCardBackgroundDark">@color/background_material_dark</color>
     <color name="listCardBackgroundBlack">@android:color/black</color>
 
+    <color name="emptyBackLight">#BBDEFB</color>
+    <color name="emptyBackDark">#2F2F2F</color>
+    <color name="emptyBackBlack">#000000</color>
+
     <color name="listCardBackgroundSelected">@color/ripple_material_light</color>
     <color name="listCardBackgroundSelectedDark">@color/ripple_material_dark</color>
     <color name="listCardBackgroundSelectedBlack">@color/ripple_material_dark</color>
