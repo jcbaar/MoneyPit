@@ -35,10 +35,11 @@ public class EditTextEx extends LinearLayout {
     private int mMaxLength;             // The maximum number of characters the EditText can contain.
     private int mErrorColor;            // The error color.
     private String mHintString;         // The hint string.
-    @Bind(R.id.editEx_charCount) TextView mCharCount;  // The character counter.
     @Bind(R.id.editEx_editor) EditText mEditor;           // The EditText.
     @Bind(R.id.editEx_wrapper) TextInputLayout mWrapper;
     private BaseValidator mValidator;   // Validator for this instance.
+
+    private boolean mCounterEnabled = false; // Is the couter view enabled?
 
     /**
      * Constructor. Initializes an instance of the object.
@@ -69,7 +70,7 @@ public class EditTextEx extends LinearLayout {
     public EditTextEx(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        // Infalate the layout of the custom view.
+        // Inflate the layout of the custom view.
         LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.view_edittext_ex, this);
 
@@ -80,8 +81,6 @@ public class EditTextEx extends LinearLayout {
         // instances of this view in the same activity androids restore on orientation
         // changes will screw things up.
         mEditor.setId(UtilsHelper.generateViewId());
-
-        mCharCount.setTextColor(ContextCompat.getColor(context, R.color.accentColor));
 
         @StyleableRes int inputType = 1;
 
@@ -111,17 +110,10 @@ public class EditTextEx extends LinearLayout {
 
         // If we have a maximum number of characters the user can enter
         // we will setup a LengthFilter to enforce this.
-        if (mMaxLength > 0) {
-            InputFilter[] filters = new InputFilter[1];
-            filters[0] = new InputFilter.LengthFilter(mMaxLength);
-            mEditor.setFilters(filters);
-        }
+        setMaxLength(mMaxLength);
 
         // Setup the views.
         mWrapper.setHint(mHintString);
-        mCharCount.setTextColor(ContextCompat.getColor(context, R.color.accentColor));
-
-        setCharCount();
 
         // Focus changes on the EditText are forwarded if the view has a
         // focus change listener. Als the current focus change listener of the EditText
@@ -146,51 +138,30 @@ public class EditTextEx extends LinearLayout {
                 if (!hasFocus) {
                     validate();
                 }
-                setCharCount();
-            }
-        });
-
-        // We need to listen to text changes in the EditText. Changes in the text are used to show or
-        // hide the floating hint TextView. It is also used to update the character counter text view.
-        mEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                setCharCount();
             }
         });
     }
 
-    /**
-     * Updates the character counter view.
-     */
-    private void setCharCount() {
-        if(mMaxLength <= 0 ) {
-            if(mCharCount.getVisibility() != View.GONE) {
-                mCharCount.setVisibility(View.GONE);
+    public void setMaxLength(int maxLength) {
+        mMaxLength = maxLength;
+        if(mMaxLength <= 0) {
+            mMaxLength = 0;
+            if(!mCounterEnabled) {
+                mWrapper.setCounterEnabled(false);
+                mCounterEnabled = true;
             }
         }
         else {
-            if (!mEditor.hasFocus()) {
-                if(mCharCount.getVisibility() != View.GONE) {
-                    mCharCount.setVisibility(View.GONE);
-                }
-            }
-            else {
-                if (mCharCount.getVisibility() != View.VISIBLE) {
-                    mCharCount.setVisibility(View.VISIBLE);
-                }
-                mCharCount.setText(String.format("%d/%d", mEditor.getText().length(), mMaxLength));
+            mMaxLength = maxLength;
+            if(mCounterEnabled) {
+                mWrapper.setCounterEnabled(false);
+                mCounterEnabled = false;
             }
         }
+        mWrapper.setCounterMaxLength(mMaxLength);
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter.LengthFilter(mMaxLength);
+        mEditor.setFilters(filters);
     }
 
     /**
