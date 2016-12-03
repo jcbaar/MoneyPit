@@ -158,10 +158,16 @@ public class EditTextEx extends LinearLayout {
                 mCounterEnabled = false;
             }
         }
-        mWrapper.setCounterMaxLength(mMaxLength);
-        InputFilter[] filters = new InputFilter[1];
-        filters[0] = new InputFilter.LengthFilter(mMaxLength);
-        mEditor.setFilters(filters);
+
+        if(mMaxLength > 0) {
+            mWrapper.setCounterMaxLength(mMaxLength);
+            InputFilter[] filters = new InputFilter[1];
+            filters[0] = new InputFilter.LengthFilter(mMaxLength);
+            mEditor.setFilters(filters);
+        }
+        else {
+            mEditor.setFilters(new InputFilter[] {});
+        }
     }
 
     /**
