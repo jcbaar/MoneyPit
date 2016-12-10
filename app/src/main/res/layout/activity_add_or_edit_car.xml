@@ -6,13 +6,44 @@
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include
-            layout="@layout/app_bar" />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_bar_height"
+            android:fitsSystemWindows="true"
+            app:titleEnabled="false"
+            android:background="?attr/listCardBackgroundColor"
+            app:contentScrim="?attr/colorPrimary"
+            app:elevation="@dimen/actionbar_elevation"
+            app:expandedTitleMarginEnd="94dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"/>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@null"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -29,16 +60,9 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/settings_margin">
 
-                <com.development.jaba.view.RecyclingImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"/>
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/imageView"
                     android:layout_centerHorizontal="true"
                     android:paddingTop="@dimen/settings_margin">
 
@@ -78,97 +102,108 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin">
 
-                <TableLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:orientation="horizontal"
-                    android:rowCount="5"
-                    android:stretchColumns="*">
-                    <TableRow  android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <com.development.jaba.view.EditTextEx
-                            android:id="@+id/carBrand"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/car_brand"
-                            android:maxLength="50"
-                            app:eteErrorColor="@color/errorColor" />
-
-                        <com.development.jaba.view.EditTextEx
-                            android:id="@+id/carModel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/carModel"
-                            android:maxLength="50"
-                            app:eteErrorColor="@color/errorColor" />
-                    </TableRow>
-                    <TableRow  android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <com.development.jaba.view.EditTextEx
-                            android:id="@+id/carBuildYear"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/carBuildYear"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            app:eteErrorColor="@color/errorColor" />
-
-                        <com.development.jaba.view.EditTextEx
-                            android:id="@+id/carLicense"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/carLicense"
-                            android:maxLength="15"
-                            app:eteErrorColor="@color/errorColor" />
-                    </TableRow>
-
-                    <TableRow  android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <android.support.v4.widget.Space />
-                        <com.development.jaba.view.EditTextEx
-                            android:id="@+id/carCurrency"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/carCurrency"
-                            android:maxLength="3"
-                            app:eteErrorColor="@color/errorColor" />
-                    </TableRow>
-
-                    <TableRow
+                    android:orientation="horizontal">
+                    <com.development.jaba.view.EditTextEx
+                        android:id="@+id/carBrand"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/car_brand"
+                        android:maxLength="50"
+                        app:eteErrorColor="@color/errorColor" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="4dp"
-                            android:text="@string/carDistanceUnit"
-                            android:textSize="@dimen/abc_text_size_small_material" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="4dp"
-                            android:text="@string/carVolumeUnit"
-                            android:textSize="@dimen/abc_text_size_small_material" />
-                    </TableRow>
-
-                    <TableRow
+                    <com.development.jaba.view.EditTextEx
+                        android:id="@+id/carModel"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <Spinner
-                            android:id="@+id/carDistanceUnit"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Widget.AppCompat.Spinner.Underlined"/>
-                        <Spinner
-                            android:id="@+id/carVolumeUnit"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Widget.AppCompat.Spinner.Underlined"/>
-                    </TableRow>
-                </TableLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/carModel"
+                        android:maxLength="50"
+                        app:eteErrorColor="@color/errorColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <com.development.jaba.view.EditTextEx
+                        android:id="@+id/carBuildYear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/carBuildYear"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        app:eteErrorColor="@color/errorColor" />
+
+                    <com.development.jaba.view.EditTextEx
+                        android:id="@+id/carLicense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/carLicense"
+                        android:maxLength="15"
+                        app:eteErrorColor="@color/errorColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <android.support.v4.widget.Space
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <com.development.jaba.view.EditTextEx
+                        android:id="@+id/carCurrency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/carCurrency"
+                        android:maxLength="3"
+                        app:eteErrorColor="@color/errorColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/carDistanceUnit"
+                        android:textSize="@dimen/abc_text_size_small_material" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/carVolumeUnit"
+                        android:textSize="@dimen/abc_text_size_small_material" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Spinner
+                        android:id="@+id/carDistanceUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        style="@style/Widget.AppCompat.Spinner.Underlined"/>
+                    <Spinner
+                        android:id="@+id/carVolumeUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        style="@style/Widget.AppCompat.Spinner.Underlined"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

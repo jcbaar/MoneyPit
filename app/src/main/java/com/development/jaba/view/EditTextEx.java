@@ -231,11 +231,12 @@ public class EditTextEx extends LinearLayout {
     public void setError(CharSequence error) {
         if(error != null) {
             mWrapper.setError(error);
-            mWrapper.setErrorEnabled(true);
+//            mWrapper.setErrorEnabled(true);
         }
         else
         {
-            mWrapper.setErrorEnabled(false);
+            mWrapper.setError(null);
+//            mWrapper.setErrorEnabled(false);
         }
     }
 
